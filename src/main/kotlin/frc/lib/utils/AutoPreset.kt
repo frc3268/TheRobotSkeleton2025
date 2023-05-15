@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 
 /**
- * A group of commands to be ran in auto.
+ * A group of commands to be run in auto.
  *
  * This class is a SequentialCommandGroup under the hood, but adds the ability to change the commands on runtime, and adds a name property for the SendableChooser.
  *
