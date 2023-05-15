@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 /**
  * A group of commands to be run in auto.
  *
- * This class is a SequentialCommandGroup under the hood, but adds the ability to change the commands on runtime, and adds a name property for the SendableChooser.
+ * This class is essentially a SequentialCommandGroup under the hood, but adds the ability to change the commands on runtime, and adds a name property for the SendableChooser.
  *
  * @param commands a mutable list of the commands in the preset. Can be created using mutableListOf()
  * @property name the name of this preset.
