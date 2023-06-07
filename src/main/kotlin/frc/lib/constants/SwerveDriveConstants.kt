@@ -58,10 +58,10 @@ class SwerveDriveConstants {
     }
 
     object DrivetrainConsts {        /* Drivetrain Constants */
-        val TRACK_WIDTH_METERS = 21.73
-        val WHEEL_BASE_METERS = 21.73
+        val TRACK_WIDTH_METERS = 0.551942
+        val WHEEL_BASE_METERS = 0.551942
 
-        val WHEEL_DIAMETER_METERS = 4
+        val WHEEL_DIAMETER_METERS = 0.1016
         val WHEEL_CIRCUMCE_METERS = WHEEL_DIAMETER_METERS * Math.PI
 
         val OPEN_LOOP_RAMP_RATE_SECONDS: Double = 0.25
@@ -77,10 +77,10 @@ class SwerveDriveConstants {
     }
     object modules{
         val list:List<ModuleConstants> = listOf(
-            ModuleConstants(0, Rotation2d.fromDegrees(0.0), 0, 0, 0),
-            ModuleConstants(0, Rotation2d.fromDegrees(0.0), 0, 0, 0),
-            ModuleConstants(0, Rotation2d.fromDegrees(0.0), 0, 0, 0),
-            ModuleConstants(0, Rotation2d.fromDegrees(0.0), 0, 0, 0)
+            ModuleConstants(1, Rotation2d.fromDegrees(0.0), 1, 2, 1),
+            ModuleConstants(2, Rotation2d.fromDegrees(0.0), 3, 4, 2),
+            ModuleConstants(3, Rotation2d.fromDegrees(0.0), 5, 6, 3),
+            ModuleConstants(4, Rotation2d.fromDegrees(0.0), 7, 8, 4)
         )
     }
 
