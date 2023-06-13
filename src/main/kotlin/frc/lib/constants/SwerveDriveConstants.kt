@@ -55,7 +55,7 @@ class SwerveDriveConstants {
 
     object EncoderConsts {
         const val INVERT:Boolean = false
-        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION:Double = 1.0
+        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION:Double = 360.0
     }
 
     object DrivetrainConsts {        /* Drivetrain Constants */

@@ -39,6 +39,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
     init {
         //config everything
+        configEncoder()
         lastAngle = getState().angle
         configAngleMotor()
         configDriveMotor()
@@ -71,7 +72,6 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         angleMotor.setSmartCurrentLimit(SwerveDriveConstants.AngleMotorConsts.CONTINUOUS_CURRENT_LIMIT)
         angleMotor.setInverted(SwerveDriveConstants.AngleMotorConsts.INVERT)
         angleMotor.setIdleMode(SwerveDriveConstants.AngleMotorConsts.NEUTRAL_MODE)
-        integratedAngleEncoder.setPositionConversionFactor(SwerveDriveConstants.AngleMotorConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION)
         angleController.setP(SwerveDriveConstants.AngleMotorConsts.KP)
         angleController.setI(SwerveDriveConstants.AngleMotorConsts.KI)
         angleController.setD(SwerveDriveConstants.AngleMotorConsts.KD)
@@ -85,6 +85,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     fun configEncoder() {
         //debug below
         encoder.distancePerRotation = SwerveDriveConstants.EncoderConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
+        encoder.positionOffset = moduleConstants.ANGLE_OFFSET.degrees
     }
 
     fun setDesiredState(desiredState: SwerveModuleState, isOpenLoop: Boolean) {
@@ -110,7 +111,13 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     }
 
     fun resetToAbsolute() {
-        integratedAngleEncoder.setPosition(getEncoderMeasurement().degrees - moduleConstants.ANGLE_OFFSET.degrees)
+        integratedAngleEncoder.position = (getEncoderMeasurement().degrees)
+    }
+
+    //TODO: use this method somewhere
+    fun zeroEncoder():Double{
+        encoder.reset()
+        return encoder.positionOffset
     }
 
     fun getAngle(): Rotation2d {
@@ -118,7 +125,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     }
 
     fun getEncoderMeasurement(): Rotation2d {
-        return Rotation2d.fromDegrees(encoder.absolutePosition * 360 - moduleConstants.ANGLE_OFFSET.degrees)
+        return Rotation2d.fromDegrees(encoder.absolutePosition)
     }
 
     fun getState(): SwerveModuleState {
