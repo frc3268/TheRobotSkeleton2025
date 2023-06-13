@@ -11,8 +11,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
 import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
+
 
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
@@ -39,6 +41,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     override fun periodic() {
         poseEstimator.update(getYaw(), getModulePositions())
+        for (mod in modules) {
+            SmartDashboard.putNumber("Mod " + mod.moduleConstants.MODULE_NUMBER + " Cancoder", mod.getEncoderMeasurement().degrees)
+            SmartDashboard.putNumber("Mod " + mod.moduleConstants.MODULE_NUMBER + " Integrated", mod.getPosition().angle.degrees)
+            SmartDashboard.putNumber("Mod " + mod.moduleConstants.MODULE_NUMBER + " Velocity", mod.getState().speedMetersPerSecond)
+        }
     }
 
     /** This method will be called once per scheduler run during simulation  */
@@ -109,7 +116,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
 
         for (mod in modules) {
-            mod.setDesiredState(desiredStates[mod.moduleConstants.MODULE_NUMBER], isOpenLoop)
+            mod.setDesiredState(desiredStates[mod.moduleConstants.MODULE_NUMBER -1], isOpenLoop)
         }
     }
 }

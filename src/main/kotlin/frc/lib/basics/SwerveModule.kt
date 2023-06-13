@@ -40,8 +40,8 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     init {
         //config everything
         lastAngle = getState().angle
-
-        resetToAbsolute()
+        configAngleMotor()
+        configDriveMotor()
     }
 
     fun configDriveMotor() {
@@ -49,7 +49,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveMotor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20)
         driveMotor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20)
         driveMotor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 50)
-        driveMotor.setSmartCurrentLimit(SwerveDriveConstants.DriveMotorConsts.CONTINUOUS_CURRENT_LIMT)
+        driveMotor.setSmartCurrentLimit(SwerveDriveConstants.DriveMotorConsts.CONTINUOUS_CURRENT_LIMIT)
         driveMotor.setInverted(SwerveDriveConstants.DriveMotorConsts.INVERT)
         driveMotor.setIdleMode(SwerveDriveConstants.DriveMotorConsts.NEUTRAL_MODE)
         integratedDriveEncoder.setVelocityConversionFactor(SwerveDriveConstants.DriveMotorConsts.VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND)
@@ -68,7 +68,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         angleMotor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 500)
         angleMotor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20)
         angleMotor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus3, 500)
-        angleMotor.setSmartCurrentLimit(SwerveDriveConstants.AngleMotorConsts.CONTINUOUS_CURRENT_LIMT)
+        angleMotor.setSmartCurrentLimit(SwerveDriveConstants.AngleMotorConsts.CONTINUOUS_CURRENT_LIMIT)
         angleMotor.setInverted(SwerveDriveConstants.AngleMotorConsts.INVERT)
         angleMotor.setIdleMode(SwerveDriveConstants.AngleMotorConsts.NEUTRAL_MODE)
         integratedAngleEncoder.setPositionConversionFactor(SwerveDriveConstants.AngleMotorConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION)
@@ -83,13 +83,12 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
 
     fun configEncoder() {
-        encoder.positionOffset = moduleConstants.ANGLE_OFFSET.degrees
         //debug below
         encoder.distancePerRotation = SwerveDriveConstants.EncoderConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
     }
 
     fun setDesiredState(desiredState: SwerveModuleState, isOpenLoop: Boolean) {
-        val optimizedState = SwerveModuleState.optimize(desiredState, getAngle())
+        val optimizedState = SwerveModuleState.optimize(desiredState, getEncoderMeasurement())
         if (isOpenLoop) {
             driveMotor.set(optimizedState.speedMetersPerSecond / SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
         } else {
@@ -111,15 +110,15 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     }
 
     fun resetToAbsolute() {
-        integratedAngleEncoder.setPosition(getEncoderMeasurement().getDegrees() - moduleConstants.ANGLE_OFFSET.getDegrees())
+        integratedAngleEncoder.setPosition(getEncoderMeasurement().degrees - moduleConstants.ANGLE_OFFSET.degrees)
     }
 
     fun getAngle(): Rotation2d {
-        return Rotation2d.fromDegrees(integratedAngleEncoder.getPosition())
+        return Rotation2d.fromDegrees(integratedAngleEncoder.position)
     }
 
     fun getEncoderMeasurement(): Rotation2d {
-        return Rotation2d.fromDegrees(encoder.getAbsolutePosition())
+        return Rotation2d.fromDegrees(encoder.absolutePosition * 360 - moduleConstants.ANGLE_OFFSET.degrees)
     }
 
     fun getState(): SwerveModuleState {

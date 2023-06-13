@@ -34,16 +34,16 @@ class SwerveJoystickDrive(
     // Called every time the scheduler runs while the command is scheduled.
     override fun execute() { 
         /* Get Values, Deadband */
-        val translationVal: Double = MathUtil.applyDeadband(translationX.getAsDouble(), Constants.OperatorConstants.STICK_DEADBAND)
-        val strafeVal: Double = MathUtil.applyDeadband(translationY.getAsDouble(), Constants.OperatorConstants.STICK_DEADBAND)
-        val rotationVal: Double = MathUtil.applyDeadband(rotation.getAsDouble(), Constants.OperatorConstants.STICK_DEADBAND)
+        val translationVal: Double = MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
+        val strafeVal: Double = MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
+        val rotationVal: Double = MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
 
         /* Drive */
         drive.drive(
             Translation2d(translationVal, strafeVal).times(SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND), 
             rotationVal * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND, 
-            fieldOriented.getAsBoolean(), 
-            true
+            true,
+            fieldOriented.asBoolean
         )
     }
 
