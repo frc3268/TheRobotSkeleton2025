@@ -25,7 +25,7 @@ class RobotContainer {
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = CommandPS4Controller(Constants.OperatorConstants.kDriverControllerPort)
 
-    //test
+    //this is the command called when teleop mode is enabled
      val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
         { -driverController.getLeftY() },
