@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.trajectory.Trajectory
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
+import frc.lib.basics.SwerveDriveBase
 
 class TrajectoryOrchestrator {
     private val tab: ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
@@ -15,7 +16,8 @@ class TrajectoryOrchestrator {
     
     //update display when trajectory is changed
     
-    fun startSwerveTrajectory(points: Array<Pose2d>) {
+    fun startSwerveTrajectory(points: Array<Pose2d>, drive:SwerveDriveBase) {
+        //voltageConstraint
         if(points[0] == startAtRobotPosition){
             //generate the trajectory at the robot's position
             return
