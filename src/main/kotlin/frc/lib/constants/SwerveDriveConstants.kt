@@ -59,13 +59,10 @@ class SwerveDriveConstants {
     }
 
     object DrivetrainConsts {        /* Drivetrain Constants */
-        const val TRACK_WIDTH_METERS = 0.551942
-        const val WHEEL_BASE_METERS = 0.551942
-
         val TRACK_WIDTH_METERS = 0.7112
         val WHEEL_BASE_METERS = 0.7112
 
-        val WHEEL_DIAMETER_METERS = 0.1016
+        const val WHEEL_DIAMETER_METERS = 0.1016
         val WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI
 
         const val OPEN_LOOP_RAMP_RATE_SECONDS: Double = 0.25
