@@ -11,6 +11,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState
 import edu.wpi.first.wpilibj.AnalogEncoder
 import frc.lib.constants.SwerveDriveConstants
 
+/*
+
+ */
 class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     //encoder
     private val encoder: AnalogEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
@@ -112,12 +115,6 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
     fun resetToAbsolute() {
         integratedAngleEncoder.position = (getEncoderMeasurement().degrees)
-    }
-
-    //TODO: use this method somewhere
-    fun zeroEncoder():Double{
-        encoder.reset()
-        return encoder.positionOffset
     }
 
     fun getAngle(): Rotation2d {
