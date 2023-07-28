@@ -25,5 +25,21 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
     private val absoluteEncoder:AnalogEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
 
-    //TODO: Config
+    init {
+        //TODO: Config
+    }
+
+    fun resetToAbsolute(){
+        driveEncoder.position = 0.0
+        angleEncoder.position = getAbsoluteEncoderMeasurement().degrees
+    }
+    fun getAbsoluteEncoderMeasurement() : Rotation2d = Rotation2d.fromDegrees(absoluteEncoder.absolutePosition)
+    fun getModuleState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, Rotation2d.fromDegrees(angleEncoder.position))
+    fun getModulePosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, Rotation2d.fromDegrees(angleEncoder.position))
+
+    fun stop(){
+        driveMotor.set(0.0)
+        angleMotor.set(0.0)
+    }
+
 }
