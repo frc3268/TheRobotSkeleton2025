@@ -1,6 +1,7 @@
 package frc.lib.constants
 
 import com.revrobotics.CANSparkMax.IdleMode
+import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import frc.lib.constants.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_METERS
 
@@ -74,6 +75,12 @@ class SwerveDriveConstants {
         /* Swerve Profiling Values */
         const val MAX_SPEED_METERS_PER_SECOND = 4.5
         const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 11.5
+
+        var turnController:PIDController = PIDController(
+            0.0,
+            0.0,
+            0.0
+        )
 
     }
     object modules{

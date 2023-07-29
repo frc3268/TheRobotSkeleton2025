@@ -27,6 +27,9 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
     init {
         //TODO: Config
+        SwerveDriveConstants.DrivetrainConsts.turnController.enableContinuousInput(
+            -90.0,90.0
+        )
     }
 
     fun resetToAbsolute(){
@@ -37,6 +40,16 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     fun getModuleState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, Rotation2d.fromDegrees(angleEncoder.position))
     fun getModulePosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, Rotation2d.fromDegrees(angleEncoder.position))
 
+    fun setDesiredState(desiredState:SwerveModuleState){
+        if (Math.abs(desiredState.speedMetersPerSecond) < 0.001){
+            stop()
+            return
+        }
+        val optimizedState = SwerveModuleState.optimize(desiredState, getModuleState().angle)
+        //TODO: 5.0 should be a const
+        driveMotor.set(desiredState.speedMetersPerSecond / 5.0)
+        angleMotor.set(SwerveDriveConstants.DrivetrainConsts.turnController.calculate(getModuleState().angle.degrees, optimizedState.angle.degrees))
+    }
     fun stop(){
         driveMotor.set(0.0)
         angleMotor.set(0.0)
