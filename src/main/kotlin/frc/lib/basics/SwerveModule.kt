@@ -26,7 +26,17 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     private val absoluteEncoder:AnalogEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
 
     init {
-        //TODO: Config
+        absoluteEncoder.distancePerRotation = SwerveDriveConstants.EncoderConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
+        absoluteEncoder.positionOffset = moduleConstants.ANGLE_OFFSET.degrees
+
+        driveEncoder.positionConversionFactor = SwerveDriveConstants.DriveMotorConsts.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION
+        driveEncoder.velocityConversionFactor = SwerveDriveConstants.DriveMotorConsts.VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND
+        angleEncoder.positionConversionFactor = SwerveDriveConstants.AngleMotorConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
+        resetToAbsolute()
+
+        driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
+        angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
+
         SwerveDriveConstants.DrivetrainConsts.turnController.enableContinuousInput(
             -90.0,90.0
         )

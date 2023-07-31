@@ -11,7 +11,9 @@ class SwerveDriveConstants {
         val ANGLE_OFFSET: Rotation2d,
         val DRIVE_MOTOR_ID: Int,
         val ANGLE_MOTOR_ID: Int,
-        val ENCODER_ID: Int
+        val ENCODER_ID: Int,
+        val DRIVE_MOTOR_REVERSED: Boolean,
+        val ANGLE_MOTOR_REVERSED: Boolean
 
     )
 
@@ -85,10 +87,10 @@ class SwerveDriveConstants {
     }
     object modules{
         val list:List<ModuleConstants> = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-181.8), 1, 2, 0),
-            ModuleConstants(2, Rotation2d.fromDegrees(-8.7), 3, 4, 1),
-            ModuleConstants(3, Rotation2d.fromDegrees(-253.7), 5, 6, 2),
-            ModuleConstants(4, Rotation2d.fromDegrees(-114.7), 7, 8, 3)
+            ModuleConstants(1, Rotation2d.fromDegrees(-181.8), 1, 2, 0,false,false),
+            ModuleConstants(2, Rotation2d.fromDegrees(-8.7), 3, 4, 1,false,false),
+            ModuleConstants(3, Rotation2d.fromDegrees(-253.7), 5, 6, 2,false,false),
+            ModuleConstants(4, Rotation2d.fromDegrees(-114.7), 7, 8, 3,false,false)
         )
     }
 
