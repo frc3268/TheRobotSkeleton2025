@@ -3,13 +3,12 @@ package frc.lib.basics
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
 import com.revrobotics.RelativeEncoder
-import com.revrobotics.SparkMaxPIDController
-import edu.wpi.first.math.controller.SimpleMotorFeedforward
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
 import edu.wpi.first.wpilibj.AnalogEncoder
 import frc.lib.constants.SwerveDriveConstants
+import frc.lib.utils.rotation2dFromDeg
 
 /*
 Props: drive motor, drive encoder, angle motor, angle encoder, absolute encoder
@@ -46,19 +45,19 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveEncoder.position = 0.0
         angleEncoder.position = getAbsoluteEncoderMeasurement().degrees
     }
-    fun getAbsoluteEncoderMeasurement() : Rotation2d = Rotation2d.fromDegrees(absoluteEncoder.absolutePosition)
-    fun getModuleState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, Rotation2d.fromDegrees(angleEncoder.position))
-    fun getModulePosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, Rotation2d.fromDegrees(angleEncoder.position))
+    fun getAbsoluteEncoderMeasurement() : Rotation2d = absoluteEncoder.absolutePosition.rotation2dFromDeg()
+    fun getState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, angleEncoder.position.rotation2dFromDeg())
+    fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, angleEncoder.position.rotation2dFromDeg())
 
     fun setDesiredState(desiredState:SwerveModuleState){
         if (Math.abs(desiredState.speedMetersPerSecond) < 0.001){
             stop()
             return
         }
-        val optimizedState = SwerveModuleState.optimize(desiredState, getModuleState().angle)
+        val optimizedState = SwerveModuleState.optimize(desiredState, getState().angle)
         //TODO: 5.0 should be a const
         driveMotor.set(desiredState.speedMetersPerSecond / 5.0)
-        angleMotor.set(SwerveDriveConstants.DrivetrainConsts.turnController.calculate(getModuleState().angle.degrees, optimizedState.angle.degrees))
+        angleMotor.set(SwerveDriveConstants.DrivetrainConsts.turnController.calculate(getState().angle.degrees, optimizedState.angle.degrees))
     }
     fun stop(){
         driveMotor.set(0.0)
