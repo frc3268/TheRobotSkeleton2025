@@ -35,14 +35,15 @@ class Camera(name:String, path:String) {
         }
     }
 
+    //call periodically
     fun captureFrame() : PhotonPipelineResult{
         frame = limelight.latestResult
         return frame
     }
 
-    fun getArpilTagTarget(id: Int):PhotonTrackedTarget? {
+    fun getArpilTagTargetByID(id: Int):PhotonTrackedTarget? {
         limelight.pipelineIndex = 1
-        if(frame.hasTargets()){
+        if(!frame.hasTargets()){
             return null
         }
         for (target:PhotonTrackedTarget in frame.getTargets()){
@@ -51,6 +52,22 @@ class Camera(name:String, path:String) {
             }
         }
         return null
+    }
+
+    fun getAprilTagTarget():PhotonTrackedTarget? {
+        limelight.pipelineIndex = 1
+        if(!frame.hasTargets()){
+            return null
+        }
+        return frame.bestTarget
+    }
+
+    fun getReflectiveTapeTarget():PhotonTrackedTarget?{
+        limelight.pipelineIndex = 0
+        if(!frame.hasTargets()){
+            return null
+        }
+        return frame.bestTarget
     }
 
 
