@@ -1,3 +1,10 @@
+/*
+HEY!
+If you're planning on using the Swerve Drive Base in this library on your own robot,
+make sure to edit these constants based on your own needs! Info on this may appear here later,
+but as of now [[https://github.com/Team364/BaseFalconSwerve]] is a great resource
+for most constants used in this library.
+ */
 package frc.lib.constants
 
 import com.revrobotics.CANSparkMax.IdleMode
@@ -87,10 +94,10 @@ class SwerveDriveConstants {
     }
     object modules{
         val list:List<ModuleConstants> = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-181.8), 1, 2, 0,false,false),
-            ModuleConstants(2, Rotation2d.fromDegrees(-8.7), 3, 4, 1,false,false),
-            ModuleConstants(3, Rotation2d.fromDegrees(-253.7), 5, 6, 2,false,false),
-            ModuleConstants(4, Rotation2d.fromDegrees(-114.7), 7, 8, 3,false,false)
+            ModuleConstants(1, Rotation2d.fromDegrees(-181.8), 1, 2, 0,false,true),
+            ModuleConstants(2, Rotation2d.fromDegrees(-8.7), 3, 4, 1,false,true),
+            ModuleConstants(3, Rotation2d.fromDegrees(-253.7), 5, 6, 2,false,true),
+            ModuleConstants(4, Rotation2d.fromDegrees(-114.7), 7, 8, 3,false,true)
         )
     }
 
