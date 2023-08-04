@@ -37,14 +37,6 @@ class SwerveJoystickDrive(
         val translationVal: Double = MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
         val strafeVal: Double = MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
         val rotationVal: Double = MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
-
-        /* Drive */
-        drive.drive(
-            Translation2d(translationVal, strafeVal).times(SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND), 
-            rotationVal * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND, 
-            true,
-            fieldOriented.asBoolean
-        )
     }
 
     // Called once the command ends or is interrupted.

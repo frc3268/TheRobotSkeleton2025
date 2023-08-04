@@ -3,6 +3,7 @@ package frc.robot
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import edu.wpi.first.wpilibj2.command.button.Trigger
@@ -35,15 +36,7 @@ class RobotContainer {
     )
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
-        driveSubsystem.setDefaultCommand(
-            SwerveJoystickDrive(
-                driveSubsystem,
-                { -driverController.getLeftY() },
-                { -driverController.getLeftX() },
-                { driverController.getRightX() },
-                { driverController.L1().getAsBoolean() }
-            )
-        )
+        driveSubsystem.setDefaultCommand(teleopCommand)
         // Configure the trigger bindings
         configureBindings()
     }
@@ -71,7 +64,7 @@ class RobotContainer {
      */
     val autonomousCommand: Command
         get() {
-            // An example command will be run in autonomous
-            return SwerveJoystickDrive(driveSubsystem, {0.1}, {0.0}, {0.0}, {false}).withTimeout(2.0)
+            // wait 3 seconds...
+            return WaitCommand(3.0)
         }
 }
