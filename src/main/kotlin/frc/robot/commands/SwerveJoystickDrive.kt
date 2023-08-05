@@ -2,6 +2,7 @@ package frc.robot.commands
 
 import edu.wpi.first.wpilibj2.command.CommandBase
 import edu.wpi.first.math.MathUtil
+import edu.wpi.first.math.filter.SlewRateLimiter
 import edu.wpi.first.math.geometry.Translation2d
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.constants.SwerveDriveConstants
@@ -33,14 +34,28 @@ class SwerveJoystickDrive(
 
     // Called every time the scheduler runs while the command is scheduled.
     override fun execute() { 
-        /* Get Values, Deadband */
-        val translationVal: Double = MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
-        val strafeVal: Double = MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
-        val rotationVal: Double = MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
+        /* Get Values, Deadband, Rate Limit, Convert to speeds */
+        val xSpeed: Double =
+            SlewRateLimiter(SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
+                .calculate(MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
+                )* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
+        val ySpeed: Double =
+            SlewRateLimiter(SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
+                .calculate(MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
+                )* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
+        val turnSpeed: Double =
+            SlewRateLimiter(SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND)
+                .calculate(MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
+                )* SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
+
+        /* Drive */
+        drive.setModuleStates(drive.constructStates(xSpeed,ySpeed,turnSpeed,fieldOriented.asBoolean))
     }
 
     // Called once the command ends or is interrupted.
-    override fun end(interrupted: Boolean) { }
+    override fun end(interrupted: Boolean) {
+        drive.stop()
+    }
 
     // Returns true when the command should end.
     override fun isFinished(): Boolean {

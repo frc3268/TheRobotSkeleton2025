@@ -5,6 +5,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
@@ -43,11 +44,22 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             mod.resetToAbsolute()
         }
     }
-    fun setModuleStates(desiredStates: Array<SwerveModuleState>, isOpenLoop: Boolean) {
+    fun setModuleStates(desiredStates: Array<SwerveModuleState>) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
 
         for (mod in modules) {
             mod.setDesiredState(desiredStates[mod.moduleConstants.MODULE_NUMBER])
+        }
+    }
+    fun constructStates(xSpeedMetersPerSecond:Double, ySpeedMetersPerSecond:Double, turningSpeedDegreesPerSecond:Double, fieldOriented:Boolean) : Array<SwerveModuleState> =
+        kinematics.toSwerveModuleStates (
+            if (fieldOriented)
+                ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().degrees,getYaw())
+            else
+                ChassisSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().degrees))
+    fun stop(){
+        for(mod in modules){
+            mod.stop()
         }
     }
     fun getYaw(): Rotation2d = gyro.rotation2d
@@ -55,4 +67,5 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     fun getPose():Pose2d = poseEstimator.estimatedPosition
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
     fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
+
 }
