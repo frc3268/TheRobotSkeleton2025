@@ -1,11 +1,21 @@
 package frc.lib.utils
 
+import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.math.controller.ProfiledPIDController
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.trajectory.Trajectory
+import edu.wpi.first.math.trajectory.TrajectoryConfig
+import edu.wpi.first.math.trajectory.TrajectoryGenerator
+import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
+import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand
 import frc.lib.basics.SwerveDriveBase
+import frc.lib.constants.SwerveDriveConstants
 
 class TrajectoryOrchestrator {
     private val tab: ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
@@ -16,13 +26,39 @@ class TrajectoryOrchestrator {
     
     //update display when trajectory is changed
     
-    fun startSwerveTrajectory(points: Array<Pose2d>, drive:SwerveDriveBase) {
-        //voltageConstraint
-        if(points[0] == startAtRobotPosition){
-            //generate the trajectory at the robot's position
-            return
-        }
-        //generate trajectory normally
+    fun buildSwerveTrajectory(startPose:Pose2d, endPose:Pose2d, points:MutableList<Translation2d>, drive:SwerveDriveBase): SequentialCommandGroup {
+        val trajectoryConfig:TrajectoryConfig = TrajectoryConfig(
+            SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
+            SwerveDriveConstants.DrivetrainConsts.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED
+        ).setKinematics(drive.kinematics)
+
+        val trajectory:Trajectory = TrajectoryGenerator.generateTrajectory(
+            startPose,
+            points,
+            endPose,
+            trajectoryConfig
+        )
+
+        //TODO: Put the values from here to the constants file
+        val xPIDController:PIDController = PIDController(0.0,0.0,0.0)
+        val yPIDController:PIDController = PIDController(0.0,0.0,0.0)
+        val thetaPIDController: ProfiledPIDController = ProfiledPIDController(0.0,0.0,0.0, TrapezoidProfile.Constraints(0.0,0.0))
+
+        val trajectoryCommand = SwerveControllerCommand(
+            trajectory,
+            drive::getPose,
+            drive.kinematics,
+            xPIDController,
+            yPIDController,
+            thetaPIDController,
+            drive::setModuleStates,
+            drive
+        )
+
+        return SequentialCommandGroup(
+            trajectoryCommand,
+            InstantCommand({drive.stop()})
+        )
     }
 
     //2 methods to add trajectory: one for swerve and one for differential
