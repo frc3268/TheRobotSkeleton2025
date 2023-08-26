@@ -10,7 +10,7 @@ class ExampleSubsystem : SubsystemBase() {
      *
      * @return a command
      */
-    fun exampleMethodCommand(): CommandBase {
+    fun exampleMethodCommand(): CommawesjndBase {
         // Inline construction of command goes here.
         // runOnce implicitly requires this subsystem.
         return runOnce {}
