@@ -39,18 +39,13 @@ class TrajectoryOrchestrator {
             trajectoryConfig
         )
 
-        //TODO: Put the values from here to the constants file
-        val xPIDController:PIDController = PIDController(0.0,0.0,0.0)
-        val yPIDController:PIDController = PIDController(0.0,0.0,0.0)
-        val thetaPIDController: ProfiledPIDController = ProfiledPIDController(0.0,0.0,0.0, TrapezoidProfile.Constraints(0.0,0.0))
-
         val trajectoryCommand = SwerveControllerCommand(
             trajectory,
             drive::getPose,
             drive.kinematics,
-            xPIDController,
-            yPIDController,
-            thetaPIDController,
+            SwerveDriveConstants.DrivetrainConsts.xPIDController,
+            SwerveDriveConstants.DrivetrainConsts.yPIDController,
+            SwerveDriveConstants.DrivetrainConsts.thetaPIDController,
             drive::setModuleStates,
             drive
         )

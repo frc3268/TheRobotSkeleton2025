@@ -9,16 +9,27 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
+import edu.wpi.first.networktables.GenericEntry
+import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
 
 //TODO:Maybe a drive function
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
+    private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
+    private val ShufflebooardEntries: List<GenericEntry> = listOf(
+        ShuffleboardTab.add("Mod 1 Angle Encoder", 0.0).entry,
+        ShuffleboardTab.add("Mod 2 Angle Encoder", 0.0).entry,
+        ShuffleboardTab.add("Mod 3 Angle Encoder", 0.0).entry,
+        ShuffleboardTab.add("Mod 4 Angle Encoder", 0.0).entry
+    )
     val poseEstimator: SwerveDrivePoseEstimator
-            private val modules: List<SwerveModule> =
+    private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
     private val gyro: AHRS = AHRS(SPI.Port.kMXP)
     val kinematics: SwerveDriveKinematics =
@@ -36,6 +47,13 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         Timer.delay(1.0)
         resetModulesToAbsolute()
     }
+
+    override fun periodic() {
+        for (mod in modules){
+            ShufflebooardEntries[mod.moduleConstants.MODULE_NUMBER].setDouble(mod.getPosition().angle.degrees)
+        }
+    }
+
     private fun zeroYaw() {
         gyro.zeroYaw()
     }

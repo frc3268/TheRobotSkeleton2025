@@ -9,7 +9,9 @@ package frc.lib.constants
 
 import com.revrobotics.CANSparkMax.IdleMode
 import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.math.controller.ProfiledPIDController
 import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.trajectory.TrapezoidProfile
 import frc.lib.constants.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_METERS
 
 class SwerveDriveConstants {
@@ -91,6 +93,11 @@ class SwerveDriveConstants {
             0.0,
             0.0
         )
+        val xPIDController:PIDController = PIDController(0.0,0.0,0.0)
+        val yPIDController:PIDController = PIDController(0.0,0.0,0.0)
+        val thetaPIDController: ProfiledPIDController = ProfiledPIDController(0.0,0.0,0.0, TrapezoidProfile.Constraints(
+            MAX_SPEED_METERS_PER_SECOND, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED))
+
 
     }
     object modules{
