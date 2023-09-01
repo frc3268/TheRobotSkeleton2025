@@ -34,19 +34,10 @@ class SwerveJoystickDrive(
 
     // Called every time the scheduler runs while the command is scheduled.
     override fun execute() { 
-        /* Get Values, Deadband, Rate Limit, Convert to speeds */
-        val xSpeed: Double =
-            SlewRateLimiter(SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
-                .calculate(MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
-                )* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
-        val ySpeed: Double =
-            SlewRateLimiter(SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
-                .calculate(MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
-                )* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
-        val turnSpeed: Double =
-            SlewRateLimiter(SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND)
-                .calculate(MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
-                )* SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
+        /* Get Values, Deadband, Convert to speeds */
+        val xSpeed: Double = MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND)* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
+        val ySpeed: Double = MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
+        val turnSpeed: Double = MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
 
         /* Drive */
         drive.setModuleStates(drive.constructStates(xSpeed,ySpeed,turnSpeed,fieldOriented.asBoolean))
