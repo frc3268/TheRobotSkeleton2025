@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState
 import edu.wpi.first.wpilibj.AnalogEncoder
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
+import kotlin.math.abs
 
 /*
 Props: drive motor, drive encoder, angle motor, angle encoder, absolute encoder
@@ -36,7 +37,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
 
         SwerveDriveConstants.DrivetrainConsts.turnController.enableContinuousInput(
-            -90.0,90.0
+            -180.0,180.0
         )
     }
 
@@ -49,7 +50,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, angleEncoder.position.rotation2dFromDeg())
 
     fun setDesiredState(desiredState:SwerveModuleState){
-        if (Math.abs(desiredState.speedMetersPerSecond) < 0.001){
+        if (abs(desiredState.speedMetersPerSecond) < 0.001){
             stop()
             return
         }
