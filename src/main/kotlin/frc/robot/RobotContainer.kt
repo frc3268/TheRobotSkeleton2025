@@ -29,10 +29,10 @@ class RobotContainer {
     //this is the command called when teleop mode is enabled
      val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
-        { -driverController.getLeftY() },
-        { -driverController.getLeftX() },
-        { driverController.getRightX() },
-        { driverController.L1().getAsBoolean() }
+        { -driverController.leftY },
+        { -driverController.leftX },
+        { driverController.rightX },
+        { driverController.L1().asBoolean }
     )
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {

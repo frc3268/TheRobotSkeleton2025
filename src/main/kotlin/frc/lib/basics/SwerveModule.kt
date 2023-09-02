@@ -27,7 +27,6 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     init {
         absoluteEncoder.distancePerRotation = SwerveDriveConstants.EncoderConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
         absoluteEncoder.positionOffset = moduleConstants.ANGLE_OFFSET.degrees
-
         driveEncoder.positionConversionFactor = SwerveDriveConstants.DriveMotorConsts.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION
         driveEncoder.velocityConversionFactor = SwerveDriveConstants.DriveMotorConsts.VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND
         angleEncoder.positionConversionFactor = SwerveDriveConstants.AngleMotorConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
@@ -45,7 +44,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveEncoder.position = 0.0
         angleEncoder.position = getAbsoluteEncoderMeasurement().degrees
     }
-    fun getAbsoluteEncoderMeasurement() : Rotation2d = absoluteEncoder.absolutePosition.rotation2dFromDeg()
+    fun getAbsoluteEncoderMeasurement() : Rotation2d = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
     fun getState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, angleEncoder.position.rotation2dFromDeg())
     fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, angleEncoder.position.rotation2dFromDeg())
 

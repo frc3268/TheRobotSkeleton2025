@@ -51,14 +51,15 @@ class SwerveDriveConstants {
     }
 
     object AngleMotorConsts {
-        private const val GEAR_RATIO: Double = 12.8 / 1.0
+        //for some reason 10:1 delivers the most accurate results
+        private const val GEAR_RATIO: Double = 10 / 1.0
         const val CONTINUOUS_CURRENT_LIMIT: Int = 20
-        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 360 / GEAR_RATIO
+        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 180 / GEAR_RATIO
         val NEUTRAL_MODE: IdleMode = IdleMode.kBrake
         const val INVERT: Boolean = false
 
         //will have to set these for real for real
-        const val KP: Double = 0.01
+        const val KP: Double = 0.05
         const val KI: Double = 0.0
         const val KD: Double = 0.0
         const val KFF: Double = 0.0
@@ -89,7 +90,7 @@ class SwerveDriveConstants {
         const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3.0
 
         var turnController:PIDController = PIDController(
-            0.0,
+            0.05,
             0.0,
             0.0
         )
@@ -102,10 +103,10 @@ class SwerveDriveConstants {
     }
     object modules{
         val list:List<ModuleConstants> = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-181.8), 1, 2, 0,false,true),
-            ModuleConstants(2, Rotation2d.fromDegrees(-8.7), 3, 4, 1,false,true),
-            ModuleConstants(3, Rotation2d.fromDegrees(-253.7), 5, 6, 2,false,true),
-            ModuleConstants(4, Rotation2d.fromDegrees(-114.7), 7, 8, 3,false,true)
+            ModuleConstants(1, Rotation2d.fromDegrees(-3.4), 1, 2, 0,false,true),
+            ModuleConstants(2, Rotation2d.fromDegrees(-188.3), 3, 4, 1,false,true),
+            ModuleConstants(3, Rotation2d.fromDegrees(-74.0), 5, 6, 2,false,true),
+            ModuleConstants(4, Rotation2d.fromDegrees(-296.8), 7, 8, 3,false,true)
         )
     }
 

@@ -50,7 +50,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     override fun periodic() {
         for (mod in modules){
-            ShufflebooardEntries[mod.moduleConstants.MODULE_NUMBER].setDouble(mod.getPosition().angle.degrees)
+            ShufflebooardEntries[mod.moduleConstants.MODULE_NUMBER - 1].setDouble(mod.getPosition().angle.degrees)
         }
     }
 
@@ -66,15 +66,15 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
 
         for (mod in modules) {
-            mod.setDesiredState(desiredStates[mod.moduleConstants.MODULE_NUMBER])
+            mod.setDesiredState(desiredStates[mod.moduleConstants.MODULE_NUMBER - 1])
         }
     }
     fun constructStates(xSpeedMetersPerSecond:Double, ySpeedMetersPerSecond:Double, turningSpeedDegreesPerSecond:Double, fieldOriented:Boolean) : Array<SwerveModuleState> =
         kinematics.toSwerveModuleStates (
             if (fieldOriented)
-                ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().degrees,getYaw())
+                ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians,getYaw())
             else
-                ChassisSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().degrees))
+                ChassisSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians))
     fun stop(){
         for(mod in modules){
             mod.stop()
