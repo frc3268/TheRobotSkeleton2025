@@ -56,7 +56,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         }
         val optimizedState = SwerveModuleState.optimize(desiredState, getState().angle)
         //TODO: 5.0 should be a const
-        driveMotor.set(desiredState.speedMetersPerSecond / 5.0)
+        driveMotor.set(optimizedState.speedMetersPerSecond / 5.0)
         angleMotor.set(SwerveDriveConstants.DrivetrainConsts.turnController.calculate(getState().angle.degrees, optimizedState.angle.degrees))
     }
     fun stop(){

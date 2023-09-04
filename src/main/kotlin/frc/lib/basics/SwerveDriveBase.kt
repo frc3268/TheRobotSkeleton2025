@@ -56,7 +56,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     override fun simulationPeriodic() {
         var x = 0
-        for (state in constructStates(-0.5, 0.0,0.0, false)){
+        for (state in constructStates(-1.0, 0.0,0.0, true)){
             ShufflebooardEntries[x].setDouble(state.speedMetersPerSecond)
             x++;
         }
@@ -82,7 +82,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             if (fieldOriented)
                 ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians,getYaw())
             else
-                ChassisSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians))
+                ChassisSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond))
     fun stop(){
         for(mod in modules){
             mod.stop()
