@@ -54,6 +54,14 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }
     }
 
+    override fun simulationPeriodic() {
+        var x = 0
+        for (state in constructStates(-0.5, 0.0,0.0, false)){
+            ShufflebooardEntries[x].setDouble(state.speedMetersPerSecond)
+            x++;
+        }
+    }
+
     private fun zeroYaw() {
         gyro.zeroYaw()
     }
