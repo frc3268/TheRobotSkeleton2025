@@ -52,7 +52,7 @@ class SwerveDriveConstants {
 
     object AngleMotorConsts {
         //for some reason 10:1 delivers the most accurate results
-        private const val GEAR_RATIO: Double = 10 / 1.0
+        private const val GEAR_RATIO: Double = 10.81 / 1.0
         const val CONTINUOUS_CURRENT_LIMIT: Int = 20
         const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 180 / GEAR_RATIO
         val NEUTRAL_MODE: IdleMode = IdleMode.kBrake
@@ -86,11 +86,11 @@ class SwerveDriveConstants {
 
         /* Swerve Profiling Values */
         const val MAX_SPEED_METERS_PER_SECOND = 4.5
-        const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 11.5
+        const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 110.0
         const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3.0
 
         var turnController:PIDController = PIDController(
-            0.05,
+            0.01,
             0.0,
             0.0
         )

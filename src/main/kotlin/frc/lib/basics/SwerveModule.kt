@@ -36,6 +36,9 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
         angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
 
+        driveMotor.setOpenLoopRampRate(0.9)
+        angleMotor.setOpenLoopRampRate(0.9)
+
         SwerveDriveConstants.DrivetrainConsts.turnController.enableContinuousInput(
             -180.0,180.0
         )
@@ -56,7 +59,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         }
         val optimizedState = SwerveModuleState.optimize(desiredState, getState().angle)
         //TODO: 5.0 should be a const
-        driveMotor.set(desiredState.speedMetersPerSecond / 5.0)
+        driveMotor.set(optimizedState.speedMetersPerSecond / 5.0)
         angleMotor.set(SwerveDriveConstants.DrivetrainConsts.turnController.calculate(getState().angle.degrees, optimizedState.angle.degrees))
     }
     fun stop(){
