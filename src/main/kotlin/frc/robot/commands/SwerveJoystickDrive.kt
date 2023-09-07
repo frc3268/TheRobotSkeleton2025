@@ -40,7 +40,7 @@ class SwerveJoystickDrive(
         val turnSpeed: Double = MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
 
         /* Drive */
-        drive.setModuleStates(drive.constructStates(xSpeed,ySpeed,turnSpeed,fieldOriented.asBoolean))
+        drive.setModuleStates(drive.constructStates(xSpeed,ySpeed,turnSpeed,false))
     }
 
     // Called once the command ends or is interrupted.

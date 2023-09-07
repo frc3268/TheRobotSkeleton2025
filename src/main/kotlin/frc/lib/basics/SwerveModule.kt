@@ -36,6 +36,9 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
         angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
 
+        driveMotor.setOpenLoopRampRate(0.9)
+        angleMotor.setOpenLoopRampRate(0.9)
+
         SwerveDriveConstants.DrivetrainConsts.turnController.enableContinuousInput(
             -180.0,180.0
         )
