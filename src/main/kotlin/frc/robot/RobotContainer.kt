@@ -2,6 +2,7 @@ package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
@@ -24,7 +25,7 @@ class RobotContainer {
     private val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d(0.0,0.0, Rotation2d.fromDegrees(0.0)))
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    private val driverController = CommandPS4Controller(Constants.OperatorConstants.kDriverControllerPort)
+    private val driverController = Joystick(Constants.OperatorConstants.kDriverControllerPort)
 
     //this is the command called when teleop mode is enabled
      val teleopCommand = SwerveJoystickDrive(
@@ -32,7 +33,7 @@ class RobotContainer {
         { -driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
         { driverController.getRawAxis(2) },
-        { !driverController.L1().asBoolean }
+        { !driverController.triggerPressed }
     )
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
