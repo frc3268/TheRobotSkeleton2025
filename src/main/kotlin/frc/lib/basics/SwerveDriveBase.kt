@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
+import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
@@ -46,6 +48,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
         resetModulesToAbsolute()
+        ShuffleboardTab.add("Stop", stopCommand())
     }
 
     override fun periodic() {
@@ -87,6 +90,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         for(mod in modules){
             mod.stop()
         }
+    }
+
+    
+    fun stopCommand() :Command{
+        return InstantCommand({stop()})
     }
     fun getYaw(): Rotation2d = gyro.rotation2d
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
