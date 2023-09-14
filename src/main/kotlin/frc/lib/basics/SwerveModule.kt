@@ -52,7 +52,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, angleEncoder.position.rotation2dFromDeg())
 
     fun setDesiredState(desiredState:SwerveModuleState){
-        if (abs(desiredState.speedMetersPerSecond) < 0.001){
+        if (abs(desiredState.speedMetersPerSecond) < 0.01){
             stop()
             return
         }

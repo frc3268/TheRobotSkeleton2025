@@ -98,7 +98,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     fun stopCommand() :Command{
         return InstantCommand({stop()})
     }
-    fun getYaw(): Rotation2d = gyro.rotation2d
+    fun getYaw(): Rotation2d = (gyro.rotation2d.degrees).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = poseEstimator.estimatedPosition
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
