@@ -104,10 +104,10 @@ class SwerveDriveConstants {
     }
     object modules{
         val list:List<ModuleConstants> = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-3.4), 1, 2, 0,false,false),
-            ModuleConstants(2, Rotation2d.fromDegrees(-188.3), 3, 4, 1,false,false),
-            ModuleConstants(3, Rotation2d.fromDegrees(-74.0), 5, 6, 2,false,false),
-            ModuleConstants(4, Rotation2d.fromDegrees(-296.8), 7, 8, 3,false,false)
+            ModuleConstants(1, Rotation2d.fromDegrees(-2.2), 1, 2, 0,false,false),
+            ModuleConstants(2, Rotation2d.fromDegrees(-7.3), 3, 4, 1,false,false),
+            ModuleConstants(3, Rotation2d.fromDegrees(-72.9), 5, 6, 2,false,false),
+            ModuleConstants(4, Rotation2d.fromDegrees(-297.5), 7, 8, 3,false,false)
         )
     }
 

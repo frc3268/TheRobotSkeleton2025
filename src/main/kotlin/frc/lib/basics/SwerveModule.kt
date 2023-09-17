@@ -31,7 +31,6 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveEncoder.positionConversionFactor = SwerveDriveConstants.DriveMotorConsts.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION
         driveEncoder.velocityConversionFactor = SwerveDriveConstants.DriveMotorConsts.VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND
         angleEncoder.positionConversionFactor = SwerveDriveConstants.AngleMotorConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
-        resetToAbsolute()
 
         driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
         angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
@@ -53,7 +52,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, scopeAngle(angleEncoder.position.rotation2dFromDeg()))
 
     fun setDesiredState(desiredState:SwerveModuleState){
-        if (abs(desiredState.speedMetersPerSecond) < 0.001){
+        if (abs(desiredState.speedMetersPerSecond) < 0.01){
             stop()
             return
         }

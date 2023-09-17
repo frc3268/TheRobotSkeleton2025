@@ -30,6 +30,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         ShuffleboardTab.add("Mod 3 Angle Encoder", 0.0).entry,
         ShuffleboardTab.add("Mod 4 Angle Encoder", 0.0).entry
     )
+    private val gyroTab = ShuffleboardTab.add("gyro yaw", 0.0).entry
     val poseEstimator: SwerveDrivePoseEstimator
     private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
@@ -48,10 +49,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
         resetModulesToAbsolute()
-        ShuffleboardTab.add("Stop", stopCommand())
+        //ShuffleboardTab.add("Stop", stopCommand())
     }
 
     override fun periodic() {
+        gyroTab.setDouble(getYaw().degrees)
         for (mod in modules){
             ShufflebooardEntries[mod.moduleConstants.MODULE_NUMBER - 1].setDouble(mod.getPosition().angle.degrees)
         }
@@ -96,7 +98,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     fun stopCommand() :Command{
         return InstantCommand({stop()})
     }
-    fun getYaw(): Rotation2d = gyro.rotation2d
+    fun getYaw(): Rotation2d = (gyro.rotation2d.degrees).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = poseEstimator.estimatedPosition
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
