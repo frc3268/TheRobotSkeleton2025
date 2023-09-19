@@ -86,7 +86,7 @@ class SwerveDriveConstants {
 
         /* Swerve Profiling Values */
         const val MAX_SPEED_METERS_PER_SECOND = 4.5
-        const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 110.0
+        const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 50.0
         const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3.0
 
         var turnController:PIDController = PIDController(
