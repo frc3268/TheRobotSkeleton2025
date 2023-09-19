@@ -12,17 +12,12 @@ import java.util.function.BooleanSupplier
 import frc.robot.Constants
 
 class SwerveJoystickDrive(
-    drive: SwerveDriveBase,
-    translationX: DoubleSupplier,
-    translationY: DoubleSupplier,
-    rotation: DoubleSupplier,
-    fieldOriented: BooleanSupplier
+    private val drive: SwerveDriveBase,
+    private val translationX: DoubleSupplier,
+    private val translationY: DoubleSupplier,
+    private val rotation: DoubleSupplier,
+    private val fieldOriented: BooleanSupplier
 ) : CommandBase() {
-    val drive: SwerveDriveBase = drive
-    val translationX: DoubleSupplier = translationX
-    val translationY: DoubleSupplier = translationY
-    val rotation: DoubleSupplier = rotation
-    val fieldOriented: BooleanSupplier = fieldOriented
 
     init {
         // Use addRequirements() here to declare subsystem dependencies.
@@ -40,7 +35,7 @@ class SwerveJoystickDrive(
         val turnSpeed: Double = MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
 
         /* Drive */
-        drive.setModuleStates(drive.constructStates(xSpeed,ySpeed,turnSpeed,false))
+        drive.setModuleStates(drive.constructStates(xSpeed,ySpeed,turnSpeed,fieldOriented.asBoolean))
     }
 
     // Called once the command ends or is interrupted.
