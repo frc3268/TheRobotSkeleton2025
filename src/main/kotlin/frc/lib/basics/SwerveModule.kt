@@ -48,8 +48,8 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         angleEncoder.position = getAbsoluteEncoderMeasurement().degrees
     }
     fun getAbsoluteEncoderMeasurement() : Rotation2d = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
-    fun getState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, scopeAngle(angleEncoder.position.rotation2dFromDeg()))
-    fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, scopeAngle(angleEncoder.position.rotation2dFromDeg()))
+    fun getState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, angleEncoder.position.rotation2dFromDeg())
+    fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, (angleEncoder.position.rotation2dFromDeg()))
 
     fun setDesiredState(desiredState:SwerveModuleState){
         if (abs(desiredState.speedMetersPerSecond) < 0.01){
@@ -66,13 +66,5 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         angleMotor.set(0.0)
     }
 
-    fun scopeAngle(angle:Rotation2d): Rotation2d{
-        if(angle.degrees < -180.0){
-            return scopeAngle((angle.degrees+180.0).rotation2dFromDeg())
-        } else if(angle.degrees > 180){
-            return scopeAngle((angle.degrees+180.0).rotation2dFromDeg())
-        }
-        return angle
-    }
 
 }
