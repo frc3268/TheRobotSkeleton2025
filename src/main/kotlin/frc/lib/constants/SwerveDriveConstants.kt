@@ -91,7 +91,7 @@ class SwerveDriveConstants {
 
         var turnController:PIDController = PIDController(
             //tentative!
-            0.005,
+            0.05,
             0.0,
             0.0
         )
