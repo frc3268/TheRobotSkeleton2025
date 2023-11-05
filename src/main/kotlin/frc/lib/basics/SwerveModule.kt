@@ -6,7 +6,10 @@ import com.revrobotics.RelativeEncoder
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
+import edu.wpi.first.networktables.GenericEntry
 import edu.wpi.first.wpilibj.AnalogEncoder
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
 import kotlin.math.abs
@@ -17,6 +20,14 @@ Get: Cancoder measurement, Module state(velocity) and position
 Set: Module state
  */
 class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
+
+    //shuffleboard
+    private val ShuffleboardTab = Shuffleboard.getTab("Swerve Module" + (moduleConstants.MODULE_NUMBER + 1))
+    private val angleEncoderEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder", getPosition().angle.degrees).withWidget(BuiltInWidgets.kDial).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
+    private val absoluteEncoderEntry:GenericEntry = ShuffleboardTab.add("Absolute Encoder", getAbsoluteEncoderMeasurement().degrees).withWidget(BuiltInWidgets.kDial).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
+    val setPointEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder", 0.0).withWidget(BuiltInWidgets.kDial).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
+
+
     private val driveMotor:CANSparkMax = CANSparkMax(moduleConstants.DRIVE_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
     private val angleMotor:CANSparkMax = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
 
@@ -24,6 +35,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     private val angleEncoder:RelativeEncoder = angleMotor.encoder
 
     private val absoluteEncoder:AnalogEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
+
 
     init {
         absoluteEncoder.distancePerRotation = SwerveDriveConstants.EncoderConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
@@ -47,7 +59,12 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveEncoder.position = 0.0
         angleEncoder.position = getAbsoluteEncoderMeasurement().degrees
     }
-    fun getAbsoluteEncoderMeasurement() : Rotation2d = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
+
+    fun updateShuffleboard(){
+        angleEncoderEntry.setDouble(getPosition().angle.degrees)
+        absoluteEncoderEntry.setDouble(getAbsoluteEncoderMeasurement().degrees)
+    }
+    private fun getAbsoluteEncoderMeasurement() : Rotation2d = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
     fun getState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, angleEncoder.position.rotation2dFromDeg())
     fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, (angleEncoder.position.rotation2dFromDeg()))
 
@@ -57,6 +74,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
             return
         }
         val optimizedState = SwerveModuleState.optimize(desiredState, getState().angle)
+        setPointEntry.setDouble(optimizedState.angle.degrees)
         //TODO: 5.0 should be a const
         driveMotor.set(optimizedState.speedMetersPerSecond / 5.0)
         angleMotor.set(SwerveDriveConstants.DrivetrainConsts.turnController.calculate(getState().angle.degrees, optimizedState.angle.degrees))

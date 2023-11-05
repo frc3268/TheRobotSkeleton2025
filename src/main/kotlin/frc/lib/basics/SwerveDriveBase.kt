@@ -10,11 +10,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
 import edu.wpi.first.networktables.GenericEntry
-import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -24,13 +23,9 @@ import frc.lib.utils.rotation2dFromDeg
 //TODO:Maybe a drive function
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
-    private val ShufflebooardEntries: List<GenericEntry> = listOf(
-        ShuffleboardTab.add("Mod 1 Angle Encoder", 0.0).entry,
-        ShuffleboardTab.add("Mod 2 Angle Encoder", 0.0).entry,
-        ShuffleboardTab.add("Mod 3 Angle Encoder", 0.0).entry,
-        ShuffleboardTab.add("Mod 4 Angle Encoder", 0.0).entry
-    )
-    private val gyroTab = ShuffleboardTab.add("gyro yaw", 0.0).entry
+    private val headingEntry = ShuffleboardTab.add("Robot Heading", 0.0).withWidget(BuiltInWidgets.kDial).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
+
+    private val turnControllerEntry:GenericEntry = ShuffleboardTab.add("Turning PID Controller", 0.0).withWidget(BuiltInWidgets.kPIDController).entry
     val poseEstimator: SwerveDrivePoseEstimator
     private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
@@ -49,20 +44,22 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
         resetModulesToAbsolute()
+        //does this work??
+        turnControllerEntry.setValue(SwerveDriveConstants.DrivetrainConsts.turnController)
         //ShuffleboardTab.add("Stop", stopCommand())
     }
 
     override fun periodic() {
-        gyroTab.setDouble(getYaw().degrees)
+        headingEntry.setDouble(getYaw().degrees)
         for (mod in modules){
-            ShufflebooardEntries[mod.moduleConstants.MODULE_NUMBER - 1].setDouble(mod.getPosition().angle.degrees)
+            mod.updateShuffleboard()
         }
     }
 
     override fun simulationPeriodic() {
         var x = 0
         for (state in constructStates(-1.0, 0.0,0.0, true)){
-            ShufflebooardEntries[x].setDouble(state.speedMetersPerSecond)
+            modules[x].setPointEntry.setDouble(state.angle.degrees)
             x++;
         }
     }

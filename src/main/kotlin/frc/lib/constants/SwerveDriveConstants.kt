@@ -41,28 +41,12 @@ class SwerveDriveConstants {
         const val VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND = POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION / 60.0
         val NEUTRAL_MODE: IdleMode = IdleMode.kBrake
         const val INVERT: Boolean = false
-
-
-        /* Drive Motor PID Values */
-        const val KP: Double = 0.1
-        const val KI: Double = 0.0
-        const val KD: Double = 0.0
-        const val KFF: Double = 0.0
     }
 
     object AngleMotorConsts {
         //for some reason 10:1 delivers the most accurate results
         private const val GEAR_RATIO: Double = ((150.0 / 7.0) / 1.0)
-        const val CONTINUOUS_CURRENT_LIMIT: Int = 20
         const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 360 / GEAR_RATIO
-        val NEUTRAL_MODE: IdleMode = IdleMode.kBrake
-        const val INVERT: Boolean = false
-
-        //will have to set these for real for real
-        const val KP: Double = 0.05
-        const val KI: Double = 0.0
-        const val KD: Double = 0.0
-        const val KFF: Double = 0.0
 
     }
 
