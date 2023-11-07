@@ -45,7 +45,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         Timer.delay(1.0)
         resetModulesToAbsolute()
         //does this work??
-        turnControllerEntry.setValue(SwerveDriveConstants.DrivetrainConsts.turnController)
+        //turnControllerEntry.setValue(SwerveDriveConstants.DrivetrainConsts.turnController)
         //ShuffleboardTab.add("Stop", stopCommand())
     }
 
