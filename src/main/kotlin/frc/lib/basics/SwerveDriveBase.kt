@@ -23,9 +23,6 @@ import frc.lib.utils.rotation2dFromDeg
 //TODO:Maybe a drive function
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
-    private val headingEntry = ShuffleboardTab.add("Robot Heading", 0.0).withWidget(BuiltInWidgets.kDial).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
-
-    private val turnControllerEntry:GenericEntry = ShuffleboardTab.add("Turning PID Controller", 0.0).withWidget(BuiltInWidgets.kPIDController).entry
     val poseEstimator: SwerveDrivePoseEstimator
     private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
@@ -44,16 +41,12 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
         resetModulesToAbsolute()
-        //does this work??
-        //turnControllerEntry.setValue(SwerveDriveConstants.DrivetrainConsts.turnController)
+        ShuffleboardTab.add("Robot Heading", gyro)
         //ShuffleboardTab.add("Stop", stopCommand())
     }
 
     override fun periodic() {
-        headingEntry.setDouble(getYaw().degrees)
-        for (mod in modules){
-            mod.updateShuffleboard()
-        }
+        
     }
 
     override fun simulationPeriodic() {
