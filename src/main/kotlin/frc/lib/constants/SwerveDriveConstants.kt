@@ -22,8 +22,8 @@ class SwerveDriveConstants {
         val ANGLE_MOTOR_ID: Int,
         val ENCODER_ID: Int,
         val DRIVE_MOTOR_REVERSED: Boolean,
-        val ANGLE_MOTOR_REVERSED: Boolean
-
+        val ANGLE_MOTOR_REVERSED: Boolean,
+        val PID_CONTROLLER:PIDController
     )
 
     object ModuleGains {
@@ -46,7 +46,7 @@ class SwerveDriveConstants {
     object AngleMotorConsts {
         //for some reason 10:1 delivers the most accurate results
         private const val GEAR_RATIO: Double = -((150.0 / 7.0) / 1.0)
-        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 360 / GEAR_RATIO
+        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 18.0
 
     }
 
@@ -88,10 +88,10 @@ class SwerveDriveConstants {
     }
     object modules{
         val list:List<ModuleConstants> = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-2.2), 1, 2, 0,false,true),
-            ModuleConstants(2, Rotation2d.fromDegrees(-7.3), 3, 4, 1,false,true),
-            ModuleConstants(3, Rotation2d.fromDegrees(-72.9), 5, 6, 2,false,true),
-            ModuleConstants(4, Rotation2d.fromDegrees(-297.5), 7, 8, 3,false,true)
+            ModuleConstants(1, Rotation2d.fromDegrees(-2.2), 1, 2, 0,false,true, PIDController(0.01,0.0,0.0)),
+            ModuleConstants(2, Rotation2d.fromDegrees(-7.3), 3, 4, 1,false,true, PIDController(0.01,0.0,0.0)),
+            ModuleConstants(3, Rotation2d.fromDegrees(-72.9), 5, 6, 2,false,true, PIDController(0.01,0.0,0.0)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-297.5), 7, 8, 3,false,true, PIDController(0.01,0.0,0.0))
         )
     }
 

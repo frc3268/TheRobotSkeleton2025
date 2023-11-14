@@ -41,12 +41,14 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
         resetModulesToAbsolute()
-        ShuffleboardTab.add("Robot Heading", gyro)
+        //ShuffleboardTab.add("Robot Heading", gyro)
         //ShuffleboardTab.add("Stop", stopCommand())
     }
 
     override fun periodic() {
-        
+        for (mod in modules){
+            mod.updateDashboard()
+        }
     }
 
     override fun simulationPeriodic() {

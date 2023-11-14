@@ -26,7 +26,8 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     private val ShuffleboardTab = Shuffleboard.getTab("Swerve Module" + (moduleConstants.MODULE_NUMBER))
     //todo: change to something else? Maybe?
     val setPointEntry:GenericEntry = ShuffleboardTab.add("Setpoint", 0.0).withWidget(BuiltInWidgets.kNumberBar).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
-
+    val angleEncoderEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder", 0.0).withWidget(BuiltInWidgets.kNumberBar).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
+    val absoluteEncoderEntry:GenericEntry = ShuffleboardTab.add("Absolute Encoder", 0.0).withWidget(BuiltInWidgets.kNumberBar).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
 
     private val driveMotor:CANSparkMax = CANSparkMax(moduleConstants.DRIVE_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
     private val angleMotor:CANSparkMax = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
@@ -36,8 +37,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
     private val absoluteEncoder:AnalogEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
 
-    private var turnController:PIDController = PIDController(SwerveDriveConstants.DrivetrainConsts.turnController.p, SwerveDriveConstants.DrivetrainConsts.turnController.i, SwerveDriveConstants.DrivetrainConsts.turnController.d)
-
+    private var turnController:PIDController = moduleConstants.PID_CONTROLLER
 
     init {
         absoluteEncoder.distancePerRotation = SwerveDriveConstants.EncoderConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
@@ -53,13 +53,19 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         angleMotor.setOpenLoopRampRate(0.9)
 
         turnController.enableContinuousInput(
-            0.0,360.0
+            -180.0,180.0
         )
 
         //todo: get this to work(https://github.com/orgs/frc3268/projects/2/views/1?pane=issue&itemId=43651204)
-        ShuffleboardTab.add("TurnController", turnController)
-        ShuffleboardTab.add("Absolute Encoder", absoluteEncoder)
-        ShuffleboardTab.add("Relative Encoder", angleEncoder)
+        //ShuffleboardTab.add("TurnController", turnController)
+        //ShuffleboardTab.add("Absolute Encoder", absoluteEncoder)
+        //ShuffleboardTab.add("Relative Encoder", angleEncoder)
+    }
+
+    fun updateDashboard(){
+        angleEncoderEntry.setDouble(getState().angle.degrees)
+
+        absoluteEncoderEntry.setDouble(getAbsoluteEncoderMeasurement().degrees)
     }
 
     fun resetToAbsolute(){
