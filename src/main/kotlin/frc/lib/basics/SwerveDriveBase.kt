@@ -28,11 +28,13 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
     private val gyro: AHRS = AHRS(SPI.Port.kMXP)
     val kinematics: SwerveDriveKinematics =
+        //front left, front right, back left, back right
+        //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
         SwerveDriveKinematics(
-            Translation2d(SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0),
             Translation2d(SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, -SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0),
-            Translation2d(-SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0),
-            Translation2d(-SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, -SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0)
+            Translation2d(SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0),
+            Translation2d(-SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, -SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0),
+            Translation2d(-SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0)
         )
     init {
         gyro.calibrate()
