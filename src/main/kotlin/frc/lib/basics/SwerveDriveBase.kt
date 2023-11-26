@@ -81,7 +81,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             if (fieldOriented)
                 ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians,getYaw())
             else
-                ChassisSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond))
+                ChassisSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond)
+        )
     fun stop(){
         for(mod in modules){
             mod.stop()
