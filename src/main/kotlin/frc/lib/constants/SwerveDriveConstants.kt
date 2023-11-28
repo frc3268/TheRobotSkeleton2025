@@ -11,6 +11,8 @@ import com.revrobotics.CANSparkMax.IdleMode
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.controller.ProfiledPIDController
 import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import frc.lib.constants.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_METERS
 
@@ -85,6 +87,16 @@ class SwerveDriveConstants {
             MAX_SPEED_METERS_PER_SECOND, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED))
 
 
+        //in the order they appear in modules list
+        //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
+        val kinematics: SwerveDriveKinematics =
+            SwerveDriveKinematics(
+                Translation2d(WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
+                Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
+                Translation2d(-WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
+                Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0)
+
+            )
     }
     object modules{
         val list:List<ModuleConstants> = listOf(

@@ -27,20 +27,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
     private val gyro: AHRS = AHRS(SPI.Port.kMXP)
-    val kinematics: SwerveDriveKinematics =
-        //in the order they appear in modules list
-        //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
-        SwerveDriveKinematics(
-            Translation2d(SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, -SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0),
-                Translation2d(-SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, -SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0),
-            Translation2d(-SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0),
-                Translation2d(SwerveDriveConstants.DrivetrainConsts.WHEEL_BASE_METERS / 2.0, SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS / 2.0)
 
-    )
     init {
         gyro.calibrate()
         zeroYaw()
-        poseEstimator = SwerveDrivePoseEstimator(kinematics, getYaw(), getModulePositions(), startingPose)
+        poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose)
         //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
         resetModulesToAbsolute()
@@ -78,7 +69,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }
     }
     fun constructStates(xSpeedMetersPerSecond:Double, ySpeedMetersPerSecond:Double, turningSpeedDegreesPerSecond:Double, fieldOriented:Boolean) : Array<SwerveModuleState> =
-        kinematics.toSwerveModuleStates (
+        SwerveDriveConstants.DrivetrainConsts.kinematics.toSwerveModuleStates (
             if (fieldOriented)
                 ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians,getYaw())
             else
