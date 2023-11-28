@@ -27,8 +27,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     //todo: change to something else? Maybe?
     val setPointEntry:GenericEntry = ShuffleboardTab.add("Setpoint", 0.0).withWidget(BuiltInWidgets.kNumberBar).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
     val angleEncoderEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder", 0.0).withWidget(BuiltInWidgets.kNumberBar).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
-    val absoluteEncoderEntry:GenericEntry = ShuffleboardTab.add("Absolute Encoder", 0.0).withWidget(BuiltInWidgets.kNumberBar).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
-
+    
     private val driveMotor:CANSparkMax = CANSparkMax(moduleConstants.DRIVE_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
     private val angleMotor:CANSparkMax = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
 
@@ -58,14 +57,11 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
         //todo: get this to work(https://github.com/orgs/frc3268/projects/2/views/1?pane=issue&itemId=43651204)
         //ShuffleboardTab.add("TurnController", turnController)
-        //ShuffleboardTab.add("Absolute Encoder", absoluteEncoder)
-        //ShuffleboardTab.add("Relative Encoder", angleEncoder)
+        ShuffleboardTab.add("Absolute Encoder", absoluteEncoder)
     }
 
     fun updateDashboard(){
         angleEncoderEntry.setDouble(getState().angle.degrees)
-
-        absoluteEncoderEntry.setDouble(getAbsoluteEncoderMeasurement().degrees)
     }
 
     fun resetToAbsolute(){
