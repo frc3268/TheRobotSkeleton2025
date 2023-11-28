@@ -30,7 +30,7 @@ class TrajectoryOrchestrator {
         val trajectoryConfig:TrajectoryConfig = TrajectoryConfig(
             SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
             SwerveDriveConstants.DrivetrainConsts.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED
-        ).setKinematics(drive.kinematics)
+        ).setKinematics(SwerveDriveConstants.DrivetrainConsts.kinematics)
 
         val trajectory:Trajectory = TrajectoryGenerator.generateTrajectory(
             startPose,
@@ -42,7 +42,7 @@ class TrajectoryOrchestrator {
         val trajectoryCommand = SwerveControllerCommand(
             trajectory,
             drive::getPose,
-            drive.kinematics,
+            SwerveDriveConstants.DrivetrainConsts.kinematics,
             SwerveDriveConstants.DrivetrainConsts.xPIDController,
             SwerveDriveConstants.DrivetrainConsts.yPIDController,
             SwerveDriveConstants.DrivetrainConsts.thetaPIDController,

@@ -47,7 +47,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     override fun simulationPeriodic() {
         var x = 0
-        for (state in constructStates(-1.0, 0.0,0.0, true)){
+        for (state in constructStates(0.0, 0.0,0.1, true)){
             modules[x].setPointEntry.setDouble(state.angle.degrees)
             x++;
         }
