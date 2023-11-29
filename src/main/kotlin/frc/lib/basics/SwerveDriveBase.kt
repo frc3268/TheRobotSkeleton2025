@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
+import frc.lib.utils.scopeAngle
 
 //TODO:Maybe a drive function
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
@@ -73,7 +74,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             if (fieldOriented)
                 ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians,getYaw())
             else
-                ChassisSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond)
+                ChassisSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians)
         )
     fun stop(){
         for(mod in modules){
@@ -85,7 +86,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     fun stopCommand() :Command{
         return InstantCommand({stop()})
     }
-    fun getYaw(): Rotation2d = (gyro.rotation2d.degrees).rotation2dFromDeg()
+    fun getYaw(): Rotation2d = scopeAngle((gyro.rotation2d.degrees + 91).rotation2dFromDeg())
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = poseEstimator.estimatedPosition
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
+import frc.lib.utils.scopeAngle
 import kotlin.math.abs
 
 /*
@@ -88,15 +89,6 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         angleMotor.set(0.0)
     }
 
-    fun scopeAngle(angle:Rotation2d) : Rotation2d{
-        if(angle.degrees < 0){
-            return scopeAngle(Rotation2d.fromDegrees(angle.degrees + 360.0))
-        }
-        if(angle.degrees > 360) {
-            return scopeAngle(Rotation2d.fromDegrees(angle.degrees - 360.0))
-        }
-        return angle
-    }
 
 
 }
