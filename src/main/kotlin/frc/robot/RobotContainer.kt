@@ -33,7 +33,7 @@ class RobotContainer {
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
         { driverController.getRawAxis(2) },
-        { driverController.triggerPressed }
+        { !driverController.triggerPressed }
     )
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {

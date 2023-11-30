@@ -28,6 +28,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
     private val gyro: AHRS = AHRS(SPI.Port.kMXP)
+    val gyroEntry:GenericEntry = ShuffleboardTab.add("Robot Heading", 0.0).withWidget(BuiltInWidgets.kNumberBar).withProperties(mapOf("Min" to 0.0, "Max" to 360.0)).entry
+
 
     init {
         gyro.calibrate()
@@ -36,7 +38,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
         resetModulesToAbsolute()
-        ShuffleboardTab.add("Robot Heading", gyro)
         //ShuffleboardTab.add("Stop", stopCommand())
     }
 
@@ -44,6 +45,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         for (mod in modules){
             mod.updateDashboard()
         }
+        gyroEntry.setDouble(getYaw().degrees)
     }
 
     override fun simulationPeriodic() {
@@ -86,7 +88,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     fun stopCommand() :Command{
         return InstantCommand({stop()})
     }
-    fun getYaw(): Rotation2d = scopeAngle((gyro.rotation2d.degrees + 91).rotation2dFromDeg())
+    fun getYaw(): Rotation2d = scopeAngle((gyro.rotation2d.degrees).rotation2dFromDeg())
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = poseEstimator.estimatedPosition
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
