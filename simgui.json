@@ -9,6 +9,9 @@
     "transitory": {
       "Shuffleboard": {
         "Drivetrain": {
+          "Robot Heading": {
+            "open": true
+          },
           "open": true
         },
         "Swerve Module1": {
