@@ -43,6 +43,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         ShuffleboardTab.add("Stop", stopCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Dig In", digInCommand()).withWidget(BuiltInWidgets.kCommand)
+        //todo: a button to restart driving
         ShuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
 
     }
@@ -95,10 +96,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
 
     fun digInCommand(): CommandBase{
-        val newWheelAngle:Rotation2d = Rotation2d.fromDegrees(getYaw().degrees + 90.0)
+        //because driving can be field-oriented, we need to take an angle perprendicular to the direction of the wheels, so that motion stops if we are being pushed
+        val newWheelAngle:Rotation2d = scopeAngle((((getModuleStates().mapIndexed { _, rot -> rot.angle.degrees })).average()+90).rotation2dFromDeg())
         return run{
             setModuleStates(
-                Array(4) {SwerveModuleState(0.0, newWheelAngle)}
+                Array(modules.size) {SwerveModuleState(0.0, newWheelAngle)}
             )
         }
     }
