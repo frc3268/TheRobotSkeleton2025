@@ -31,7 +31,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
     private val gyro: AHRS = AHRS(SPI.Port.kMXP)
 
-
+    private var joystickControlledEntry: GenericEntry =  Shuffleboard.getTab("Drivetrain")
+        .add("Joystick Control", true)
+        .withWidget("Toggle Button")
+        .withProperties(mapOf("colorWhenTrue" to "green", "colorWhenFalse" to "maroon"))
+        .getEntry()
 
     init {
         gyro.calibrate()
@@ -92,17 +96,22 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     
     fun stopCommand() :CommandBase{
-        return run{stop()}
+        return run {stop()}.until { joystickControlledEntry.getBoolean(true) }.beforeStarting (runOnce{joystickControlledEntry.setBoolean(false)} )
     }
 
-    fun digInCommand(): CommandBase{
-        //because driving can be field-oriented, we need to take an angle perprendicular to the direction of the wheels, so that motion stops if we are being pushed
-        val newWheelAngle:Rotation2d = scopeAngle((((getModuleStates().mapIndexed { _, rot -> rot.angle.degrees })).average()+90).rotation2dFromDeg())
-        return run{
-            setModuleStates(
-                Array(modules.size) {SwerveModuleState(0.0, newWheelAngle)}
-            )
-        }
+     fun digInCommand(): CommandBase{
+         //todo: there might be a better way to do this. Im hesitant to use a global, though.
+        var newWheelAngle:Rotation2d = scopeAngle((((getModuleStates().mapIndexed { _, rot -> rot.angle.degrees })).average()+90).rotation2dFromDeg())
+        return runOnce{
+            joystickControlledEntry.setBoolean(false)
+            //because driving can be field-oriented, we need to take an angle perprendicular to the direction of the wheels, so that motion stops if we are being pushed
+            newWheelAngle = scopeAngle((((getModuleStates().mapIndexed { _, rot -> rot.angle.degrees })).average()+90).rotation2dFromDeg())
+        }.andThen(
+            run{
+                setModuleStates(
+                    Array(modules.size) {SwerveModuleState(0.0, newWheelAngle)}
+                )
+            }.until {joystickControlledEntry.getBoolean(true)})
     }
 
     fun zeroHeadingCommand(): CommandBase {
