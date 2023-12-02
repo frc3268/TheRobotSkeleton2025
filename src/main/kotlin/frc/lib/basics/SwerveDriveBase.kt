@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.CommandBase
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
@@ -24,6 +25,7 @@ import frc.lib.utils.scopeAngle
 //TODO:Maybe a drive function
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
+
     val poseEstimator: SwerveDrivePoseEstimator
     private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
@@ -40,6 +42,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         resetModulesToAbsolute()
         ShuffleboardTab.add("Stop", stopCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Dig In", digInCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
 
     }
@@ -87,13 +90,23 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
 
     
-    fun stopCommand() :Command{
-        return InstantCommand({stop()})
+    fun stopCommand() :CommandBase{
+        return run{stop()}
     }
-    fun zeroHeadingCommand(): Command {
+
+    fun digInCommand(): CommandBase{
+        val newWheelAngle:Rotation2d = Rotation2d.fromDegrees(getYaw().degrees + 90.0)
+        return run{
+            setModuleStates(
+                Array(4) {SwerveModuleState(0.0, newWheelAngle)}
+            )
+        }
+    }
+
+    fun zeroHeadingCommand(): CommandBase {
         // Inline construction of command goes here.
         // runOnce implicitly requires this subsystem.
-        return InstantCommand({zeroYaw()})
+        return runOnce { zeroYaw() }
     }
     fun getYaw(): Rotation2d = scopeAngle((gyro.rotation2d.degrees).rotation2dFromDeg())
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
