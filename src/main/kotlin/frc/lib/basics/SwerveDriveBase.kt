@@ -52,6 +52,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     }
 
+
     override fun periodic() {
         for (mod in modules){
             mod.updateDashboard()
@@ -72,6 +73,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             mod.resetToAbsolute()
         }
     }
+
     fun setModuleStates(desiredStates: Array<SwerveModuleState>) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
 
@@ -79,6 +81,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             mod.setDesiredState(desiredStates[mod.moduleConstants.MODULE_NUMBER - 1])
         }
     }
+
     fun constructStates(xSpeedMetersPerSecond:Double, ySpeedMetersPerSecond:Double, turningSpeedDegreesPerSecond:Double, fieldOriented:Boolean) : Array<SwerveModuleState> =
         SwerveDriveConstants.DrivetrainConsts.kinematics.toSwerveModuleStates (
             if (fieldOriented)
@@ -92,10 +95,10 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }
     }
 
-    
     fun stopCommand() :CommandBase{
         return run {stop()}.until { joystickControlledEntry.getBoolean(true) }.beforeStarting (runOnce{joystickControlledEntry.setBoolean(false)} )
     }
+
 
      fun digInCommand(): CommandBase{
          //todo: there might be a better way to do this. Im hesitant to use a global, though.
