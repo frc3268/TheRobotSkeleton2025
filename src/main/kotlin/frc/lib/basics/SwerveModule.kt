@@ -60,7 +60,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
         //todo: get this to work(https://github.com/orgs/frc3268/projects/2/views/1?pane=issue&itemId=43651204)
         ShuffleboardTab.add("Absolute Encoder", absoluteEncoder).withWidget(BuiltInWidgets.kEncoder)
-        ShuffleboardTab.add("Relative Angle Encoder", angleEncoder).withWidget(BuiltInWidgets.kEncoder)
+        //ShuffleboardTab.add("Relative Angle Encoder", angleEncoder).withWidget(BuiltInWidgets.kEncoder)
 
     }
 

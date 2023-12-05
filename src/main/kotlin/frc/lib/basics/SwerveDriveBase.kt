@@ -31,11 +31,14 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
     private val gyro: AHRS = AHRS(SPI.Port.kMXP)
 
-    private var joystickControlledEntry: GenericEntry =  Shuffleboard.getTab("Drivetrain")
+    private var joystickControlledEntry: GenericEntry =  ShuffleboardTab
         .add("Joystick Control", true)
         .withWidget("Toggle Button")
         .withProperties(mapOf("colorWhenTrue" to "green", "colorWhenFalse" to "maroon"))
         .getEntry()
+
+
+    var estimatedheadingentry:GenericEntry = ShuffleboardTab.add("Estimated Robot Heading", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
     init {
         gyro.calibrate()
@@ -50,6 +53,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //todo: a button to restart driving
         ShuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
 
+
     }
 
 
@@ -57,6 +61,9 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         for (mod in modules){
             mod.updateDashboard()
         }
+        poseEstimator.update(getYaw(), getModulePositions())
+        estimatedheadingentry.setDouble(poseEstimator.estimatedPosition.rotation.degrees)
+
     }
 
     override fun simulationPeriodic() {
@@ -64,6 +71,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             modules[x].setPointEntry.setDouble(state.angle.degrees)
         }
     }
+
 
     private fun zeroYaw() {
         gyro.zeroYaw()
@@ -102,16 +110,17 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
      fun digInCommand(): CommandBase{
          //todo: there might be a better way to do this. Im hesitant to use a global, though.
-        var newWheelAngle:Rotation2d = scopeAngle((((getModuleStates().mapIndexed { _, rot -> rot.angle.degrees })).average()+90).rotation2dFromDeg())
-        return runOnce{
+       return runOnce{
             joystickControlledEntry.setBoolean(false)
             //because driving can be field-oriented, we need to take an angle perprendicular to the direction of the wheels, so that motion stops if we are being pushed
-            newWheelAngle = scopeAngle((((getModuleStates().mapIndexed { _, rot -> rot.angle.degrees })).average()+90).rotation2dFromDeg())
-        }.andThen(
+            }.andThen(
             run{
                 setModuleStates(
-                    Array(modules.size) {SwerveModuleState(0.0, newWheelAngle)}
-                )
+                    arrayOf(SwerveModuleState(0.01, 45.0.rotation2dFromDeg()),
+                            SwerveModuleState(0.01, (-45.0).rotation2dFromDeg()),
+                            SwerveModuleState(0.01, 45.0.rotation2dFromDeg()),
+                            SwerveModuleState(0.01, (-45.0).rotation2dFromDeg())
+                ))
             }.until {joystickControlledEntry.getBoolean(true)})
     }
 
