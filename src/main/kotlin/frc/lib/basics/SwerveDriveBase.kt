@@ -62,7 +62,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             mod.updateDashboard()
         }
         poseEstimator.update(getYaw(), getModulePositions())
-        estimatedheadingentry.setDouble(poseEstimator.estimatedPosition.rotation.degrees)
+        estimatedheadingentry.setDouble(getPose().rotation.degrees)
 
     }
 

@@ -39,6 +39,8 @@ class TrajectoryOrchestrator {
             trajectoryConfig
         )
 
+        SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(-180.0, 180.0)
+
         val trajectoryCommand = SwerveControllerCommand(
             trajectory,
             drive::getPose,

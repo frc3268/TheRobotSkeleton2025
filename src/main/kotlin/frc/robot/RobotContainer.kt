@@ -32,9 +32,10 @@ class RobotContainer {
     private val orchestrator:TrajectoryOrchestrator = TrajectoryOrchestrator()
 
     val autoCommand:Command = orchestrator.buildSwerveTrajectory(
-            driveSubsystem.poseEstimator.estimatedPosition,
-            Pose2d(Translation2d(0.1,0.0), Rotation2d.fromDegrees(45.0)),
-            mutableListOf(),
+            Pose2d(0.0,0.0, Rotation2d(0.0)),
+            Pose2d(0.5,0.0, Rotation2d.fromDegrees(150.0)),
+            mutableListOf(
+            ),
             driveSubsystem
     )
 
