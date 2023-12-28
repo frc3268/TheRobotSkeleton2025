@@ -22,7 +22,6 @@ import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
 import frc.lib.utils.scopeAngle
 
-//TODO:Maybe a drive function
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
 
