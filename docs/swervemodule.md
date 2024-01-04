@@ -1,6 +1,7 @@
 # Swerve Module
 
-![4d7afcc4247d0e069651e376f0e48393.png](./4d7afcc4247d0e069651e376f0e48393.png)
+![4d7afcc4247d0e069651e376f0e48393.png](./4d7afcc4247d0e069651e376f0e48393.png)  
+
 *Pictured: A Swerve Module*
 
 **The core of any swerve drive system is the swerve module**. As wings are to a bee, swerve modules are to a swerve drive system. The major components of a swerve module are as follows:
