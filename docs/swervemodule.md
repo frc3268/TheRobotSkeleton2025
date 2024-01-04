@@ -1,8 +1,8 @@
 # Swerve Module
 
-![4d7afcc4247d0e069651e376f0e48393.png](./4d7afcc4247d0e069651e376f0e48393.png)  
+![4d7afcc4247d0e069651e376f0e48393.png](https://raw.githubusercontent.com/frc3268/ValhallaLib/master/docs/4d7afcc4247d0e069651e376f0e48393.png)
 
-*Pictured: A Swerve Module*
+_Pictured: A Swerve Module_
 
 **The core of any swerve drive system is the swerve module**. As wings are to a bee, swerve modules are to a swerve drive system. The major components of a swerve module are as follows:
 - Wheel: Somewhat self-explanatory
@@ -17,9 +17,9 @@
 - Report values from encoders(eg: 60 deg, 2.5 meters)
 - Set the wheel to a specific rotation(eg: 60 deg) and speed(eg: 2.5 meters/second)
 
-The code for a Swerve Module is stored in the `src/main/kotlin/frc/lib/basics/SwerveModule.kt` file. 
+The code for a Swerve Module is stored in the `src/main/kotlin/frc/lib/basics/SwerveModule.kt` file of the ValhallaLib repo. 
 
-*But what does each part do?*
+_But what does each part do?_
 
 **1. Lines 24-60 (Setup)**:
 ```kt
@@ -97,4 +97,3 @@ fun setDesiredState(desiredState:SwerveModuleState){
 ```
 This section, which is the most impactful(i.e: the most likely to cause errors), contains two functions which concern the movement of the Swerve Module's wheel. The first function, `setDesiredState`, takes several actions to, as the name suggests, set the state(the same kind as in `getState`) of the Swerve Module to a given `desiredState`. First, it makes sure that the `desiredState`'s speed is not lower than 0.01 meters per second, so as to prevent accidental inputs from causing the wheels to move. After that, it calls the `optimize` function, which changes the wheel speed and angle of the `desiredState` to minimize the distance that the wheel would have to rotate. For example, if the wheel was at a 0 degree angle, and the `desiredState` called for a speed of x and a rotation of 180 degrees, the `optimize` function would return a state with a speed of -x and an angle of 0 degrees. The result of the `optimize` function is stored in the `optimizedState` variable. Then, the Drive Motor and Angle Motor's `set` functions are called, with the relevant parts of the `optimizedState` being passed in. Because the `set` function takes in a value from -1 to 1, the value passed to the Drive Motor's `set` function is the `optimizedState`'s speed, divided by the maximum speed of the wheel(in meters per second). By contrast, the Angle Motor uses a the PID controller from before to calculate a value to pass into `set` in order to get the wheel's rotation to match the rotation specified in the `optimizeState` function.
 The `stop` function is less complicated, simply calling the `set` functions for the Angle and Drive motors in order to stop both motos, thus bringing the wheel to a halt.
-
