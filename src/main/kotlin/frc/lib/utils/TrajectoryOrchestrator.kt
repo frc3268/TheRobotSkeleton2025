@@ -11,6 +11,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
+import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand
@@ -19,12 +20,18 @@ import frc.lib.constants.SwerveDriveConstants
 
 class TrajectoryOrchestrator {
     private val tab: ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
+    private val field: Field2d = Field2d()
     private var trajectory: Trajectory = Trajectory()
     val startAtRobotPosition : Pose2d = Pose2d(0.0,0.0, Rotation2d.fromDegrees(0.0))
 
     //take in a trajectory and display it on the tab
     
     //update display when trajectory is changed
+
+    init{
+
+        
+    }
     
     fun buildSwerveTrajectory(startPose:Pose2d, endPose:Pose2d, points:MutableList<Translation2d>, drive:SwerveDriveBase): SequentialCommandGroup {
         val trajectoryConfig:TrajectoryConfig = TrajectoryConfig(

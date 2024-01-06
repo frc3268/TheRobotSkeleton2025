@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import edu.wpi.first.wpilibj2.command.button.Trigger
 import frc.lib.basics.SwerveDriveBase
+import frc.lib.utils.Camera
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.robot.commands.Autos
 import frc.robot.commands.ExampleCommand
@@ -25,6 +26,9 @@ import frc.robot.subsystems.ExampleSubsystem
 class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d(0.0,0.0, Rotation2d.fromDegrees(0.0)))
+
+    //todo: set limelight up
+    //private val cameraSubsystem:Camera = Camera("Spy Baloon Camera", "")
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = Joystick(Constants.OperatorConstants.kDriverControllerPort)
