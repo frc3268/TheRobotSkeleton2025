@@ -3,7 +3,12 @@ package frc.robot
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.networktables.GenericEntry
 import edu.wpi.first.wpilibj.Joystick
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
+import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
@@ -24,11 +29,13 @@ import frc.robot.subsystems.ExampleSubsystem
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
+
     // The robot's subsystems and commands are defined here...
-    private val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d(0.0,0.0, Rotation2d.fromDegrees(0.0)))
+    //todo: change this to reflect a field position. Maybe use a constant?
+    private val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
 
     //todo: set limelight up
-    //private val cameraSubsystem:Camera = Camera("Spy Baloon Camera", "")
+    //private val cameraSubsystem:Camera = Camera("Spy Balloon Camera", "")
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = Joystick(Constants.OperatorConstants.kDriverControllerPort)
@@ -36,7 +43,7 @@ class RobotContainer {
     private val orchestrator:TrajectoryOrchestrator = TrajectoryOrchestrator()
 
     val autoCommand:Command = orchestrator.buildSwerveTrajectory(
-            Pose2d(0.0,0.0, Rotation2d(0.0)),
+            driveSubsystem.getPose(),
             Pose2d(0.5,0.0, Rotation2d.fromDegrees(150.0)),
             mutableListOf(
             ),

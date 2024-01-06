@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandBase
 import edu.wpi.first.wpilibj2.command.InstantCommand
@@ -23,6 +24,7 @@ import frc.lib.utils.rotation2dFromDeg
 import frc.lib.utils.scopeAngle
 
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
+    val field:Field2d = Field2d()
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
 
     val poseEstimator: SwerveDrivePoseEstimator
@@ -49,8 +51,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         ShuffleboardTab.add("Stop", stopCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Dig In", digInCommand()).withWidget(BuiltInWidgets.kCommand)
-        //todo: a button to restart driving
         ShuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
+
+        //pending review: should the field be on the drivetrain's panel or somewhere else?
+        //todo: consult with drive(chris) about this
+        ShuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
 
 
     }
@@ -59,6 +64,10 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     override fun periodic() {
         poseEstimator.update(getYaw(), getModulePositions())
         estimatedheadingentry.setDouble(getPose().rotation.degrees)
+        for (mod in modules){
+            mod.updateShuffleboard()
+        }
+        field.getObject("traj").pose = poseEstimator.estimatedPosition
 
     }
 

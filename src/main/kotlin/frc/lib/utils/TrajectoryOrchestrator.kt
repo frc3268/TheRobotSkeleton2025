@@ -19,10 +19,6 @@ import frc.lib.basics.SwerveDriveBase
 import frc.lib.constants.SwerveDriveConstants
 
 class TrajectoryOrchestrator {
-    private val tab: ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
-    private val field: Field2d = Field2d()
-    private var trajectory: Trajectory = Trajectory()
-    val startAtRobotPosition : Pose2d = Pose2d(0.0,0.0, Rotation2d.fromDegrees(0.0))
 
     //take in a trajectory and display it on the tab
     
