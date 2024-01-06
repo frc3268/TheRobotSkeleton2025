@@ -1,4 +1,6 @@
 # Swerve Module
+**Prerequisite Knowledge:**
+- Introduction
 
 ![4d7afcc4247d0e069651e376f0e48393.png](https://raw.githubusercontent.com/frc3268/ValhallaLib/master/docs/4d7afcc4247d0e069651e376f0e48393.png)
 

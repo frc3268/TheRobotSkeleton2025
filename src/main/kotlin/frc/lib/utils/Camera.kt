@@ -12,7 +12,7 @@ import org.photonvision.targeting.PhotonPipelineResult
 import org.photonvision.targeting.PhotonTrackedTarget
 import java.io.IOException
 
-class Camera(name:String, path:String) {
+class Camera(name:String, path:String){
     val limelight:PhotonCamera = PhotonCamera(name)
     var frame: PhotonPipelineResult = PhotonPipelineResult()
     var poseEstimator: PhotonPoseEstimator? = null
