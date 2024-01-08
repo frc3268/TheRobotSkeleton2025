@@ -2,8 +2,6 @@ package frc.robot.commands
 
 import edu.wpi.first.wpilibj2.command.CommandBase
 import edu.wpi.first.math.MathUtil
-import edu.wpi.first.math.filter.SlewRateLimiter
-import edu.wpi.first.math.geometry.Translation2d
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.constants.SwerveDriveConstants
 import java.util.function.DoubleSupplier
@@ -35,7 +33,7 @@ class SwerveJoystickDrive(
         val turnSpeed: Double = MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
 
         /* Drive */
-        drive.setModuleStates(drive.constructStates(xSpeed,ySpeed,turnSpeed,fieldOriented.asBoolean))
+        drive.setModuleStates(drive.constructModuleStatesFromChassisSpeeds(xSpeed,ySpeed,turnSpeed,fieldOriented.asBoolean))
 
     }
 

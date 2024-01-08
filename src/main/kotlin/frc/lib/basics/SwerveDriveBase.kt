@@ -4,7 +4,6 @@ import com.kauailabs.navx.frc.AHRS
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.kinematics.SwerveModulePosition
@@ -15,9 +14,7 @@ import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
-import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandBase
-import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
@@ -38,8 +35,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         .withProperties(mapOf("colorWhenTrue" to "green", "colorWhenFalse" to "maroon"))
         .getEntry()
 
-
-    var estimatedheadingentry:GenericEntry = ShuffleboardTab.add("Estimated Robot Heading", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
     init {
         gyro.calibrate()
@@ -63,16 +58,16 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     override fun periodic() {
         poseEstimator.update(getYaw(), getModulePositions())
-        estimatedheadingentry.setDouble(getPose().rotation.degrees)
         for (mod in modules){
             mod.updateShuffleboard()
         }
+        //matthew try to read challenge - why does this say "traj"????
         field.getObject("traj").pose = poseEstimator.estimatedPosition
 
     }
 
     override fun simulationPeriodic() {
-        for ((x, state) in constructStates(0.0, 0.0,0.1, true).withIndex()){
+        for ((x, state) in constructModuleStatesFromChassisSpeeds(0.0, 0.0,0.1, true).withIndex()){
             modules[x].setPointEntry.setDouble(state.angle.degrees)
         }
     }
@@ -95,7 +90,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }
     }
 
-    fun constructStates(xSpeedMetersPerSecond:Double, ySpeedMetersPerSecond:Double, turningSpeedDegreesPerSecond:Double, fieldOriented:Boolean) : Array<SwerveModuleState> =
+    fun constructModuleStatesFromChassisSpeeds(xSpeedMetersPerSecond:Double, ySpeedMetersPerSecond:Double, turningSpeedDegreesPerSecond:Double, fieldOriented:Boolean) : Array<SwerveModuleState> =
         SwerveDriveConstants.DrivetrainConsts.kinematics.toSwerveModuleStates (
             if (fieldOriented)
                 ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians,getYaw())
