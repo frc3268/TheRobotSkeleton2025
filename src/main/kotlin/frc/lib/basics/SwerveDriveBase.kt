@@ -35,6 +35,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         .withProperties(mapOf("colorWhenTrue" to "green", "colorWhenFalse" to "maroon"))
         .getEntry()
 
+    private var poseXEntry = ShuffleboardTab.add("Pose X", 0.0).entry
+
+    private var poseYEntry = ShuffleboardTab.add("Pose Y", 0.0).entry
+
+    private var poseRotEntry = ShuffleboardTab.add("Pose Rot", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
     init {
         gyro.calibrate()
@@ -57,12 +62,16 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
 
     override fun periodic() {
+        
         poseEstimator.update(getYaw(), getModulePositions())
         for (mod in modules){
             mod.updateShuffleboard()
         }
         //matthew try to read challenge - why does this say "traj"????
-        field.getObject("traj").pose = poseEstimator.estimatedPosition
+        field.robotPose = poseEstimator.estimatedPosition
+        poseXEntry.setDouble(poseEstimator.estimatedPosition.x)
+        poseYEntry.setDouble(poseEstimator.estimatedPosition.y)
+        //poseRotEntry.set(poseEstimator.estimatedPosition.rotation)
 
     }
 

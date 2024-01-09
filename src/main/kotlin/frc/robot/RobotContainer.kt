@@ -42,12 +42,9 @@ class RobotContainer {
 
     private val orchestrator:TrajectoryOrchestrator = TrajectoryOrchestrator()
 
-    val autoCommand:Command = orchestrator.buildSwerveTrajectory(
-            driveSubsystem.getPose(),
-            Pose2d(0.5,0.0, Rotation2d.fromDegrees(150.0)),
-            mutableListOf(
-            ),
-            driveSubsystem
+    val autoCommand:Command = orchestrator.beelineCommand(
+        driveSubsystem,
+        Pose2d(1.0, 0.0, Rotation2d.fromDegrees(0.0))
     )
 
     //this is the command called when teleop mode is enabled

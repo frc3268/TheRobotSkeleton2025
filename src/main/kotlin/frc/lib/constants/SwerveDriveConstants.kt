@@ -81,8 +81,8 @@ class SwerveDriveConstants {
             0.0,
             0.0
         )
-        val xPIDController:PIDController = PIDController(0.05,0.0,0.0)
-        val yPIDController:PIDController = PIDController(0.05,0.0,0.0)
+        val xPIDController:PIDController = PIDController(0.6,0.0,0.0)
+        val yPIDController:PIDController = PIDController(0.5,0.0,0.0)
         val thetaPIDController: ProfiledPIDController = ProfiledPIDController(0.9,0.0,0.0, TrapezoidProfile.Constraints(
             MAX_SPEED_METERS_PER_SECOND, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED))
 
@@ -100,10 +100,10 @@ class SwerveDriveConstants {
     }
     object modules{
         val list:List<ModuleConstants> = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-2.2), 1, 2, 0,false,true, PIDController(0.005,0.0,0.0)),
-            ModuleConstants(2, Rotation2d.fromDegrees(-7.3), 3, 4, 1,true,true, PIDController(0.005,0.0,0.0)),
-            ModuleConstants(3, Rotation2d.fromDegrees(-72.9), 5, 6, 2,false,true, PIDController(0.005,0.0,0.0)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-297.5), 7, 8, 3,false,true, PIDController(0.005,0.0,0.0))
+            ModuleConstants(1, Rotation2d.fromDegrees(-2.2), 1, 2, 0,false,true, PIDController(0.006,0.0,0.0)),
+            ModuleConstants(2, Rotation2d.fromDegrees(-7.3), 3, 4, 1,true,true, PIDController(0.006,0.0,0.0)),
+            ModuleConstants(3, Rotation2d.fromDegrees(-72.9), 5, 6, 2,false,true, PIDController(0.006,0.0,0.0)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-297.5), 7, 8, 3,false,true, PIDController(0.006,0.0,0.0))
         )
     }
 

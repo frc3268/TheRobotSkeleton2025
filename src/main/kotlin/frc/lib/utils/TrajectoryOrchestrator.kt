@@ -60,6 +60,10 @@ class TrajectoryOrchestrator {
             InstantCommand({drive.stop()})
         )
     }
+    
+    fun beelineCommand(drive:SwerveDriveBase, to:Pose2d):SequentialCommandGroup{
+        return buildSwerveTrajectory(drive.getPose(), to, mutableListOf(), drive)
+    }
 
     //2 methods to add trajectory: one for swerve and one for differential
     
