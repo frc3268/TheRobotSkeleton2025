@@ -12,10 +12,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
+import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.CommandBase
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand
 import frc.lib.basics.SwerveDriveBase
+import frc.lib.basics.SwerveModule
 import frc.lib.constants.SwerveDriveConstants
 
 class TrajectoryOrchestrator {
@@ -28,38 +31,20 @@ class TrajectoryOrchestrator {
 
         
     }
-    
+
+
     fun buildSwerveTrajectory(startPose:Pose2d, endPose:Pose2d, points:MutableList<Translation2d>, drive:SwerveDriveBase): SequentialCommandGroup {
-        val trajectoryConfig:TrajectoryConfig = TrajectoryConfig(
-            SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
-            SwerveDriveConstants.DrivetrainConsts.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED
-        ).setKinematics(SwerveDriveConstants.DrivetrainConsts.kinematics)
-
-        val trajectory:Trajectory = TrajectoryGenerator.generateTrajectory(
-            startPose,
-            points,
-            endPose,
-            trajectoryConfig
-        )
-
-        SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(-180.0, 180.0)
-
-        val trajectoryCommand = SwerveControllerCommand(
-            trajectory,
-            drive::getPose,
-            SwerveDriveConstants.DrivetrainConsts.kinematics,
-            SwerveDriveConstants.DrivetrainConsts.xPIDController,
-            SwerveDriveConstants.DrivetrainConsts.yPIDController,
-            SwerveDriveConstants.DrivetrainConsts.thetaPIDController,
-            drive::setModuleStates,
-            drive
-        )
-
-        return SequentialCommandGroup(
-            trajectoryCommand,
-            InstantCommand({drive.stop()})
-        )
+        val scg:SequentialCommandGroup = SequentialCommandGroup()
+        scg.addCommands(drive.robotPoseToBCommand(startPose))
+        for(point in points){
+            scg.addCommands(drive.robotPoseToBCommand(Pose2d(point, drive.getYaw())))
+        }
+        scg.addCommands(drive.robotPoseToBCommand(endPose))
+        scg.addCommands(InstantCommand({drive.stop()}))
+        scg.addRequirements(drive)
+        return scg
     }
+
 
     //2 methods to add trajectory: one for swerve and one for differential
     

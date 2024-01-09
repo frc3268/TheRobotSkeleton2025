@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
 import frc.lib.utils.scopeAngle
+import kotlin.math.abs
 
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     val field:Field2d = Field2d()
@@ -129,6 +130,21 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         // runOnce implicitly requires this subsystem.
         return runOnce { zeroYaw() }
     }
+
+
+    fun robotPoseToBCommand(endPose: Pose2d): CommandBase{
+        //!todo test
+        return run {
+            setModuleStates(
+                constructModuleStatesFromChassisSpeeds(
+                SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
+                SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.x),
+                SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getYaw().degrees,  endPose.rotation.degrees),
+                true
+            ))
+        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.01 && abs(getYaw().degrees - endPose.rotation.degrees) < 1 }
+    }
+
     fun getYaw(): Rotation2d = scopeAngle((gyro.rotation2d.degrees).rotation2dFromDeg())
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = poseEstimator.estimatedPosition
