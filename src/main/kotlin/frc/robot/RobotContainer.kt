@@ -32,7 +32,7 @@ class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     //todo: change this to reflect a field position. Maybe use a constant?
-    private val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
+    val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
 
     //todo: set limelight up
     //private val cameraSubsystem:Camera = Camera("Spy Balloon Camera", "")

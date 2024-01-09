@@ -49,6 +49,7 @@ class Robot : TimedRobot() {
     /** This autonomous runs the autonomous command selected by your [RobotContainer] class.  */
     override fun autonomousInit() {
         autonomousCommand = robotContainer?.autonomousCommand
+        robotContainer?.driveSubsystem?.zeroYaw()
 
         // Schedule the autonomous command (example)
         // Note the Kotlin safe-call(?.), this ensures autonomousCommand is not null before scheduling it

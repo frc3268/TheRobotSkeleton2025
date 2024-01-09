@@ -44,10 +44,10 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     init {
         gyro.calibrate()
-        zeroYaw()
         poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose)
         //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
+        zeroYaw()
         resetModulesToAbsolute()
         ShuffleboardTab.add("Stop", stopCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
@@ -83,8 +83,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
 
 
-    private fun zeroYaw() {
-        gyro.zeroYaw()
+    fun zeroYaw() {
+        gyro.reset()
     }
     private fun resetModulesToAbsolute(){
         for (mod in modules){
