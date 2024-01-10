@@ -142,16 +142,19 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
 
     fun robotPoseToBCommand(endPose: Pose2d): CommandBase{
+        SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
+            360.0, 0.0
+        )
         //!todo test
         return run {
             setModuleStates(
                 constructModuleStatesFromChassisSpeeds(
                 SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
-                SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.x),
+                SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.y),
                 SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getYaw().degrees,  endPose.rotation.degrees),
                 true
             ))
-        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.01 && abs(getYaw().degrees - endPose.rotation.degrees) < 1 }
+        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.1 && abs(getYaw().degrees - endPose.rotation.degrees) < 5 }
     }
 
     fun getYaw(): Rotation2d = scopeAngle((gyro.rotation2d.degrees).rotation2dFromDeg())

@@ -46,7 +46,11 @@ class TrajectoryOrchestrator {
     }
     
     fun beelineCommand(drive:SwerveDriveBase, to:Pose2d):SequentialCommandGroup{
-        return buildSwerveTrajectory(drive.getPose(), to, mutableListOf(), drive)
+        val scg:SequentialCommandGroup = SequentialCommandGroup()
+        scg.addCommands(drive.robotPoseToBCommand(to))
+        scg.addCommands(InstantCommand({drive.stop()}))
+        scg.addRequirements(drive)
+        return scg
     }
 
 

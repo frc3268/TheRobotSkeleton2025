@@ -44,7 +44,7 @@ class RobotContainer {
 
     val autoCommand:Command = orchestrator.beelineCommand(
         driveSubsystem,
-        Pose2d(1.0, 0.0, Rotation2d.fromDegrees(0.0))
+        Pose2d(1.0, 1.0, Rotation2d.fromDegrees(90.0))
     )
 
     //this is the command called when teleop mode is enabled
@@ -52,7 +52,7 @@ class RobotContainer {
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
-        { driverController.getRawAxis(2) },
+        { -driverController.getRawAxis(2) },
         { !driverController.triggerPressed }
     )
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
