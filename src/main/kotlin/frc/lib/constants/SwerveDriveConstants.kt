@@ -7,7 +7,7 @@ for most constants used in this library.
  */
 package frc.lib.constants
 
-import com.revrobotics.CANSparkMax.IdleMode
+import com.revrobotics.CANSparkBase
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.controller.ProfiledPIDController
 import edu.wpi.first.math.geometry.Rotation2d
@@ -41,7 +41,7 @@ class SwerveDriveConstants {
         const val POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION: Double =
             (WHEEL_DIAMETER_METERS * Math.PI) / GEAR_RATIO
         const val VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND = POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION / 60.0
-        val NEUTRAL_MODE: IdleMode = IdleMode.kBrake
+        val NEUTRAL_MODE: CANSparkBase.IdleMode = CANSparkBase.IdleMode.kBrake
         const val INVERT: Boolean = false
     }
 

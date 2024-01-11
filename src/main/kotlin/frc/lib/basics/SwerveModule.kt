@@ -1,7 +1,7 @@
 package frc.lib.basics
 
+import com.revrobotics.CANSparkLowLevel
 import com.revrobotics.CANSparkMax
-import com.revrobotics.CANSparkMaxLowLevel
 import com.revrobotics.RelativeEncoder
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
@@ -32,8 +32,8 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     val absoluteEncoderEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder(Absolute)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
 
-    private val driveMotor:CANSparkMax = CANSparkMax(moduleConstants.DRIVE_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
-    private val angleMotor:CANSparkMax = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
+    private val driveMotor:CANSparkMax = CANSparkMax(moduleConstants.DRIVE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
+    private val angleMotor:CANSparkMax = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
 
     private val driveEncoder:RelativeEncoder = driveMotor.encoder
     private val angleEncoder:RelativeEncoder = angleMotor.encoder
