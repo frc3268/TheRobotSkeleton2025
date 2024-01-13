@@ -44,8 +44,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     init {
         gyro.reset()
-        poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose)
-        //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
+       //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
         zeroYaw()
         resetModulesToAbsolute()
@@ -57,6 +56,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //pending review: should the field be on the drivetrain's panel or somewhere else?
         //todo: consult with drive(chris) about this
         ShuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
+        poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose)
+
 
 
     }
@@ -154,12 +155,12 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
                 SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getYaw().degrees,  endPose.rotation.degrees),
                 true
             ))
-        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.1 && abs(getYaw().degrees - endPose.rotation.degrees) < 5 }
+        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.1 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
     }
 
     fun getYaw(): Rotation2d = scopeAngle((gyro.rotation2d.degrees).rotation2dFromDeg())
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
-    fun getPose():Pose2d = poseEstimator.estimatedPosition
+    fun getPose():Pose2d = Pose2d(poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
     fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
 
