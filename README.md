@@ -12,8 +12,5 @@ Usage:
 2. Change constants to match your robot
 3. Enjoy
 
-toupdate:
-https://github.com/PhotonVision/photonvision/releases
-
 
 Thanks to frc team 6814 for creating an excellent series on frc programming(0 to Autonomous). Their code in episode 6 served as the basis for much of the swerve-drive code in this library
