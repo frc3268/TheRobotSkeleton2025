@@ -11,31 +11,31 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 class ShooterSubsystem:SubsystemBase() {
 
-    val shootPid:PIDController = PIDController(0.0, 0.0, 0.0, 0.0);
-    val shootmotor:CANSparkMax = CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
-    public val kP:Double = 0.0;
-    public val kI:Double = 0.0;
-    public val kD:Double = 0.0;
-    public val kMaxOutput:Double = 0.0;
-    public val kMinOutput:Double = 0.0;
-    public val maxRPM:Double = 0.0;
-    public var isSet:Boolean = false;
+    val shootPid = PIDController(0.0, 0.0, 0.0, 0.0);
+    val shootmotor = CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
+    val kP:Double = 0.0;
+    val kI:Double = 0.0;
+    val kD:Double = 0.0;
+    val kMaxOutput:Double = 0.0;
+    val kMinOutput:Double = 0.0;
+    val maxRPM:Double = 0.0;
+    var isSet:Boolean = false;
 
-    public fun setShoot(speed:Double) {
-        shootmotor.set(speed);
+    fun setShoot(speed:Double) {
+        shootmotor.set(speed)
     }
-    public fun toggleMotor(speed:Double) {
-        if(isSet) {
-            stop();
-            isSet = false;
-        }else {
+
+    fun toggleMotor(speed:Double) {
+        if(isSet)
+            stop()
+        else
             setShoot(speed)
-            isSet = true
-        }
+        isSet = !isSet
     }
-    public fun stop() {
-        shootmotor.stopMotor();
-        isSet = false;
+
+    fun stop() {
+        shootmotor.stopMotor()
+        isSet = false
     }
     /** This method will be called once per scheduler run  */
     override fun periodic() {
