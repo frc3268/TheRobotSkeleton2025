@@ -26,7 +26,7 @@ class Camera(name:String, path:String): SubsystemBase(){
                         Filesystem.getDeployDirectory().toString() +
                         path
                     ),
-                    PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP,
+                    PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     limelight,
                     Transform3d()
                 )

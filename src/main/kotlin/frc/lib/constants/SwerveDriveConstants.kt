@@ -7,7 +7,7 @@ for most constants used in this library.
  */
 package frc.lib.constants
 
-import com.revrobotics.CANSparkMax.IdleMode
+import com.revrobotics.CANSparkBase
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.controller.ProfiledPIDController
 import edu.wpi.first.math.geometry.Rotation2d
@@ -41,7 +41,7 @@ class SwerveDriveConstants {
         const val POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION: Double =
             (WHEEL_DIAMETER_METERS * Math.PI) / GEAR_RATIO
         const val VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND = POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION / 60.0
-        val NEUTRAL_MODE: IdleMode = IdleMode.kBrake
+        val NEUTRAL_MODE: CANSparkBase.IdleMode = CANSparkBase.IdleMode.kBrake
         const val INVERT: Boolean = false
     }
 
@@ -83,9 +83,7 @@ class SwerveDriveConstants {
         )
         val xPIDController:PIDController = PIDController(2.0,0.5,0.0)
         val yPIDController:PIDController = PIDController(2.0,0.5,0.0)
-        val thetaPIDController: ProfiledPIDController = ProfiledPIDController(2.5,0.5,0.0, TrapezoidProfile.Constraints(
-            MAX_SPEED_METERS_PER_SECOND, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED))
-
+        val thetaPIDController:PIDController = PIDController(2.0,0.5,0.0)
 
         //in the order they appear in modules list
         //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
@@ -100,10 +98,10 @@ class SwerveDriveConstants {
     }
     object modules{
         val list:List<ModuleConstants> = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-2.2), 1, 2, 0,false,true, PIDController(0.006,0.0,0.005)),
-            ModuleConstants(2, Rotation2d.fromDegrees(-7.3), 3, 4, 1,true,true, PIDController(0.006,0.0,0.005)),
-            ModuleConstants(3, Rotation2d.fromDegrees(-72.9), 5, 6, 2,false,true, PIDController(0.006,0.0,0.005)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-297.5), 7, 8, 3,false,true, PIDController(0.006,0.0,0.005))
+            ModuleConstants(1, Rotation2d.fromDegrees(-2.2), 1, 2, 0,false,true, PIDController(0.006,0.001,0.0006)),
+            ModuleConstants(2, Rotation2d.fromDegrees(-7.3), 3, 4, 1,true,true, PIDController(0.006,0.001,0.0006)),
+            ModuleConstants(3, Rotation2d.fromDegrees(-72.9), 5, 6, 2,false,true, PIDController(0.006,0.001,0.0006)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-297.5), 7, 8, 3,false,true, PIDController(0.006,0.001,0.0006))
         )
     }
 

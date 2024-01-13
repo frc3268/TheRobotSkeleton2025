@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
-import edu.wpi.first.wpilibj2.command.CommandBase
+import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
@@ -43,7 +43,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private var poseRotEntry = ShuffleboardTab.add("Pose Rot", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
     init {
-        gyro.calibrate()
+        gyro.reset()
         poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose)
         //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
@@ -113,12 +113,12 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }
     }
 
-    fun stopCommand() :CommandBase{
+    fun stopCommand() : Command {
         return run {stop()}.until { joystickControlledEntry.getBoolean(true) }.beforeStarting (runOnce{joystickControlledEntry.setBoolean(false)} )
     }
 
 
-     fun digInCommand(): CommandBase{
+     fun digInCommand(): Command{
          //todo: there might be a better way to do this. Im hesitant to use a global, though.
        return runOnce{
             joystickControlledEntry.setBoolean(false)
@@ -134,14 +134,14 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             }.until {joystickControlledEntry.getBoolean(true)})
     }
 
-    fun zeroHeadingCommand(): CommandBase {
+    fun zeroHeadingCommand(): Command {
         // Inline construction of command goes here.
         // runOnce implicitly requires this subsystem.
         return runOnce { zeroYaw() }
     }
 
 
-    fun robotPoseToBCommand(endPose: Pose2d): CommandBase{
+    fun robotPoseToBCommand(endPose: Pose2d): Command{
         SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
             360.0, 0.0
         )

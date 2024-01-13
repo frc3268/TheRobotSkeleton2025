@@ -1,6 +1,8 @@
+/*
 package frc.lib.basics
 
 import com.kauailabs.navx.frc.AHRS
+import com.revrobotics.CANSparkLowLevel
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
 import com.revrobotics.RelativeEncoder
@@ -23,10 +25,10 @@ import frc.lib.constants.DifferentialDriveConstants
 
 open class DifferentialDriveBase(startingPose: Pose2d?) : SubsystemBase() {
     //motors-required
-    private val frontLeftMotor = CANSparkMax(DifferentialDriveConstants.MotorIDs.FRONT_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless)
-    private val rearLeftMotor = CANSparkMax(DifferentialDriveConstants.MotorIDs.REAR_LEFT, CANSparkMaxLowLevel.MotorType.kBrushless)
-    private val frontRightMotor = CANSparkMax(DifferentialDriveConstants.MotorIDs.FRONT_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless)
-    private val rearRightMotor = CANSparkMax(DifferentialDriveConstants.MotorIDs.REAR_RIGHT, CANSparkMaxLowLevel.MotorType.kBrushless)
+    private val frontLeftMotor = CANSparkMax(DifferentialDriveConstants.MotorIDs.FRONT_LEFT, CANSparkLowLevel.MotorType.kBrushless)
+    private val rearLeftMotor = CANSparkMax(DifferentialDriveConstants.MotorIDs.REAR_LEFT, CANSparkLowLevel.MotorType.kBrushless)
+    private val frontRightMotor = CANSparkMax(DifferentialDriveConstants.MotorIDs.FRONT_RIGHT, CANSparkLowLevel.MotorType.kBrushless)
+    private val rearRightMotor = CANSparkMax(DifferentialDriveConstants.MotorIDs.REAR_RIGHT, CANSparkLowLevel.MotorType.kBrushless)
 
     //groups-motors
     private val leftMotors = MotorControllerGroup(frontLeftMotor, rearLeftMotor)
@@ -173,3 +175,4 @@ open class DifferentialDriveBase(startingPose: Pose2d?) : SubsystemBase() {
     }
 
 }
+*/
