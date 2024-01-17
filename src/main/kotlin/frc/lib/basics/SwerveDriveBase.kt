@@ -1,6 +1,7 @@
 package frc.lib.basics
 
 import com.kauailabs.navx.frc.AHRS
+import edu.wpi.first.math.VecBuilder
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
+import frc.lib.utils.Camera
 import frc.lib.utils.rotation2dFromDeg
 import frc.lib.utils.scopeAngle
 import kotlin.math.abs
@@ -26,6 +28,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
 
     val poseEstimator: SwerveDrivePoseEstimator
+    val camera:Camera
     private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
     private val gyro: AHRS = AHRS(SPI.Port.kMXP)
@@ -39,9 +42,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private var poseXEntry = ShuffleboardTab.add("Pose X", 0.0).entry
 
     private var poseYEntry = ShuffleboardTab.add("Pose Y", 0.0).entry
-
-    private var poseRotEntry = ShuffleboardTab.add("Pose Rot", 0.0).withWidget(BuiltInWidgets.kGyro).entry
-
     init {
         gyro.reset()
        //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
@@ -53,18 +53,14 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         ShuffleboardTab.add("Dig In", digInCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
 
+        camera = Camera("something", "or other")
         //pending review: should the field be on the drivetrain's panel or somewhere else?
         //todo: consult with drive(chris) about this
         ShuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
-        poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose)
-
-
-
+        poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1),  VecBuilder.fill(1.0, 1.0, 1.0))
     }
 
-
     override fun periodic() {
-        
         poseEstimator.update(getYaw(), getModulePositions())
         for (mod in modules){
             mod.updateShuffleboard()
