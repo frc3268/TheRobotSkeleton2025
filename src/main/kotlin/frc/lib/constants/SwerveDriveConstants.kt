@@ -81,9 +81,9 @@ class SwerveDriveConstants {
             0.0,
             0.0
         )
-        val xPIDController:PIDController = PIDController(2.0,0.5,0.0)
-        val yPIDController:PIDController = PIDController(2.0,0.5,0.0)
-        val thetaPIDController:PIDController = PIDController(3.0,1.0,0.0)
+        val xPIDController:PIDController = PIDController(1.8,0.5,0.0)
+        val yPIDController:PIDController = PIDController(1.8,0.5,0.0)
+        val thetaPIDController:PIDController = PIDController(3.5,1.0,0.0)
 
         //in the order they appear in modules list
         //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
@@ -98,10 +98,10 @@ class SwerveDriveConstants {
     }
     object modules{
         val list:List<ModuleConstants> = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-2.2), 1, 2, 0,false,true, PIDController(0.007,0.00,0.0007)),
-            ModuleConstants(2, Rotation2d.fromDegrees(-7.3), 3, 4, 1,true,true, PIDController(0.007,0.00,0.0007)),
-            ModuleConstants(3, Rotation2d.fromDegrees(-72.9), 5, 6, 2,false,true, PIDController(0.007,0.00,0.0007)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-297.5), 7, 8, 3,false,true, PIDController(0.007,0.00,0.0007))
+            ModuleConstants(1, Rotation2d.fromDegrees(-2.2), 1, 2, 0,false,true, PIDController(0.006,0.00,0.0007)),
+            ModuleConstants(2, Rotation2d.fromDegrees(-7.3), 3, 4, 1,true,true, PIDController(0.006,0.00,0.0007)),
+            ModuleConstants(3, Rotation2d.fromDegrees(-72.9), 5, 6, 2,false,true, PIDController(0.006,0.00,0.0007)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-297.5), 7, 8, 3,false,true, PIDController(0.006,0.00,0.0007))
         )
     }
 

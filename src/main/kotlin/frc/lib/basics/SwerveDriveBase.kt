@@ -70,9 +70,9 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             mod.updateShuffleboard()
         }
         //matthew try to read challenge - why does this say "traj"????
-        field.robotPose = poseEstimator.estimatedPosition
-        poseXEntry.setDouble(poseEstimator.estimatedPosition.x)
-        poseYEntry.setDouble(poseEstimator.estimatedPosition.y)
+        field.robotPose = getPose()
+        poseXEntry.setDouble(getPose().x)
+        poseYEntry.setDouble(getPose().y)
         //poseRotEntry.set(poseEstimator.estimatedPosition.rotation)
 
     }
@@ -150,17 +150,17 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         return run {
             setModuleStates(
                 constructModuleStatesFromChassisSpeeds(
-                SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
+                -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
                 SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.y),
                 SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getYaw().degrees,  endPose.rotation.degrees),
                 true
             ))
-        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.1 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
+        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.05 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
     }
 
     fun getYaw(): Rotation2d = scopeAngle((gyro.rotation2d.degrees).rotation2dFromDeg())
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
-    fun getPose():Pose2d = Pose2d(poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
+    fun getPose():Pose2d = Pose2d(-poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
     fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
 
