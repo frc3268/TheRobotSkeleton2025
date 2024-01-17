@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Transform3d
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import frc.lib.basics.SwerveDriveBase
 import org.photonvision.EstimatedRobotPose
 import org.photonvision.PhotonCamera
 import org.photonvision.PhotonPoseEstimator
@@ -13,10 +14,11 @@ import org.photonvision.targeting.PhotonPipelineResult
 import org.photonvision.targeting.PhotonTrackedTarget
 import java.io.IOException
 
-class Camera(name:String, path:String): SubsystemBase(){
+class Camera(name:String, path:String, val drive:SwerveDriveBase): SubsystemBase(){
     val limelight:PhotonCamera = PhotonCamera(name)
     var frame: PhotonPipelineResult = PhotonPipelineResult()
     var poseEstimator: PhotonPoseEstimator? = null
+
 
     init {
         try {
@@ -75,11 +77,25 @@ class Camera(name:String, path:String): SubsystemBase(){
         return frame.bestTarget
     }
 
-
-    fun getEstimatedPose(prevPose: Pose2d): EstimatedRobotPose? {
-        poseEstimator ?: return null
-        poseEstimator?.setReferencePose(prevPose)
-        return poseEstimator?.update()?.orElse(null)
+    // Old code in case it is needed
+    //fun getEstimatedPose(prevPose: Pose2d): EstimatedRobotPose? {
+    //    poseEstimator ?: return null
+    //    poseEstimator?.setReferencePose(prevPose)
+    //    return poseEstimator?.update()?.orElse(null)
+    //}
+    // New code (hope this works and is what you meant
+    fun getEstimatedPose(leftDist:Double, rightDist:Double) {
+        //Gives me an error every time I attempt to use it
+        //poseEstimator.update(drive.getYaw(), leftDist, rightDist);
+        var res = limelight.latestResult;
+        if(res.hasTargets()) {
+            var imageCaptureTime = res.timestampSeconds;
+            var camToTargetTrans = res.bestTarget.bestCameraToTarget;
+            // need an equivilant to kfartargetpose here
+            var camPose = Constants.kFarTargetPose.transformBy(camToTargetTrans.inverse());
+            // need an equal to add vision measurement for poseEstimator
+            poseEstimator?.update(res)
+        }
     }
 
     fun resetPose(pose: Pose2d) {

@@ -30,6 +30,19 @@ import frc.robot.subsystems.ExampleSubsystem
  */
 class RobotContainer {
 
+    private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
+    private var commandIndex = 0
+
+    private fun incrementCommandIndex() {
+        commandIndex++
+    }
+
+    private fun runSelectedCommand() {
+        when(commandIndex) {
+
+        }
+    }
+
     // The robot's subsystems and commands are defined here...
     //todo: change this to reflect a field position. Maybe use a constant?
     val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
@@ -60,6 +73,9 @@ class RobotContainer {
         driveSubsystem.setDefaultCommand(teleopCommand)
         // Configure the trigger bindings
         configureBindings()
+
+        ShuffleboardTab.add("Change Autonomous Command", incrementCommandIndex())
+        ShuffleboardTab.add("Run Selected Command", runSelectedCommand())
     }
 
     /**
