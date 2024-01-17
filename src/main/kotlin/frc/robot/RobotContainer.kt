@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
@@ -33,12 +34,12 @@ class RobotContainer {
     private val ShuffleboardTab = Shuffleboard.getTab("General")
 
 
+
+
     // The robot's subsystems and commands are defined here...
     //todo: change this to reflect a field position. Maybe use a constant?
     val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
 
-    //todo: set limelight up
-    //private val cameraSubsystem:Camera = Camera("Spy Balloon Camera", "")
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = Joystick(Constants.OperatorConstants.kDriverControllerPort)
@@ -60,6 +61,12 @@ class RobotContainer {
     )
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
+        //todo: make real and test
+        ShuffleboardTab
+            .add("Autonomous Mode", SendableChooser<Command>())
+            .withWidget(BuiltInWidgets.kComboBoxChooser)
+            .withPosition(0, 0)
+            .withSize(2, 1);
         driveSubsystem.setDefaultCommand(teleopCommand)
         // Configure the trigger bindings
         configureBindings()

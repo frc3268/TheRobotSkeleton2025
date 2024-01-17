@@ -8,8 +8,12 @@ class IntakeSubsystem:SubsystemBase() {
 
     val motor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
 
-    public fun stop() {
+    fun stop() {
         motor.stopMotor()
+    }
+
+    fun set(){
+        motor.set(0.3)
     }
 
     override fun periodic() {
