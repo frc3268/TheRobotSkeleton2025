@@ -81,8 +81,8 @@ class SwerveDriveConstants {
             0.0,
             0.0
         )
-        val xPIDController:PIDController = PIDController(1.5,0.5,0.0)
-        val yPIDController:PIDController = PIDController(1.5,0.5,0.0)
+        val xPIDController:PIDController = PIDController(3.0,0.6,0.0)
+        val yPIDController:PIDController = PIDController(3.5,0.8,0.5)
         val thetaPIDController:PIDController = PIDController(3.5,1.0,0.0)
 
         //in the order they appear in modules list

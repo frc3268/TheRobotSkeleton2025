@@ -20,16 +20,27 @@ class TrajectoryOrchestrator {
 
     fun buildSwerveTrajectory(startPose:Pose2d, endPose:Pose2d, points:MutableList<Translation2d>, drive:SwerveDriveBase): SequentialCommandGroup {
         val scg:SequentialCommandGroup = SequentialCommandGroup()
-        scg.addCommands(drive.robotPoseToBCommand(startPose))
+        val relativeTo:Pose2d = drive.getPose()
+        scg.addCommands(drive.robotPoseToBCommand(makePoseRelative(startPose, relativeTo)))
         for(point in points){
-            scg.addCommands(drive.robotPoseToBCommand(Pose2d(point, drive.getYaw())))
+            scg.addCommands(drive.robotPoseToBCommand(makePoseRelative(Pose2d(point, drive.getYaw()), relativeTo)))
         }
-        scg.addCommands(drive.robotPoseToBCommand(endPose))
+        scg.addCommands(drive.robotPoseToBCommand(makePoseRelative(endPose, relativeTo)))
         scg.addCommands(InstantCommand({drive.stop()}))
         scg.addRequirements(drive)
         return scg
     }
     
+    fun makePoseRelative(pose:Pose2d, relativeTo: Pose2d): Pose2d{
+        return Pose2d(
+            Translation2d(
+                pose.x + relativeTo.x,
+                pose.y + relativeTo.y,
+            ),
+            pose.rotation
+        )
+    }
+
     fun beelineCommand(drive:SwerveDriveBase, to:Pose2d):SequentialCommandGroup{
         val scg:SequentialCommandGroup = SequentialCommandGroup()
         scg.addCommands(drive.robotPoseToBCommand(to))
