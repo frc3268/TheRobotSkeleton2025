@@ -44,9 +44,9 @@ class RobotContainer {
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = Joystick(Constants.OperatorConstants.kDriverControllerPort)
 
-    private val orchestrator:TrajectoryOrchestrator = TrajectoryOrchestrator()
+    val autochooser:SendableChooser<Command> = SendableChooser<Command>()
 
-    val autoCommand:Command = orchestrator.buildSwerveTrajectory(
+    val autoCommand:Command = TrajectoryOrchestrator.buildSwerveTrajectory(
         Pose2d(0.0,0.0, Rotation2d(0.0)),
         Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0.0)),
         mutableListOf(
@@ -68,7 +68,7 @@ class RobotContainer {
     init {
         //todo: make real and test
         ShuffleboardTab
-            .add("Autonomous Mode", SendableChooser<Command>())
+            .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
             .withSize(2, 1);
