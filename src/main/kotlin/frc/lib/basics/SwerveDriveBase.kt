@@ -1,6 +1,7 @@
 package frc.lib.basics
 
 import com.kauailabs.navx.frc.AHRS
+import edu.wpi.first.math.Matrix
 import edu.wpi.first.math.VecBuilder
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.Pose2d
@@ -9,6 +10,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
+import edu.wpi.first.math.numbers.N1
+import edu.wpi.first.math.numbers.N3
 import edu.wpi.first.networktables.GenericEntry
 import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
@@ -21,6 +24,8 @@ import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.Camera
 import frc.lib.utils.rotation2dFromDeg
 import frc.lib.utils.scopeAngle
+import org.photonvision.EstimatedRobotPose
+import java.util.*
 import kotlin.math.abs
 
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
@@ -65,11 +70,19 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         for (mod in modules){
             mod.updateShuffleboard()
         }
-        //matthew try to read challenge - why does this say "traj"????
+        val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
+        visionEst?.ifPresent { est ->
+            val estPose: Pose2d = est.estimatedPose.toPose2d()
+            // Change our trust in the measurement based on the tags we can see
+            val estStdDevs: Matrix<N3, N1> = camera.getEstimationStdDevs(estPose)
+            poseEstimator.addVisionMeasurement(
+                est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs
+            )
+        }
         field.robotPose = getPose()
         poseXEntry.setDouble(getPose().x)
         poseYEntry.setDouble(getPose().y)
-        //poseRotEntry.set(poseEstimator.estimatedPosition.rotation)
+
 
     }
 
