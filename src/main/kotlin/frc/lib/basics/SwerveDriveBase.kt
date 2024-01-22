@@ -53,7 +53,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         ShuffleboardTab.add("Dig In", digInCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
 
-        camera = Camera("something", "or other")
+        camera = Camera("hawkeye", "or other")
         //pending review: should the field be on the drivetrain's panel or somewhere else?
         //todo: consult with drive(chris) about this
         ShuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
