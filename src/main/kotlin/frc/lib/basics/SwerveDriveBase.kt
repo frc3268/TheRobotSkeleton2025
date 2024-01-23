@@ -73,10 +73,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
             val estPose: Pose2d = est.estimatedPose.toPose2d()
-            // Change our trust in the measurement based on the tags we can see
-            val estStdDevs: Matrix<N3, N1> = camera.getEstimationStdDevs(estPose)
             poseEstimator.addVisionMeasurement(
-                est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs
+                est.estimatedPose.toPose2d(), est.timestampSeconds
             )
         }
         field.robotPose = getPose()

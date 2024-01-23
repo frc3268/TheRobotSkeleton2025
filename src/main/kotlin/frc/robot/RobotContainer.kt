@@ -74,6 +74,7 @@ class RobotContainer {
             .withSize(2, 1);
         driveSubsystem.setDefaultCommand(teleopCommand)
         autochooser.setDefaultOption("taxi", Autos.moveOutTheWayAuto(driveSubsystem))
+        autochooser.addOption("test", WaitCommand(3.0))
         // Configure the trigger bindings
         configureBindings()
     }
