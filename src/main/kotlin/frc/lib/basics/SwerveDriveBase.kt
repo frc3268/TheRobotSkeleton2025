@@ -23,14 +23,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.Camera
 import frc.lib.utils.rotation2dFromDeg
-import frc.lib.utils.scopeAngle
 import org.photonvision.EstimatedRobotPose
 import java.util.*
+import kotlin.math.IEEErem
 import kotlin.math.abs
 
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     val field:Field2d = Field2d()
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
+
 
     val poseEstimator: SwerveDrivePoseEstimator
     val camera:Camera
@@ -72,7 +73,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
-            val estPose: Pose2d = est.estimatedPose.toPose2d()
             poseEstimator.addVisionMeasurement(
                 est.estimatedPose.toPose2d(), est.timestampSeconds
             )
@@ -165,7 +165,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.05 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
     }
 
-    fun getYaw(): Rotation2d = scopeAngle((gyro.rotation2d.degrees).rotation2dFromDeg())
+    fun getYaw(): Rotation2d = (gyro.rotation2d.degrees).IEEErem(360.0).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = Pose2d(-poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
