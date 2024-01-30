@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.trajectory.TrapezoidProfile
+import edu.wpi.first.math.util.Units
 import frc.lib.constants.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_METERS
 
 class SwerveDriveConstants {
@@ -58,8 +59,8 @@ class SwerveDriveConstants {
     }
 
     object DrivetrainConsts {        /* Drivetrain Constants */
-        val TRACK_WIDTH_METERS = 0.7112
-        val WHEEL_BASE_METERS = 0.7112
+        val TRACK_WIDTH_METERS = Units.inchesToMeters(24.0)
+        val WHEEL_BASE_METERS = Units.inchesToMeters(24.0)
 
         const val WHEEL_DIAMETER_METERS = 0.1016
         val WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI
