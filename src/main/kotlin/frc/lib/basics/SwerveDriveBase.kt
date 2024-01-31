@@ -28,7 +28,7 @@ import java.util.*
 import kotlin.math.IEEErem
 import kotlin.math.abs
 
-class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
+class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     val field:Field2d = Field2d()
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
 
@@ -63,7 +63,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //pending review: should the field be on the drivetrain's panel or somewhere else?
         //todo: consult with drive(chris) about this
         ShuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
-        poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1),  VecBuilder.fill(1.0, 1.0, 1.0))
+        val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
+        visionEst?.ifPresent { est ->
+            startingPose = est.estimatedPose.toPose2d()
+        }
+        poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1),  VecBuilder.fill(0.5, 0.5, 0.5))
     }
 
     override fun periodic() {
