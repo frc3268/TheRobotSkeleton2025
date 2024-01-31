@@ -3,25 +3,17 @@ package frc.robot
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
-import edu.wpi.first.networktables.GenericEntry
 import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
-import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import edu.wpi.first.wpilibj2.command.button.Trigger
 import frc.lib.basics.SwerveDriveBase
-import frc.lib.utils.Camera
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.robot.commands.Autos
-import frc.robot.commands.ExampleCommand
 import frc.robot.commands.SwerveJoystickDrive
-import frc.robot.subsystems.ExampleSubsystem
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -73,7 +65,7 @@ class RobotContainer {
             .withPosition(0, 0)
             .withSize(2, 1);
         driveSubsystem.setDefaultCommand(teleopCommand)
-        autochooser.setDefaultOption("taxi", Autos.moveOutTheWayAuto(driveSubsystem))
+        autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
         autochooser.addOption("test", WaitCommand(3.0))
         // Configure the trigger bindings
         configureBindings()
