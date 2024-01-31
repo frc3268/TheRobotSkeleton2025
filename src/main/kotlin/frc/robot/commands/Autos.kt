@@ -55,5 +55,25 @@ class Autos private constructor() {
 
         }
 
+        fun goToSource(drive:SwerveDriveBase, closerToBaseLine: Boolean):Command{
+            val color = DriverStation.getAlliance()
+            var to = Pose2d(0.356108, 0.883666, 60.0.rotation2dFromDeg())
+            if(!closerToBaseLine){
+                to = Pose2d(1.461516, 0.245872, 60.0.rotation2dFromDeg())
+            }
+            color?.ifPresent{ color ->
+                if (color == DriverStation.Alliance.Blue){
+                    to = Pose2d(15.079472, 0.245872, 120.0.rotation2dFromDeg())
+                    if(!closerToBaseLine){
+                        to = Pose2d(16.185134, 0.883666, 120.0.rotation2dFromDeg())
+                    }
+                }
+
+            }
+            return TrajectoryOrchestrator.beelineCommand(
+                drive, to
+            )
+        }
+
     }
 }
