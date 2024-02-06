@@ -49,6 +49,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
 
     private var poseYEntry = ShuffleboardTab.add("Pose Y", 0.0).entry
     init {
+
         gyro.reset()
        //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
