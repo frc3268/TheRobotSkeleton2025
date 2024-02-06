@@ -67,6 +67,8 @@ class RobotContainer {
         driveSubsystem.setDefaultCommand(teleopCommand)
         autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
         autochooser.addOption("test", WaitCommand(3.0))
+
+        ShuffleboardTab.add("Speaker Shooter", Autos.speakerShooter(driveSubsystem),.withWidget(BuiltInWidgets.kCommand))
         // Configure the trigger bindings
         configureBindings()
     }
