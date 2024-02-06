@@ -92,7 +92,7 @@ class Autos private constructor() {
             )
 
         }
-        fun speakerShoot(drive:SwerveDriveBase) {
+        fun speakerShooter(drive:SwerveDriveBase) {
             goToSpeaker(drive)
             ShooterSubsystem.shootCommand()
         }
