@@ -32,6 +32,14 @@ class ShooterSubsystem:SubsystemBase() {
         }).withTimeout(3.0).andThen(runOnce{stop()})
     }
 
+    fun ampCommand(): Command{
+        return run{
+            setIndex()
+        }.alongWith(run{
+            setShoot(0.5)
+        }).withTimeout(3.0).andThen(runOnce{stop()})
+    }
+
 
     fun stop() {
         leftFlywheelMotor.stopMotor()
