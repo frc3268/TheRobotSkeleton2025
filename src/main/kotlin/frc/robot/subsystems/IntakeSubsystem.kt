@@ -51,6 +51,10 @@ class IntakeSubsystem:SubsystemBase() {
         return poweredArmDownCommand().andThen(run{setIntake()}.withTimeout(3.0)).andThen(poweredArmUpCommand())
     }
 
+    fun takeOutCommand():Command{
+        return run{setOuttake()}.withTimeout(3.0)
+    }
+
     fun getPoweredArmMeasurement() : Rotation2d{
         return armEncoder.position.rotation2dFromDeg()
     }

@@ -9,8 +9,9 @@ import edu.wpi.first.wpilibj2.command.Commands
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.lib.utils.rotation2dFromDeg
-import frc.robot.subsystems.ShooterSubsystem
-
+import frc.robot.subsystems.ExampleSubsystem
+import kotlin.math.atan
+import kotlin.math.cos
 
 class Autos private constructor() {
     init {
@@ -77,24 +78,31 @@ class Autos private constructor() {
             )
         }
 
-        fun goToAmp(drive:SwerveDriveBase):Command{
+        fun goWithinSpeaker(drive:SwerveDriveBase): Command {
             val color = DriverStation.getAlliance()
             //todo: fix x
-            var to = Pose2d(1.8415, 8.2042, 270.rotation2dFromDeg())
+            var to = Pose2d(0.0, 5.547868, 0.0.rotation2dFromDeg())
             color?.ifPresent { color ->
-                if (color == DriverStation.Alliance.Red) {
-                    to = Pose2d(14.700758, 8.2042, 270.0.rotation2dFromDeg())
+                if(color == DriverStation.Alliance.Red){
+                    to = Pose2d(14.579342, 5.547868, 180.0.rotation2dFromDeg())
                 }
             }
+            //todo: make this real
+            val pose = drive.getPose()
+            val c = 1.0
+            val r = pose.translation.getDistance(to.translation)
+            val x = pose.x - to.x
+            val y = pose.y - to.y
+            val theta = atan(x/y).rotation2dFromDeg()
+            val nx = theta.cos*c
+            val ny = theta.sin*c
             return TrajectoryOrchestrator.beelineCommand(
-                    drive,
-                    to
+                drive, Pose2d(nx,ny, theta)
             )
+        }
 
-        }
-        fun speakerShooter(drive:SwerveDriveBase) {
-            goToSpeaker(drive)
-            ShooterSubsystem.shootCommand()
-        }
+        //go to speaker
+        //shootcommand()
+
     }
 }

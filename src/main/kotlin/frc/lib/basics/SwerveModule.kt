@@ -63,6 +63,10 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
             -180.0, 180.0
         )
 
+        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
+        //todo: fix? below
+        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
+
 
     }
 
