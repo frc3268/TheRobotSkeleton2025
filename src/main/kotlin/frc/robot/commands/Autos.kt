@@ -89,14 +89,13 @@ class Autos private constructor() {
             //todo: make this real
             val pose = drive.getPose()
             val c = 1.0
-            val r = pose.translation.getDistance(to.translation)
             val x = pose.x - to.x
             val y = pose.y - to.y
             val theta = atan(x/y).rotation2dFromDeg()
             val nx = theta.cos*c
             val ny = theta.sin*c
             return TrajectoryOrchestrator.beelineCommand(
-                drive, Pose2d(nx,ny, theta)
+                drive, Pose2d(pose.x + nx, pose.y+ny, theta)
             )
         }
 
