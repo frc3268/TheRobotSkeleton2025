@@ -23,14 +23,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.Camera
 import frc.lib.utils.rotation2dFromDeg
-import frc.lib.utils.scopeAngle
 import org.photonvision.EstimatedRobotPose
 import java.util.*
+import kotlin.math.IEEErem
 import kotlin.math.abs
 
-class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
+class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     val field:Field2d = Field2d()
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
+
 
     val poseEstimator: SwerveDrivePoseEstimator
     val camera:Camera
@@ -48,6 +49,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     private var poseYEntry = ShuffleboardTab.add("Pose Y", 0.0).entry
     init {
+
         gyro.reset()
        //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
@@ -62,7 +64,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //pending review: should the field be on the drivetrain's panel or somewhere else?
         //todo: consult with drive(chris) about this
         ShuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
-        poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1),  VecBuilder.fill(1.0, 1.0, 1.0))
+        val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
+        visionEst?.ifPresent { est ->
+            startingPose = est.estimatedPose.toPose2d()
+        }
+        poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1),  VecBuilder.fill(0.5, 0.5, 0.5))
     }
 
     override fun periodic() {
@@ -72,11 +78,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
-            val estPose: Pose2d = est.estimatedPose.toPose2d()
-            // Change our trust in the measurement based on the tags we can see
-            val estStdDevs: Matrix<N3, N1> = camera.getEstimationStdDevs(estPose)
             poseEstimator.addVisionMeasurement(
-                est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs
+                est.estimatedPose.toPose2d(), est.timestampSeconds
             )
         }
         field.robotPose = getPose()
@@ -167,7 +170,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.05 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
     }
 
-    fun getYaw(): Rotation2d = scopeAngle((gyro.rotation2d.degrees).rotation2dFromDeg())
+    fun getYaw(): Rotation2d = (gyro.rotation2d.degrees).IEEErem(360.0).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = Pose2d(-poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()

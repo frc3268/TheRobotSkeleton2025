@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
-import frc.lib.utils.scopeAngle
+import kotlin.math.IEEErem
 import kotlin.math.abs
 
 /*
@@ -63,6 +63,10 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
             -180.0, 180.0
         )
 
+        driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
+        //todo: fix? below
+        angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
+
 
     }
 
@@ -76,8 +80,8 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         angleEncoder.position = getAbsoluteEncoderMeasurement().degrees
     }
     private fun getAbsoluteEncoderMeasurement() : Rotation2d = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
-    fun getState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, scopeAngle(angleEncoder.position.rotation2dFromDeg()))
-    fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, scopeAngle(angleEncoder.position.rotation2dFromDeg()))
+    fun getState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, (angleEncoder.position.IEEErem(360.0).rotation2dFromDeg()))
+    fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, angleEncoder.position.IEEErem(360.0).rotation2dFromDeg())
 
     fun setDesiredState(desiredState:SwerveModuleState){
         if (abs(desiredState.speedMetersPerSecond) < 0.01){

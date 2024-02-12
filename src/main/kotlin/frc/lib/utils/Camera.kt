@@ -1,6 +1,7 @@
 package frc.lib.utils
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout
+import edu.wpi.first.apriltag.AprilTagFields
 import edu.wpi.first.math.Matrix
 import edu.wpi.first.math.VecBuilder
 import edu.wpi.first.math.geometry.Pose2d
@@ -29,10 +30,7 @@ class Camera(name:String, path:String): SubsystemBase(){
         try {
             poseEstimator =
                 PhotonPoseEstimator(
-                    AprilTagFieldLayout(
-                        Filesystem.getDeployDirectory().toString() +
-                        path
-                    ),
+                    AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(),
                     PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     limelight,
                     //todo: this!
