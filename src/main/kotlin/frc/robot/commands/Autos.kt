@@ -42,13 +42,29 @@ class Autos private constructor() {
         }
 
         fun goToSpeaker(drive:SwerveDriveBase):Command{
+            val color = DriverStation.getAlliance()
+            //todo: fix x
+            var to = Pose2d(1.0, 5.547868, 0.0.rotation2dFromDeg())
+            color?.ifPresent { color ->
+                if (color == DriverStation.Alliance.Red) {
+                    to = Pose2d(15.579342, 5.547868, 180.0.rotation2dFromDeg())
+                }
+            }
+            return TrajectoryOrchestrator.beelineCommand(
+                drive,
+                to
+            )
+
+        }
+
+        fun goToAmp(drive:SwerveDriveBase):Command{
             val radius:Int = 0 //to do: calibrate distance from speaker
             val color = DriverStation.getAlliance()
             //todo: fix x
-            var to = Pose2d(1.0 + radius, 5.547868, 0.0.rotation2dFromDeg())
+            var to = Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
             color?.ifPresent { color ->
                 if (color == DriverStation.Alliance.Red) {
-                    to = Pose2d(15.579342 - radius, 5.547868, 180.0.rotation2dFromDeg())
+                    to = Pose2d(14.929358, 8.2042, 270.0.rotation2dFromDeg())
                 }
             }
             return TrajectoryOrchestrator.beelineCommand(
