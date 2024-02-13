@@ -128,6 +128,21 @@ class Autos private constructor() {
             )
         }
 
+        fun getNoteOnGround(drive: SwerveDriveBase, intake:IntakeSubsystem) : Command {
+            return SequentialCommandGroup(
+                intake.poweredArmDownCommand(),
+                intake.takeInCommand(),
+                intake.poweredArmUpCommand()
+            )
+        }
+
+        fun getNoteFromSource(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, closerToBaseLine: Boolean) : Command {
+            return SequentialCommandGroup(
+                    goToSource(drive, closerToBaseLine),//fix closer to baseline
+                    shooter.takeInCommand()
+            )
+        }
+
 
     }
 }
