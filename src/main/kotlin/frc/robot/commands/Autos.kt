@@ -128,7 +128,7 @@ class Autos private constructor() {
             )
         }
 
-        fun getNoteOnGround(drive: SwerveDriveBase, intake:IntakeSubsystem) : Command {
+        fun getNoteOnGround(intake:IntakeSubsystem) : Command {
             return SequentialCommandGroup(
                 intake.poweredArmDownCommand(),
                 intake.takeInCommand(),

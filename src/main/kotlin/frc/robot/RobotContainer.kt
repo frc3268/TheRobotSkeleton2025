@@ -75,6 +75,10 @@ class RobotContainer {
         autochooser.addOption("test", WaitCommand(3.0))
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Floor Note", Autos.getNoteOnGround(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.getNoteFromSource(driveSubsystem, intakeSubsystem, shooterSubsystem, true)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.getNoteFromSource(driveSubsystem, intakeSubsystem, shooterSubsystem, false)).withWidget(BuiltInWidgets.kCommand)
+
         // Configure the trigger bindings
         configureBindings()
     }
