@@ -20,13 +20,13 @@ class ShooterSubsystem:SubsystemBase() {
         rightFlywheelMotor.set(speed)
     }
 
-    fun setIndex(){
-       indexWheelMotor.set(0.3)
+    fun setIndex(speed: Double){
+       indexWheelMotor.set(speed)
     }
 
     fun shootCommand(): Command {
         return run{
-            setIndex()
+            setIndex(0.3)
         }.alongWith(run{
             setShoot(0.7)
         }).withTimeout(3.0).andThen(runOnce{stop()})
@@ -34,10 +34,18 @@ class ShooterSubsystem:SubsystemBase() {
 
     fun ampCommand(): Command{
         return run{
-            setIndex()
+            setIndex(0.3)
         }.alongWith(run{
             setShoot(0.5)
         }).withTimeout(3.0).andThen(runOnce{stop()})
+    }
+
+    fun takeInCommand(): Command {
+        return run{
+            setShoot(-0.7)
+        }.andThen(run{
+            setIndex(-0.3)
+        }).withTimeout(3.0)
     }
 
 

@@ -3,15 +3,16 @@ package frc.robot.commands
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.wpilibj.DriverStation
-import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.lib.utils.rotation2dFromDeg
 import frc.robot.subsystems.ExampleSubsystem
+import frc.robot.subsystems.IntakeSubsystem
+import frc.robot.subsystems.ShooterSubsystem
 import kotlin.math.atan
-import kotlin.math.cos
 
 class Autos private constructor() {
     init {
@@ -42,13 +43,29 @@ class Autos private constructor() {
         }
 
         fun goToSpeaker(drive:SwerveDriveBase):Command{
+            val color = DriverStation.getAlliance()
+            //todo: fix x
+            var to = Pose2d(1.0, 5.547868, 0.0.rotation2dFromDeg())
+            color?.ifPresent { color ->
+                if (color == DriverStation.Alliance.Red) {
+                    to = Pose2d(15.579342, 5.547868, 180.0.rotation2dFromDeg())
+                }
+            }
+            return TrajectoryOrchestrator.beelineCommand(
+                drive,
+                to
+            )
+
+        }
+
+        fun goToAmp(drive:SwerveDriveBase):Command{
             val radius:Int = 0 //to do: calibrate distance from speaker
             val color = DriverStation.getAlliance()
             //todo: fix x
-            var to = Pose2d(1.0 + radius, 5.547868, 0.0.rotation2dFromDeg())
+            var to = Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
             color?.ifPresent { color ->
                 if (color == DriverStation.Alliance.Red) {
-                    to = Pose2d(15.579342 - radius, 5.547868, 180.0.rotation2dFromDeg())
+                    to = Pose2d(14.929358, 8.2042, 270.0.rotation2dFromDeg())
                 }
             }
             return TrajectoryOrchestrator.beelineCommand(
@@ -99,6 +116,30 @@ class Autos private constructor() {
 
         //go to speaker
         //shootcommand()
+
+        fun driveUpAndShootSpeakerCommand(drive:SwerveDriveBase, intake:IntakeSubsystem, shooter:ShooterSubsystem) : Command{
+            return SequentialCommandGroup(
+                goToSpeaker(drive),
+                intake.takeOutCommand(),
+                shooter.shootCommand()
+            )
+        }
+
+        fun getNoteOnGround(intake:IntakeSubsystem) : Command {
+            return SequentialCommandGroup(
+                intake.poweredArmDownCommand(),
+                intake.takeInCommand(),
+                intake.poweredArmUpCommand()
+            )
+        }
+
+        fun getNoteFromSource(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, closerToBaseLine: Boolean) : Command {
+            return SequentialCommandGroup(
+                    goToSource(drive, closerToBaseLine),//fix closer to baseline
+                    shooter.takeInCommand()
+            )
+        }
+
 
     }
 }

@@ -14,6 +14,9 @@ import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.robot.commands.Autos
 import frc.robot.commands.SwerveJoystickDrive
+import frc.robot.subsystems.ClimberSubsystem
+import frc.robot.subsystems.IntakeSubsystem
+import frc.robot.subsystems.ShooterSubsystem
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,6 +34,9 @@ class RobotContainer {
     // The robot's subsystems and commands are defined here...
     //todo: change this to reflect a field position. Maybe use a constant?
     val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
+    val intakeSubsystem:IntakeSubsystem = IntakeSubsystem()
+    val shooterSubsystem: ShooterSubsystem = ShooterSubsystem()
+    val climberSubsystem: ClimberSubsystem = ClimberSubsystem()
 
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -68,7 +74,11 @@ class RobotContainer {
         autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
         autochooser.addOption("test", WaitCommand(3.0))
 
-        ShuffleboardTab.add("Speaker Shooter", Autos.speakerShooter(driveSubsystem),.withWidget(BuiltInWidgets.kCommand))
+        ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Floor Note", Autos.getNoteOnGround(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.getNoteFromSource(driveSubsystem, intakeSubsystem, shooterSubsystem, true)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.getNoteFromSource(driveSubsystem, intakeSubsystem, shooterSubsystem, false)).withWidget(BuiltInWidgets.kCommand)
+
         // Configure the trigger bindings
         configureBindings()
     }
