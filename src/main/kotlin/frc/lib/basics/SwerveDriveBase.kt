@@ -29,17 +29,16 @@ import kotlin.math.IEEErem
 import kotlin.math.abs
 
 class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
-    val field:Field2d = Field2d()
+    val field = Field2d()
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
-
 
     val poseEstimator: SwerveDrivePoseEstimator
     val camera:Camera
     private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
-    private val gyro: AHRS = AHRS(SPI.Port.kMXP)
+    private val gyro = AHRS(SPI.Port.kMXP)
 
-    private var joystickControlledEntry: GenericEntry =  ShuffleboardTab
+    private var joystickControlledEntry: GenericEntry = ShuffleboardTab
         .add("Joystick Control", true)
         .withWidget("Toggle Button")
         .withProperties(mapOf("colorWhenTrue" to "green", "colorWhenFalse" to "maroon"))

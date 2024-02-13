@@ -81,23 +81,19 @@ class Autos private constructor() {
         fun goWithinSpeaker(drive:SwerveDriveBase): Command {
             val color = DriverStation.getAlliance()
             //todo: fix x
-            var to = Pose2d(0.0, 5.547868, 0.0.rotation2dFromDeg())
-            color?.ifPresent { color ->
-                if(color == DriverStation.Alliance.Red){
-                    to = Pose2d(14.579342, 5.547868, 180.0.rotation2dFromDeg())
-                }
-            }
+            val to =
+                    if(color?.present && color == DriverStation.Alliance.Red)
+                        Pose2d(14.579342, 5.547868, 180.0.rotation2dFromDeg())
+                    else
+                        Pose2d(0.0, 5.547868, 0.0.rotation2dFromDeg())
             //todo: make this real
             val pose = drive.getPose()
             val c = 1.0
-            val r = pose.translation.getDistance(to.translation)
             val x = pose.x - to.x
             val y = pose.y - to.y
             val theta = atan(x/y).rotation2dFromDeg()
-            val nx = theta.cos*c
-            val ny = theta.sin*c
             return TrajectoryOrchestrator.beelineCommand(
-                drive, Pose2d(nx,ny, theta)
+                drive, Pose2d(theta.cos*c, theta.sin*c, theta)
             )
         }
 
