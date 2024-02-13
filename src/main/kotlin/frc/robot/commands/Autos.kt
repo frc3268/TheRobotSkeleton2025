@@ -59,7 +59,6 @@ class Autos private constructor() {
         }
 
         fun goToAmp(drive:SwerveDriveBase):Command{
-            val radius:Int = 0 //to do: calibrate distance from speaker
             val color = DriverStation.getAlliance()
             //todo: fix x
             var to = Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
@@ -113,12 +112,9 @@ class Autos private constructor() {
             val nx = theta.cos*c
             val ny = theta.sin*c
             return TrajectoryOrchestrator.beelineCommand(
-                drive, Pose2d(pose.x + nx, pose.y+ny, theta)
+                drive, Pose2d(to.x + nx, to.y+ny, theta)
             )
         }
-
-        //go to speaker
-        //shootcommand()
 
         fun driveUpAndShootSpeakerCommand(drive:SwerveDriveBase, intake:IntakeSubsystem, shooter:ShooterSubsystem) : Command{
             return SequentialCommandGroup(
@@ -128,7 +124,7 @@ class Autos private constructor() {
             )
         }
 
-        fun getNoteOnGround(drive: SwerveDriveBase, intake:IntakeSubsystem) : Command {
+        fun groundIntakeCommand(intake:IntakeSubsystem) : Command {
             return SequentialCommandGroup(
                 intake.poweredArmDownCommand(),
                 intake.takeInCommand(),
@@ -136,7 +132,25 @@ class Autos private constructor() {
             )
         }
 
-        fun getNoteFromSource(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, closerToBaseLine: Boolean) : Command {
+        fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command{
+            return SequentialCommandGroup(
+                intake.takeOutCommand(),
+                shooter.shootCommand()
+            )
+        }
+
+        fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command {
+        return SequentialCommandGroup(
+            intake.takeOutCommand(),
+            shooter.ampCommand()
+        )
+        }
+
+        fun sourceIntakeCommand(shooter: ShooterSubsystem): Command{
+            return shooter.takeInCommand()
+        }
+
+        fun driveUpAndIntakeSourceCommand(drive: SwerveDriveBase,shooter: ShooterSubsystem, closerToBaseLine: Boolean) : Command {
             return SequentialCommandGroup(
                     goToSource(drive, closerToBaseLine),//fix closer to baseline
                     shooter.takeInCommand()
