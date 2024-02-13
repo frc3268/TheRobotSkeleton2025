@@ -13,6 +13,8 @@ import frc.robot.subsystems.ExampleSubsystem
 import frc.robot.subsystems.IntakeSubsystem
 import frc.robot.subsystems.ShooterSubsystem
 import kotlin.math.atan
+import kotlin.math.cos
+import kotlin.math.sin
 
 class Autos private constructor() {
     init {
@@ -97,9 +99,11 @@ class Autos private constructor() {
         fun goWithinSpeaker(drive:SwerveDriveBase): Command {
             val color = DriverStation.getAlliance()
             //todo: fix x
-            var to = Pose2d(0.0, 5.547868, 0.0.rotation2dFromDeg())
-            color?.ifPresent { color ->
-                if(color == DriverStation.Alliance.Red){
+            var to =
+                        Pose2d(0.0, 5.547868, 0.0.rotation2dFromDeg())
+            color.ifPresent {
+                color ->
+                if (color == DriverStation.Alliance.Red) {
                     to = Pose2d(14.579342, 5.547868, 180.0.rotation2dFromDeg())
                 }
             }
@@ -109,11 +113,8 @@ class Autos private constructor() {
             val x = pose.x - to.x
             val y = pose.y - to.y
             val theta = atan(x/y).rotation2dFromDeg()
-            val nx = theta.cos*c
-            val ny = theta.sin*c
             return TrajectoryOrchestrator.beelineCommand(
-                drive, Pose2d(to.x + nx, to.y+ny, theta)
-            )
+                drive, Pose2d(to.x + cos(theta.radians)*c, to.y+ sin(theta.radians)*c, theta))
         }
 
         fun driveUpAndShootSpeakerCommand(drive:SwerveDriveBase, intake:IntakeSubsystem, shooter:ShooterSubsystem) : Command{
