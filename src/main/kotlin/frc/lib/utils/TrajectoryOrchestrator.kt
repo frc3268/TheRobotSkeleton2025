@@ -15,7 +15,6 @@ class TrajectoryOrchestrator {
     companion object {
         fun buildSwerveTrajectory(startPose:Pose2d, endPose:Pose2d, points:MutableList<Translation2d>, drive:SwerveDriveBase): SequentialCommandGroup {
             val scg:SequentialCommandGroup = SequentialCommandGroup()
-            val relativeTo:Pose2d = drive.getPose()
             scg.addCommands(drive.robotPoseToBCommand(startPose))
             for(point in points){
                 scg.addCommands(drive.robotPoseToBCommand(Pose2d(point, drive.getYaw())))
