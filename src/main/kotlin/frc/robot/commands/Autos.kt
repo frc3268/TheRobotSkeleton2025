@@ -60,7 +60,7 @@ class Autos private constructor() {
 
         }
 
-        fun goToAmp(drive:SwerveDriveBase):Command{
+        fun goToAmpCommand(drive:SwerveDriveBase):Command{
             val color = DriverStation.getAlliance()
             //todo: fix x
             var to = Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
@@ -76,7 +76,7 @@ class Autos private constructor() {
 
         }
 
-        fun goToSource(drive:SwerveDriveBase, closerToBaseLine: Boolean):Command{
+        fun goToSourceCommand(drive:SwerveDriveBase, closerToBaseLine: Boolean):Command{
             val color = DriverStation.getAlliance()
             var to = Pose2d(0.356108, 0.883666, 60.0.rotation2dFromDeg())
             if(!closerToBaseLine){
@@ -96,7 +96,14 @@ class Autos private constructor() {
             )
         }
 
-        fun goWithinSpeaker(drive:SwerveDriveBase): Command {
+        fun goToSourceAndIntakeCommand(drive:SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem): Command{
+            return SequentialCommandGroup(
+                goToSourceCommand(drive, closerToBaseLine),
+                sourceIntakeCommand(shooter)
+            )
+        }
+
+        fun goWithinSpeakerCommand(drive:SwerveDriveBase): Command {
             val color = DriverStation.getAlliance()
             //todo: fix x
             var to =
@@ -116,6 +123,7 @@ class Autos private constructor() {
             return TrajectoryOrchestrator.beelineCommand(
                 drive, Pose2d(to.x + cos(theta.radians)*c, to.y+ sin(theta.radians)*c, theta))
         }
+
 
         fun driveUpAndShootSpeakerCommand(drive:SwerveDriveBase, intake:IntakeSubsystem, shooter:ShooterSubsystem) : Command{
             return SequentialCommandGroup(
@@ -153,7 +161,7 @@ class Autos private constructor() {
 
         fun driveUpAndIntakeSourceCommand(drive: SwerveDriveBase,shooter: ShooterSubsystem, closerToBaseLine: Boolean) : Command {
             return SequentialCommandGroup(
-                    goToSource(drive, closerToBaseLine),//fix closer to baseline
+                    goToSourceCommand(drive, closerToBaseLine),//fix closer to baseline
                     shooter.takeInCommand()
             )
         }

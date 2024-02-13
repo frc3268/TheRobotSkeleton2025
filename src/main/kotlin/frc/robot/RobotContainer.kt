@@ -3,16 +3,12 @@ package frc.robot
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
-import edu.wpi.first.wpilibj.Joystick
-import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import edu.wpi.first.wpilibj2.command.button.Trigger
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.robot.commands.Autos
@@ -78,9 +74,9 @@ class RobotContainer {
         autochooser.addOption("test", WaitCommand(3.0))
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Floor Note", Autos.getNoteOnGround(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.getNoteFromSource(driveSubsystem, intakeSubsystem, shooterSubsystem, true)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.getNoteFromSource(driveSubsystem, intakeSubsystem, shooterSubsystem, false)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Floor Note", Autos.groundIntakeCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, true, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, false, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
 
         // Configure the trigger bindings
         configureBindings()
