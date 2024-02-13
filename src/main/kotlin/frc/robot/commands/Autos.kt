@@ -119,9 +119,9 @@ class Autos private constructor() {
             val c = 1.0
             val x = pose.x - to.x
             val y = pose.y - to.y
-            val theta = atan(x/y).rotation2dFromDeg()
+            val theta = atan(y/x).rotation2dFromDeg()
             return TrajectoryOrchestrator.beelineCommand(
-                drive, Pose2d(to.x + cos(theta.radians)*c, to.y+ sin(theta.radians)*c, theta))
+                drive, Pose2d(to.x + cos(theta.radians)*c, to.y+ sin(theta.radians)*c, theta + pose.rotation))
         }
 
 
