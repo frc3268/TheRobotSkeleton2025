@@ -4,12 +4,15 @@ import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.wpilibj.Joystick
+import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import edu.wpi.first.wpilibj2.command.button.Trigger
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.robot.commands.Autos
@@ -40,7 +43,7 @@ class RobotContainer {
 
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    private val driverController = Joystick(Constants.OperatorConstants.kDriverControllerPort)
+    private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
     val autochooser:SendableChooser<Command> = SendableChooser<Command>()
 
@@ -60,7 +63,7 @@ class RobotContainer {
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
         { -driverController.getRawAxis(2) },
-        { !driverController.triggerPressed }
+        { !driverController.leftBumper().asBoolean }
     )
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
@@ -93,6 +96,12 @@ class RobotContainer {
         // Schedule exampleMethodCommand when the Xbox controller's B button is pressed,
         // cancelling on release.
         //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand())
+        driverController.a().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        driverController.b().onTrue(Autos.groundIntakeCommand(intakeSubsystem))
+        driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
+        driverController.y().onTrue(Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
+
+
     }
 
     /**
