@@ -3,7 +3,6 @@ package frc.robot
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
-import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
@@ -40,7 +39,7 @@ class RobotContainer {
 
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    private val driverController = Joystick(Constants.OperatorConstants.kDriverControllerPort)
+    private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
     val autochooser:SendableChooser<Command> = SendableChooser<Command>()
 
@@ -60,7 +59,7 @@ class RobotContainer {
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
         { -driverController.getRawAxis(2) },
-        { !driverController.triggerPressed }
+        { !driverController.leftBumper().asBoolean }
     )
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
@@ -75,9 +74,9 @@ class RobotContainer {
         autochooser.addOption("test", WaitCommand(3.0))
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Floor Note", Autos.getNoteOnGround(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.getNoteFromSource(driveSubsystem, intakeSubsystem, shooterSubsystem, true)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.getNoteFromSource(driveSubsystem, intakeSubsystem, shooterSubsystem, false)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Floor Note", Autos.groundIntakeCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, true, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, false, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
 
         // Configure the trigger bindings
         configureBindings()
@@ -97,6 +96,12 @@ class RobotContainer {
         // Schedule exampleMethodCommand when the Xbox controller's B button is pressed,
         // cancelling on release.
         //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand())
+        driverController.a().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        driverController.b().onTrue(Autos.groundIntakeCommand(intakeSubsystem))
+        driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
+        driverController.y().onTrue(Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
+
+
     }
 
     /**
