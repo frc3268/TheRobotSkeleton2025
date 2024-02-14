@@ -166,6 +166,39 @@ class Autos private constructor() {
             )
         }
 
+        //Find Intersetion is not complete. FindIntersection and calculateIntersection need testing.
+// I'm sure there's a more efficent way to do this too
+        fun findIntersectionWithStages(startPose:Pose2d, endPose:Pose2d): Command{
+            val clear: Boolean = true;
+            val startX: Double = startPose.getX()
+            val startY: Double = startPose.getY()
+            val endX: Double = endPose.getX()
+            val endY: Double = endPose.getY()
+            clear = calculateIntersection(3.0734, 4.105656, 5.770626, 6.66293, startX, startY, endX, endY) //blue stage ab
+            clear = calculateIntersection(5.770626, 6.66293, 5.77026, 2.548382 startX, startY, endX, endY) //blue stage ac
+            clear = calculateIntersection(3.0734, 4.105656, 5.770626, 2.548382, startX, startY, endX, endY) //blue stage bc
+            clear = calculateIntersection(10.617454, 4.105656, 13.31468, 4.105656, startX, startY, endX, endY) //red stage ba
+            clear = calculateIntersection(10.617454, 2.548382, 13.31468, 4.105656, startX, startY, endX, endY) //red stage ca
+            clear = calculateIntersection(10.617454, 4.105656, 10.617454, 2.548382, startX, startY, endX, endY) //red stage bc
+            if (clear == false) {
+                //find another path
+            }
+        }
+
+        fun calculateIntersection(hazardStartX:double, hazardStartY:double, hazardEndX:double, hazardEndY:double, robotStartX:double, robotStartY:double, robotEndX:double, robotEndY:double) : Boolean {
+            val slopeRobot: Double = (robotStartY - robotEndY) / (robotStartX - robotEndX)
+            val slopeHazard: Double (robotStartY-robotEndY)/(robotStartX-robotEndX)
+            if (slopeRobot == slopeHazard){ //paralell line case
+                return true
+            }
+            val intersectionX: Double = (slopeRobot * robotStartX - slopeHazard * hazardStartX + hazardStartY - robotStartY) / (slopeRobot - slopeHazard)
+            val intersectionY: Double = slopeRobot(intersectionX - robotStartX) + robotStartY
+            if (intersectionX >= hazardStartX || intersectionX <= hazardEndX) {
+                if (intersectionY >= hazardStartY || intersectionY <= hazardEndY) {
+                    return false
+                }
+            }
+        }
 
 
     }
