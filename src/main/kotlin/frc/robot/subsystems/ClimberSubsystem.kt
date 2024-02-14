@@ -48,6 +48,13 @@ class ClimberSubsystem: SubsystemBase(){
             setToPositionMeters(0.0)
         }
     }
+
+    fun climberCentreCommand():Command{
+        return run{
+            setToPositionMeters(0.2)
+        }
+    }
+    
     fun stop(){
         rightMotor.set(0.0)
         leftMotor.set(0.0)
