@@ -26,6 +26,7 @@ import frc.robot.subsystems.ShooterSubsystem
 class RobotContainer {
 
     private val ShuffleboardTab = Shuffleboard.getTab("General")
+    private val TroubleShootingTab = Shuffleboard.getTab("TroubleShooting")
 
 
 
@@ -71,12 +72,22 @@ class RobotContainer {
             .withSize(2, 1);
         driveSubsystem.setDefaultCommand(teleopCommand)
         autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
-        autochooser.addOption("test", WaitCommand(3.0))
+        autochooser.addOption("shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Floor Note", Autos.groundIntakeCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, true, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, false, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+
+        /*
+      TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
+      URGENT URGENT!
+       */
+
+
+        TroubleShootingTab.add("Zero arm encoder", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
+
+
 
         // Configure the trigger bindings
         configureBindings()
@@ -96,10 +107,10 @@ class RobotContainer {
         // Schedule exampleMethodCommand when the Xbox controller's B button is pressed,
         // cancelling on release.
         //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand())
-        driverController.a().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
-        driverController.b().onTrue(Autos.groundIntakeCommand(intakeSubsystem))
-        driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
-        driverController.y().onTrue(Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
+        driverController.leftTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        driverController.rightTrigger().onTrue(Autos.groundIntakeCommand(intakeSubsystem))
+        driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
+        driverController.leftBumper().onTrue(Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
 
 
     }

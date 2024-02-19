@@ -32,7 +32,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     val field = Field2d()
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
 
-    val poseEstimator: SwerveDrivePoseEstimator
+    var poseEstimator: SwerveDrivePoseEstimator
     val camera:Camera
     private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
@@ -174,5 +174,15 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     fun getPose():Pose2d = Pose2d(-poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
     fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
+
+    fun zeroPoseToFieldPositionCommand(startingPose: Pose2d) : Command{
+        return runOnce{
+            //todo: make this correct with regards to yaw - red starts at 180 deg!
+            //URGENT URGENT
+            gyro.reset()
+            poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1),  VecBuilder.fill(0.5, 0.5, 0.5))
+
+        }
+    }
 
 }
