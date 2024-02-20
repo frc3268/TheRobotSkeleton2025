@@ -32,17 +32,17 @@ class RobotContainer {
 
 
     // The robot's subsystems and commands are defined here...
-    //todo: change this to reflect a field position. Maybe use a constant?
     val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
     val intakeSubsystem:IntakeSubsystem = IntakeSubsystem()
     val shooterSubsystem: ShooterSubsystem = ShooterSubsystem()
-    val climberSubsystem: ClimberSubsystem = ClimberSubsystem()
+    //val climberSubsystem: ClimberSubsystem = ClimberSubsystem()
 
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
     val autochooser:SendableChooser<Command> = SendableChooser<Command>()
+    val startingPositionChooser:SendableChooser<Pose2d?> = SendableChooser<Pose2d?>()
 
 
     //this is the command called when teleop mode is enabled
@@ -55,15 +55,31 @@ class RobotContainer {
     )
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
-        //todo: make real and test
+        driveSubsystem.defaultCommand = teleopCommand
+
         ShuffleboardTab
             .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
-            .withSize(2, 1);
-        driveSubsystem.setDefaultCommand(teleopCommand)
+            .withSize(2, 1)
+
         autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
         autochooser.addOption("shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
+
+        ShuffleboardTab
+            .add("Starting Position", startingPositionChooser)
+            .withWidget(BuiltInWidgets.kComboBoxChooser)
+            .withPosition(0, 0)
+            .withSize(2, 1)
+
+        //todo! make these into the real poses from the field. How? idk
+        startingPositionChooser.setDefaultOption("None", null)
+        startingPositionChooser.setDefaultOption("Red 1", null)
+        startingPositionChooser.setDefaultOption("Red 2", null)
+        startingPositionChooser.setDefaultOption("Red 3", null)
+        startingPositionChooser.setDefaultOption("Blue 1", null)
+        startingPositionChooser.setDefaultOption("Blue 2", null)
+        startingPositionChooser.setDefaultOption("Blue 3", null)
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Floor Note", Autos.groundIntakeCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)

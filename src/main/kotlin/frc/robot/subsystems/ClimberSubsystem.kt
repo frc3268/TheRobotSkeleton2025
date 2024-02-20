@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command
 import kotlin.math.abs
 
 class ClimberSubsystem: SubsystemBase(){
-    private val leftMotor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
-    private val rightMotor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
+    private val leftMotor:CANSparkMax = CANSparkMax(13, CANSparkLowLevel.MotorType.kBrushless)
+    private val rightMotor:CANSparkMax = CANSparkMax(14, CANSparkLowLevel.MotorType.kBrushless)
     
     val leftEncoder:RelativeEncoder = leftMotor.encoder
     private val rightEncoder:RelativeEncoder = rightMotor.encoder

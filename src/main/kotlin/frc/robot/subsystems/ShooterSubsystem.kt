@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 class ShooterSubsystem:SubsystemBase() {
 
     val pidController:PIDController = PIDController(0.0, 0.0, 0.0, 0.0);
-    val leftFlywheelMotor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
-    val rightFlywheelMotor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
-    val indexWheelMotor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
+    val leftFlywheelMotor:CANSparkMax = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
+    val rightFlywheelMotor:CANSparkMax = CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless)
+    val indexWheelMotor:CANSparkMax = CANSparkMax(12, CANSparkLowLevel.MotorType.kBrushless)
 
     fun setShoot(speed:Double) {
         leftFlywheelMotor.set(-speed)
