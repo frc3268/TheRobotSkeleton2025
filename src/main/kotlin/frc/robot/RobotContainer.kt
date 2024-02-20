@@ -44,15 +44,6 @@ class RobotContainer {
 
     val autochooser:SendableChooser<Command> = SendableChooser<Command>()
 
-    val autoCommand:Command = TrajectoryOrchestrator.buildSwerveTrajectory(
-        Pose2d(0.0,0.0, Rotation2d(0.0)),
-        Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0.0)),
-        mutableListOf(
-            Translation2d(1.0, 0.0),
-            Translation2d(1.0, 1.0)
-        ),
-        driveSubsystem
-    )
 
     //this is the command called when teleop mode is enabled
      val teleopCommand = SwerveJoystickDrive(
@@ -123,6 +114,6 @@ class RobotContainer {
     val autonomousCommand: Command
         get() {
             // wait 3 seconds...
-            return autoCommand
+            return autochooser.selected
         }
 }

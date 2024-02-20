@@ -169,6 +169,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.05 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
     }
 
+    //todo! give this an offset depending on the side of the starting
     fun getYaw(): Rotation2d = (gyro.rotation2d.degrees).IEEErem(360.0).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = Pose2d(-poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
@@ -177,11 +178,8 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
 
     fun zeroPoseToFieldPositionCommand(startingPose: Pose2d) : Command{
         return runOnce{
-            //todo: make this correct with regards to yaw - red starts at 180 deg!
-            //URGENT URGENT
-            gyro.reset()
-            poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1),  VecBuilder.fill(0.5, 0.5, 0.5))
-
+            resetModulesToAbsolute()
+            poseEstimator.resetPosition(getYaw(), getModulePositions(), startingPose)
         }
     }
 
