@@ -31,7 +31,7 @@ import kotlin.math.abs
 
 class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     val field = Field2d()
-    private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
+    private val ShuffleboardTab = Shuffleboard.getTab("Dirvetrain")
 
     var poseEstimator: SwerveDrivePoseEstimator
     val camera:Camera
@@ -69,7 +69,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         ShuffleboardTab.add("Dig In", digInCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
 
-        camera = Camera("hawkeye", "or other")
+        camera = Camera("hawkeye", "")
         ShuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
@@ -79,7 +79,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     }
 
     override fun periodic() {
-        poseEstimator.update(getYaw(), getModulePositions())
+        //poseEstimator.update(getYaw(), getModulePositions())
         for (mod in modules){
             mod.updateShuffleboard()
         }
@@ -88,6 +88,8 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
             poseEstimator.addVisionMeasurement(
                 est.estimatedPose.toPose2d(), est.timestampSeconds
             )
+            System.out.println(poseEstimator.estimatedPosition.x)
+            System.out.println(poseEstimator.estimatedPosition.y)
         }
         field.robotPose = getPose()
         poseXEntry.setDouble(getPose().x)

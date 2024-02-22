@@ -12,14 +12,14 @@ import kotlin.math.abs
 
 class IntakeSubsystem:SubsystemBase() {
 
-    val intakeMotor:CANSparkMax = CANSparkMax(8, CANSparkLowLevel.MotorType.kBrushless)
-    val armMotor:CANSparkMax = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
+    val intakeMotor:CANSparkMax = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
+    val armMotor:CANSparkMax = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
     val armEncoder:RelativeEncoder = armMotor.encoder
     val armPIDController:PIDController = PIDController(0.005,0.0,0.0)
     //todo: extra motor for powered arm
 
     init {
-        armEncoder.positionConversionFactor = 360 / 192 / 1.0
+        armEncoder.positionConversionFactor = 360 / 375 / 2/3 / 1.0
     }
 
     fun stop() {

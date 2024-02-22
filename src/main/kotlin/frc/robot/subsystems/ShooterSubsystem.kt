@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 class ShooterSubsystem:SubsystemBase() {
 
-    val pidController:PIDController = PIDController(0.0, 0.0, 0.0, 0.0);
-    val leftFlywheelMotor:CANSparkMax = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
-    val rightFlywheelMotor:CANSparkMax = CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless)
-    val indexWheelMotor:CANSparkMax = CANSparkMax(12, CANSparkLowLevel.MotorType.kBrushless)
+    //val pidController:PIDController = PIDController(0.0, 0.0, 0.0, 0.0);
+    val leftFlywheelMotor:CANSparkMax = CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless)
+    val rightFlywheelMotor:CANSparkMax = CANSparkMax(12, CANSparkLowLevel.MotorType.kBrushless)
+    val indexWheelMotor:CANSparkMax = CANSparkMax(13, CANSparkLowLevel.MotorType.kBrushless)
 
     fun setShoot(speed:Double) {
         leftFlywheelMotor.set(-speed)
@@ -26,17 +26,17 @@ class ShooterSubsystem:SubsystemBase() {
 
     fun shootCommand(): Command {
         return run{
-            setIndex(0.3)
-        }.alongWith(run{
             setShoot(0.7)
+        }.andThen(run{
+            setIndex(0.3)
         }).withTimeout(3.0).andThen(runOnce{stop()})
     }
 
     fun ampCommand(): Command{
         return run{
-            setIndex(0.3)
-        }.alongWith(run{
             setShoot(0.5)
+        }.andThen(run{
+            setIndex(0.3)
         }).withTimeout(3.0).andThen(runOnce{stop()})
     }
 

@@ -69,7 +69,7 @@ class RobotContainer {
         ShuffleboardTab
             .add("Starting Position", startingPositionChooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withPosition(0, 0)
+            .withPosition(0, 1)
             .withSize(2, 1)
 
         //todo! make these into the real poses from the field. How? idk
