@@ -89,6 +89,7 @@ class Camera(name:String, path:String): SubsystemBase(){
         val targets = captureFrame().getTargets()
         var numTags = 0
         var avgDist = 0.0
+        
         for (tgt in targets) {
             val tagPose = poseEstimator?.getFieldTags()?.getTagPose(tgt.getFiducialId()) ?: continue;
             if (tagPose.isEmpty) continue
