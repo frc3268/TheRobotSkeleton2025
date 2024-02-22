@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState
 import edu.wpi.first.math.numbers.N1
 import edu.wpi.first.math.numbers.N3
 import edu.wpi.first.networktables.GenericEntry
+import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
@@ -30,9 +31,9 @@ import kotlin.math.abs
 
 class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     val field = Field2d()
-    private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
+    private val ShuffleboardTab = Shuffleboard.getTab("Dirvetrain")
 
-    val poseEstimator: SwerveDrivePoseEstimator
+    var poseEstimator: SwerveDrivePoseEstimator
     val camera:Camera
     private val modules: List<SwerveModule> =
         SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
@@ -47,7 +48,16 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     private var poseXEntry = ShuffleboardTab.add("Pose X", 0.0).entry
 
     private var poseYEntry = ShuffleboardTab.add("Pose Y", 0.0).entry
+
+    var yawOffset:Double = 0.0
     init {
+        DriverStation.getAlliance().ifPresent {
+            color ->
+            if(color == DriverStation.Alliance.Blue){
+                yawOffset = 180.0
+            }
+        }
+
 
         gyro.reset()
        //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
@@ -59,9 +69,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         ShuffleboardTab.add("Dig In", digInCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
 
-        camera = Camera("hawkeye", "or other")
-        //pending review: should the field be on the drivetrain's panel or somewhere else?
-        //todo: consult with drive(chris) about this
+        camera = Camera("hawkeye", "")
         ShuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
@@ -75,11 +83,14 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         for (mod in modules){
             mod.updateShuffleboard()
         }
+        //estimate robot pose based on what the camera sees
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
             poseEstimator.addVisionMeasurement(
-                est.estimatedPose.toPose2d(), est.timestampSeconds
+                est.estimatedPose.toPose2d(), est.timestampSeconds, camera.getEstimationStdDevs(est.estimatedPose.toPose2d())
             )
+            System.out.println(poseEstimator.estimatedPosition.x)
+            System.out.println(poseEstimator.estimatedPosition.y)
         }
         field.robotPose = getPose()
         poseXEntry.setDouble(getPose().x)
@@ -131,7 +142,6 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
 
 
      fun digInCommand(): Command{
-         //todo: there might be a better way to do this. Im hesitant to use a global, though.
        return runOnce{
             joystickControlledEntry.setBoolean(false)
             //because driving can be field-oriented, we need to take an angle perprendicular to the direction of the wheels, so that motion stops if we are being pushed
@@ -157,7 +167,6 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
             360.0, 0.0
         )
-        //!todo test
         return run {
             setModuleStates(
                 constructModuleStatesFromChassisSpeeds(
@@ -169,10 +178,15 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.05 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
     }
 
-    fun getYaw(): Rotation2d = (gyro.rotation2d.degrees).IEEErem(360.0).rotation2dFromDeg()
+    fun getYaw(): Rotation2d = (gyro.rotation2d.degrees + yawOffset).IEEErem(360.0).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = Pose2d(-poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
     fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
+
+    fun zeroPoseToFieldPositionCommand(startingPose: Pose2d){
+            resetModulesToAbsolute()
+            poseEstimator.resetPosition(getYaw(), getModulePositions(), startingPose)
+    }
 
 }

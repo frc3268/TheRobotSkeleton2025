@@ -10,48 +10,36 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 class ShooterSubsystem:SubsystemBase() {
 
-    val pidController:PIDController = PIDController(0.0, 0.0, 0.0, 0.0);
-    val leftFlywheelMotor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
-    val rightFlywheelMotor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
-    val indexWheelMotor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
-
+    val leftFlywheelMotor:CANSparkMax = CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless)
+    val rightFlywheelMotor:CANSparkMax = CANSparkMax(12, CANSparkLowLevel.MotorType.kBrushless)
     fun setShoot(speed:Double) {
         leftFlywheelMotor.set(-speed)
         rightFlywheelMotor.set(speed)
     }
 
-    fun setIndex(speed: Double){
-       indexWheelMotor.set(speed)
-    }
 
     fun shootCommand(): Command {
         return run{
-            setIndex(0.3)
-        }.alongWith(run{
             setShoot(0.7)
-        }).withTimeout(3.0).andThen(runOnce{stop()})
+        }.withTimeout(3.0).andThen(runOnce{stop()})
     }
 
     fun ampCommand(): Command{
         return run{
-            setIndex(0.3)
-        }.alongWith(run{
             setShoot(0.5)
-        }).withTimeout(3.0).andThen(runOnce{stop()})
+        }.withTimeout(3.0).andThen(runOnce{stop()})
     }
 
     fun takeInCommand(): Command {
         return run{
             setShoot(-0.7)
-        }.andThen(run{
-            setIndex(-0.3)
-        }).withTimeout(3.0)
+        }.withTimeout(3.0)
     }
 
 
     fun stop() {
         leftFlywheelMotor.stopMotor()
-        indexWheelMotor.stopMotor()
+        rightFlywheelMotor.stopMotor()
     }
     /** This method will be called once per scheduler run  */
     override fun periodic() {

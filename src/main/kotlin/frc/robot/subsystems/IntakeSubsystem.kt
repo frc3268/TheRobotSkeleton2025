@@ -12,15 +12,14 @@ import kotlin.math.abs
 
 class IntakeSubsystem:SubsystemBase() {
 
-    val intakeMotor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
-    val armMotor:CANSparkMax = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
+    val intakeMotor:CANSparkMax = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
+    val armMotor:CANSparkMax = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
     val armEncoder:RelativeEncoder = armMotor.encoder
-    val armPIDController:PIDController = PIDController(0.0,0.0,0.0)
+    val armPIDController:PIDController = PIDController(0.005,0.0,0.0)
     //todo: extra motor for powered arm
 
     init {
-        //todo:fix!
-        armEncoder.positionConversionFactor = 1.0
+        armEncoder.positionConversionFactor = 360 / 375 / 2/3 / 1.0
     }
 
     fun stop() {
@@ -37,14 +36,14 @@ class IntakeSubsystem:SubsystemBase() {
 
     fun poweredArmUpCommand():Command{
         return run{
-            armMotor.set(armPIDController.calculate(getPoweredArmMeasurement().degrees, 50.0))
-        }.until{abs(armPIDController.calculate(getPoweredArmMeasurement().degrees, 50.0) )< 0.05}
+            armMotor.set(0.5)
+        }.until { getPoweredArmMeasurement().degrees < 5.0 }.andThen(runOnce{stop()})
     }
 
     fun poweredArmDownCommand():Command{
         return run{
-            armMotor.set(armPIDController.calculate(getPoweredArmMeasurement().degrees, 10.0))
-        }.until{abs(armPIDController.calculate(getPoweredArmMeasurement().degrees, 10.0) )< 0.05}
+            armMotor.set(-0.5)
+        }.until { getPoweredArmMeasurement().degrees > 85.0 }.andThen(runOnce{stop()})
     }
 
     fun takeInCommand():Command{
@@ -53,6 +52,10 @@ class IntakeSubsystem:SubsystemBase() {
 
     fun takeOutCommand():Command{
         return run{setOuttake()}.withTimeout(3.0)
+    }
+
+    fun zeroArmEncoderCommand():Command{
+        return runOnce{armEncoder.position = 0.0}
     }
 
     fun getPoweredArmMeasurement() : Rotation2d{

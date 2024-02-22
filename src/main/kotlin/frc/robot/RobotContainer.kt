@@ -26,32 +26,24 @@ import frc.robot.subsystems.ShooterSubsystem
 class RobotContainer {
 
     private val ShuffleboardTab = Shuffleboard.getTab("General")
+    private val TroubleShootingTab = Shuffleboard.getTab("TroubleShooting")
 
 
 
 
     // The robot's subsystems and commands are defined here...
-    //todo: change this to reflect a field position. Maybe use a constant?
     val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
     val intakeSubsystem:IntakeSubsystem = IntakeSubsystem()
     val shooterSubsystem: ShooterSubsystem = ShooterSubsystem()
-    val climberSubsystem: ClimberSubsystem = ClimberSubsystem()
+    //val climberSubsystem: ClimberSubsystem = ClimberSubsystem()
 
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
     val autochooser:SendableChooser<Command> = SendableChooser<Command>()
+    val startingPositionChooser:SendableChooser<Pose2d?> = SendableChooser<Pose2d?>()
 
-    val autoCommand:Command = TrajectoryOrchestrator.buildSwerveTrajectory(
-        Pose2d(0.0,0.0, Rotation2d(0.0)),
-        Pose2d(0.0, 1.0, Rotation2d.fromDegrees(0.0)),
-        mutableListOf(
-            Translation2d(1.0, 0.0),
-            Translation2d(1.0, 1.0)
-        ),
-        driveSubsystem
-    )
 
     //this is the command called when teleop mode is enabled
      val teleopCommand = SwerveJoystickDrive(
@@ -63,20 +55,46 @@ class RobotContainer {
     )
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
-        //todo: make real and test
+        driveSubsystem.defaultCommand = teleopCommand
+
         ShuffleboardTab
             .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
-            .withSize(2, 1);
-        driveSubsystem.setDefaultCommand(teleopCommand)
+            .withSize(2, 1)
+
         autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
-        autochooser.addOption("test", WaitCommand(3.0))
+        autochooser.addOption("shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
+
+        ShuffleboardTab
+            .add("Starting Position", startingPositionChooser)
+            .withWidget(BuiltInWidgets.kComboBoxChooser)
+            .withPosition(0, 1)
+            .withSize(2, 1)
+
+        //todo! make these into the real poses from the field. How? idk
+        startingPositionChooser.setDefaultOption("None", null)
+        startingPositionChooser.setDefaultOption("Red 1", null)
+        startingPositionChooser.setDefaultOption("Red 2", null)
+        startingPositionChooser.setDefaultOption("Red 3", null)
+        startingPositionChooser.setDefaultOption("Blue 1", null)
+        startingPositionChooser.setDefaultOption("Blue 2", null)
+        startingPositionChooser.setDefaultOption("Blue 3", null)
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Floor Note", Autos.groundIntakeCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, true, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, false, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+
+        /*
+      TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
+      URGENT URGENT!
+       */
+
+
+        TroubleShootingTab.add("Zero arm encoder", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
+
+
 
         // Configure the trigger bindings
         configureBindings()
@@ -96,10 +114,10 @@ class RobotContainer {
         // Schedule exampleMethodCommand when the Xbox controller's B button is pressed,
         // cancelling on release.
         //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand())
-        driverController.a().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
-        driverController.b().onTrue(Autos.groundIntakeCommand(intakeSubsystem))
-        driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
-        driverController.y().onTrue(Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
+        driverController.leftTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        driverController.rightTrigger().onTrue(Autos.groundIntakeCommand(intakeSubsystem))
+        driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
+        driverController.leftBumper().onTrue(Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
 
 
     }
@@ -112,6 +130,6 @@ class RobotContainer {
     val autonomousCommand: Command
         get() {
             // wait 3 seconds...
-            return autoCommand
+            return autochooser.selected
         }
 }
