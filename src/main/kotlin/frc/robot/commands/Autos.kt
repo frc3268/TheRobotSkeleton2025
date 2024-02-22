@@ -187,7 +187,7 @@ class Autos private constructor() {
 
         private fun calculateIntersection(hazardStartX:Double, hazardStartY:Double, hazardEndX:Double, hazardEndY:Double, robotStartX:Double, robotStartY:Double, robotEndX:Double, robotEndY:Double) : Boolean {
             val slopeRobot: Double = (robotStartY - robotEndY) / (robotStartX - robotEndX)
-            val slopeHazard: Double = (robotStartY-robotEndY) / (robotStartX-robotEndX)
+            val slopeHazard: Double = (hazardStartY - hazardEndY) / (hazardStartX - hazardEndX)
             if (slopeRobot == slopeHazard){ //parallel line case
                 return true
             }
