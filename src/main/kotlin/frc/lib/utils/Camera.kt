@@ -86,6 +86,7 @@ class Camera(name:String, path:String): SubsystemBase(){
         return poseEstimator?.update()
     }
 
+    //stolen from  photonvision(blatantly)
     fun getEstimationStdDevs(estimatedPose: Pose2d): Matrix<N3, N1> {
         //todo: expiriment with vecbuilder values(somehow)
         var estStdDevs =  VecBuilder.fill(4.0, 4.0, 8.0)

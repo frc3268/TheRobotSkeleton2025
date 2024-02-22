@@ -86,7 +86,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
             poseEstimator.addVisionMeasurement(
-                est.estimatedPose.toPose2d(), est.timestampSeconds
+                est.estimatedPose.toPose2d(), est.timestampSeconds, camera.getEstimationStdDevs(est.estimatedPose.toPose2d())
             )
             System.out.println(poseEstimator.estimatedPosition.x)
             System.out.println(poseEstimator.estimatedPosition.y)
