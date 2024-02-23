@@ -79,10 +79,11 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     }
 
     override fun periodic() {
-        //poseEstimator.update(getYaw(), getModulePositions())
+        poseEstimator.update(getYaw(), getModulePositions())
         for (mod in modules){
             mod.updateShuffleboard()
         }
+        //estimate robot pose based on what the camera sees
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
             poseEstimator.addVisionMeasurement(

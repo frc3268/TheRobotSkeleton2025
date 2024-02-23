@@ -36,14 +36,14 @@ class IntakeSubsystem:SubsystemBase() {
 
     fun poweredArmUpCommand():Command{
         return run{
-            armMotor.set(armPIDController.calculate(getPoweredArmMeasurement().degrees, 50.0))
-        }.until{abs(armPIDController.calculate(getPoweredArmMeasurement().degrees, 90.0) )< 5}
+            armMotor.set(0.5)
+        }.until { getPoweredArmMeasurement().degrees < 5.0 }.andThen(runOnce{stop()})
     }
 
     fun poweredArmDownCommand():Command{
         return run{
-            armMotor.set(armPIDController.calculate(getPoweredArmMeasurement().degrees, 10.0))
-        }.until{abs(armPIDController.calculate(getPoweredArmMeasurement().degrees, 0.0) )< 5}
+            armMotor.set(-0.5)
+        }.until { getPoweredArmMeasurement().degrees > 85.0 }.andThen(runOnce{stop()})
     }
 
     fun takeInCommand():Command{

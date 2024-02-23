@@ -126,8 +126,7 @@ class Autos private constructor() {
         fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command {
             return SequentialCommandGroup(
                     goToSpeaker(drive),
-                    intake.takeOutCommand(),
-                    shooter.shootCommand()
+                    intake.takeOutCommand().alongWith(shooter.shootCommand())
             )
         }
 
@@ -141,8 +140,7 @@ class Autos private constructor() {
 
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command {
             return SequentialCommandGroup(
-                    intake.takeOutCommand(),
-                    shooter.shootCommand()
+                    intake.takeOutCommand().alongWith(shooter.shootCommand())
             )
         }
 
