@@ -5,25 +5,52 @@ import com.revrobotics.CANSparkLowLevel
 import com.revrobotics.RelativeEncoder
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.networktables.GenericEntry
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.utils.rotation2dFromDeg
-import kotlin.math.abs
 
 class IntakeSubsystem:SubsystemBase() {
 
-    val intakeMotor:CANSparkMax = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
-    val armMotor:CANSparkMax = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
+    val intakeMotor:CANSparkMax = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
+    val armMotor:CANSparkMax = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
     val armEncoder:RelativeEncoder = armMotor.encoder
     val armPIDController:PIDController = PIDController(0.005,0.0,0.0)
     //todo: extra motor for powered arm
+    val ShuffleboardTab:ShuffleboardTab = Shuffleboard.getTab("intake")
+    val intakeArmEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder(ARM)", 0.0).entry
 
     init {
-        armEncoder.positionConversionFactor = 360 / 375 / 2/3 / 1.0
+        armEncoder.positionConversionFactor = 3 / 2 / 1.0
+        ShuffleboardTab.add("up", poweredArmUpCommand()).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("down", poweredArmDownCommand()).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("stop", stopAllCommand()).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("in", takeInCommand()).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("out", takeOutCommand()).withWidget(BuiltInWidgets.kCommand)
     }
 
-    fun stop() {
+    fun armsetCommand(amount: Double): Command {
+        stopArm()
+        return run{
+            armMotor.set(amount)
+        }
+    }
+
+    fun stopIntake() {
         intakeMotor.stopMotor()
+    }
+    fun stopArm() {
+        armMotor.stopMotor()
+    }
+
+    fun stopAllCommand():Command{
+        return runOnce{
+            stopIntake()
+            stopArm()
+        }
     }
 
     fun setIntake(){
@@ -36,14 +63,14 @@ class IntakeSubsystem:SubsystemBase() {
 
     fun poweredArmUpCommand():Command{
         return run{
-            armMotor.set(0.5)
-        }.until { getPoweredArmMeasurement().degrees < 5.0 }.andThen(runOnce{stop()})
+            armMotor.set(-0.3)
+        }.until { getPoweredArmMeasurement().degrees < 5.0 }.andThen(stopAllCommand())
     }
 
     fun poweredArmDownCommand():Command{
         return run{
-            armMotor.set(-0.5)
-        }.until { getPoweredArmMeasurement().degrees > 85.0 }.andThen(runOnce{stop()})
+            armMotor.set(0.3)
+        }.until { getPoweredArmMeasurement().degrees > 265.0 }.andThen(stopAllCommand())
     }
 
     fun takeInCommand():Command{
@@ -63,6 +90,7 @@ class IntakeSubsystem:SubsystemBase() {
     }
 
     override fun periodic() {
+        System.out.println(armEncoder.position)
 
     }
 
