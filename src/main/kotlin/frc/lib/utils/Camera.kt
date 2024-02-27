@@ -21,8 +21,8 @@ import java.io.IOException
 import java.util.*
 
 class Camera(name:String, path:String): SubsystemBase(){
-    val limelight:PhotonCamera = PhotonCamera(name)
-    var frame: PhotonPipelineResult = PhotonPipelineResult()
+    val limelight = PhotonCamera(name)
+    var frame = PhotonPipelineResult()
     var poseEstimator: PhotonPoseEstimator? = null
 
 
@@ -47,9 +47,8 @@ class Camera(name:String, path:String): SubsystemBase(){
     }
 
     //call periodically
-    fun captureFrame() : PhotonPipelineResult{
-        frame = limelight.latestResult
-        return frame
+    fun captureFrame() : PhotonPipelineResult {
+        return limelight.latestResult
     }
 
     fun getArpilTagTargetByID(id: Int):PhotonTrackedTarget? {
@@ -57,12 +56,9 @@ class Camera(name:String, path:String): SubsystemBase(){
         if(!frame.hasTargets()){
             return null
         }
-        for (target:PhotonTrackedTarget in frame.getTargets()){
-            if(target.fiducialId == id){
-                return target
-            }
-        }
-        return null
+        return frame.getTargets()
+                .filter { it.fudicialId == id }
+                .firstOrNull()
     }
 
     fun getAprilTagTarget():PhotonTrackedTarget? {
@@ -89,10 +85,11 @@ class Camera(name:String, path:String): SubsystemBase(){
     //stolen from  photonvision(blatantly)
     fun getEstimationStdDevs(estimatedPose: Pose2d): Matrix<N3, N1> {
         //todo: expiriment with vecbuilder values(somehow)
-        var estStdDevs =  VecBuilder.fill(1.0, 1.0, 1.0)
-        val targets = captureFrame().getTargets();
-        var numTags = 0;
-        var avgDist:Double = 0.0;
+        var estStdDevs =  VecBuilder.fill(4.0, 4.0, 8.0)
+        val targets = captureFrame().getTargets()
+        var numTags = 0
+        var avgDist = 0.0
+        
         for (tgt in targets) {
             val tagPose = poseEstimator?.getFieldTags()?.getTagPose(tgt.getFiducialId()) ?: continue;
             if (tagPose.isEmpty) continue

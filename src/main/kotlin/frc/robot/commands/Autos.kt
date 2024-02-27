@@ -105,8 +105,7 @@ class Autos private constructor() {
         fun goWithinSpeakerCommand(drive: SwerveDriveBase): Command {
             val color = DriverStation.getAlliance()
             //todo: fix x
-            var to =
-                    Pose2d(0.0, 5.547868, 0.0.rotation2dFromDeg())
+            var to = Pose2d(0.0, 5.547868, 0.0.rotation2dFromDeg())
             color.ifPresent { color ->
                 if (color == DriverStation.Alliance.Red) {
                     to = Pose2d(14.579342, 5.547868, 180.0.rotation2dFromDeg())
@@ -169,23 +168,21 @@ class Autos private constructor() {
             val startY: Double = startPose.getY()
             val endX: Double = endPose.getX()
             val endY: Double = endPose.getY()
-            if (calculateIntersection(3.0734, 4.105656, 5.770626, 6.66293, startX, startY, endX, endY) && //blue stage ab
+            return calculateIntersection(3.0734, 4.105656, 5.770626, 6.66293, startX, startY, endX, endY) && //blue stage ab
                     calculateIntersection(5.770626, 6.66293, 5.77026, 2.548382, startX, startY, endX, endY) && //blue stage ac
                     calculateIntersection(3.0734, 4.105656, 5.770626, 2.548382, startX, startY, endX, endY) && //blue stage bc
                     calculateIntersection(10.617454, 4.105656, 13.31468, 4.105656, startX, startY, endX, endY) && //red stage ba
                     calculateIntersection(10.617454, 2.548382, 13.31468, 4.105656, startX, startY, endX, endY) && //red stage ca
-                    calculateIntersection(10.617454, 4.105656, 10.617454, 2.548382, startX, startY, endX, endY)) { //red stage bc
-                // temporary
-                return true
-            }
-            // temporary
-            return false
+                    calculateIntersection(10.617454, 4.105656, 10.617454, 2.548382, startX, startY, endX, endY) // red state bc
         }
 
-
-        private fun calculateIntersection(hazardStartX:Double, hazardStartY:Double, hazardEndX:Double, hazardEndY:Double, robotStartX:Double, robotStartY:Double, robotEndX:Double, robotEndY:Double) : Boolean {
+        /**
+         * to whoever wrote this: pls comment or fix bc rn it will always return true
+         * -- weiju
+         */
+        private fun calculateIntersection(hazardStartX: Double, hazardStartY: Double, hazardEndX: Double, hazardEndY: Double, robotStartX: Double, robotStartY: Double, robotEndX: Double, robotEndY: Double) : Boolean {
             val slopeRobot: Double = (robotStartY - robotEndY) / (robotStartX - robotEndX)
-            val slopeHazard: Double = (robotStartY-robotEndY) / (robotStartX-robotEndX)
+            val slopeHazard: Double = (hazardStartY - hazardEndY) / (hazardStartX - hazardEndX)
             if (slopeRobot == slopeHazard){ //parallel line case
                 return true
             }
