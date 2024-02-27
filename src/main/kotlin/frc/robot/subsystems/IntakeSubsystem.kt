@@ -74,11 +74,11 @@ class IntakeSubsystem:SubsystemBase() {
     }
 
     fun takeInCommand():Command{
-        return poweredArmDownCommand().andThen(run{setIntake()}.withTimeout(3.0)).andThen(poweredArmUpCommand())
+        return poweredArmDownCommand().andThen(run{setIntake()}.withTimeout(3.0)).andThen(runOnce { stopIntake() }).andThen(poweredArmUpCommand())
     }
 
     fun takeOutCommand():Command{
-        return run{setOuttake()}.withTimeout(3.0)
+        return run{setOuttake()}.withTimeout(3.0).andThen(runOnce{stopIntake()})
     }
 
     fun zeroArmEncoderCommand():Command{

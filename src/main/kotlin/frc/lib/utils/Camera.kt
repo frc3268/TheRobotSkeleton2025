@@ -51,15 +51,7 @@ class Camera(name:String, path:String): SubsystemBase(){
         return limelight.latestResult
     }
 
-    fun getArpilTagTargetByID(id: Int):PhotonTrackedTarget? {
-        limelight.pipelineIndex = 1
-        if(!frame.hasTargets()){
-            return null
-        }
-        return frame.getTargets()
-                .filter { it.fudicialId == id }
-                .firstOrNull()
-    }
+
 
     fun getAprilTagTarget():PhotonTrackedTarget? {
         limelight.pipelineIndex = 1
