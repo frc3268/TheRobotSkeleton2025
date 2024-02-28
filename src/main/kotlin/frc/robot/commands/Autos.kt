@@ -146,7 +146,7 @@ class Autos private constructor() {
 
         fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command {
             return SequentialCommandGroup(
-                shooter.ampCommand()
+                    shooter.ampCommand().andThen(intake.takeOutCommand()).andThen(shooter.stopCommand())
             )
         }
 
