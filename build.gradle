@@ -101,6 +101,7 @@ tasks.withType(JavaCompile) {
 }
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 compileKotlin {

@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.math.util.Units
 import frc.lib.constants.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_METERS
+import edu.wpi.first.math.geometry.Pose2d
 
 class SwerveDriveConstants {
     data class ModuleConstants(
@@ -104,6 +105,15 @@ class SwerveDriveConstants {
             ModuleConstants(3, Rotation2d.fromDegrees(-179.53), 5, 6, 2,false,true, PIDController(0.008,0.00,0.0007)),
             ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3,false,true, PIDController(0.008,0.00,0.0007))
         )
+    }
+
+    object coordinates {
+        val blueStartA = Pose2d(.5,2.57305,  Rotation2d.fromDegrees(0.0))
+        val blueStartB = Pose2d(.5,4.6305, Rotation2d.fromDegrees(0.0))
+        val blueStartC = Pose2d(.5,7.181312,Rotation2d.fromDegrees(0.0))
+        val redStartA = Pose2d(13.2254,2.57305,  Rotation2d.fromDegrees(0.0))
+        val redStartB = Pose2d(13.2254,4.6305, Rotation2d.fromDegrees(0.0))
+        val redStartC = Pose2d(13.2254,7.181312,Rotation2d.fromDegrees(0.0))
     }
 
 
