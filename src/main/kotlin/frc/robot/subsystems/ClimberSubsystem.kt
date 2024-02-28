@@ -41,7 +41,7 @@ class ClimberSubsystem: SubsystemBase(){
 
     fun getPositionMeters(): Double = getRotations() * metersPerRotation
 
-    fun setPositionMeters(positionMeters: Double){
+    fun setToPositionMeters(positionMeters: Double){
         // Restrict actualPositionMeters to within the bounds
         val actualPositionMeters =
                 if (positionMeters < minPositionMeters) minPositionMeters
