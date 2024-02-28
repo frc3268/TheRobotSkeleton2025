@@ -59,19 +59,19 @@ class ClimberSubsystem: SubsystemBase(){
 
     fun climberUpCommand():Command{
         return run{
-            setToPositionMeters(1.0)
+            //setToPositionMeters(1.0)
         }
     }
     
     fun climberDownCommand():Command{
         return run{
-            setToPositionMeters(0.0)
+            //setToPositionMeters(0.0)
         }
     }
 
     fun climberCentreCommand():Command{
         return run{
-            setToPositionMeters(0.2)
+            //setToPositionMeters(0.2)
         }
     }
 

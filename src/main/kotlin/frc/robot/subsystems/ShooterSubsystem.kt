@@ -19,13 +19,15 @@ class ShooterSubsystem:SubsystemBase() {
 
 
     fun shootCommand(): Command {
-        return run{
-            setShoot(-0.7)
+        return runOnce {
+            setShoot(
+                    -0.7
+            )
         }
     }
 
     fun ampCommand(): Command{
-        return run{
+        return runOnce{
             setShoot(-0.5)
         }
     }
