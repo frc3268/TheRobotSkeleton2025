@@ -140,7 +140,7 @@ class Autos private constructor() {
 
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command {
             return SequentialCommandGroup(
-                    shooter.shootCommand().andThen(intake.takeOutCommand()).andThen(shooter.stopCommand())
+                    (intake.takeOutCommand()).andThen(shooter.stopCommand())
             )
         }
 

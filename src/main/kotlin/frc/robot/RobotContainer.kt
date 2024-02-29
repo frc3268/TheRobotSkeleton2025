@@ -63,7 +63,8 @@ class RobotContainer {
             .withPosition(0, 0)
             .withSize(2, 1)
 
-        autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
+        //autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
+        autochooser.setDefaultOption("TESTING", Autos.groundIntakeCommand(intakeSubsystem))
         autochooser.addOption("shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
 
         ShuffleboardTab
@@ -114,7 +115,7 @@ class RobotContainer {
         // Schedule exampleMethodCommand when the Xbox controller's B button is pressed,
         // cancelling on release.
         //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand())
-        driverController.leftTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        driverController.x().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
         driverController.rightTrigger().onTrue(Autos.groundIntakeCommand(intakeSubsystem))
         driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
         driverController.leftBumper().onTrue(Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
