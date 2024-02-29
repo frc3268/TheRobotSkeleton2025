@@ -91,7 +91,7 @@ class IntakeSubsystem:SubsystemBase() {
     }
 
     override fun periodic() {
-        System.out.println(armEncoder.position)
+        //System.out.println(armEncoder.position)
 
     }
 

@@ -32,17 +32,17 @@ class RobotContainer {
 
 
     // The robot's subsystems and commands are defined here...
-    val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
-    val intakeSubsystem:IntakeSubsystem = IntakeSubsystem()
-    val shooterSubsystem: ShooterSubsystem = ShooterSubsystem()
-    //val climberSubsystem: ClimberSubsystem = ClimberSubsystem()
+    val driveSubsystem = SwerveDriveBase(Pose2d())
+    val intakeSubsystem = IntakeSubsystem()
+    val shooterSubsystem = ShooterSubsystem()
+    val climberSubsystem = ClimberSubsystem()
 
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
-    val autochooser:SendableChooser<Command> = SendableChooser<Command>()
-    val startingPositionChooser:SendableChooser<Pose2d?> = SendableChooser<Pose2d?>()
+    val autochooser = SendableChooser<Command>()
+    val startingPositionChooser = SendableChooser<Pose2d?>()
 
 
     //this is the command called when teleop mode is enabled
