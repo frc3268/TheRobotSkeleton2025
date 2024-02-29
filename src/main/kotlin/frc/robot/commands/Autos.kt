@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.lib.utils.rotation2dFromDeg
@@ -139,15 +140,13 @@ class Autos private constructor() {
 
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command {
             return SequentialCommandGroup(
-                    shooter.shootCommand()
-                    .alongWith(intake.takeOutCommand())
+                    shooter.shootCommand().andThen(intake.takeOutCommand()).andThen(shooter.stopCommand())
             )
         }
 
         fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command {
             return SequentialCommandGroup(
-                    intake.takeOutCommand(),
-                    shooter.ampCommand()
+                shooter.ampCommand()
             )
         }
 

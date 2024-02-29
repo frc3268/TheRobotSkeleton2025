@@ -13,7 +13,7 @@ class ShooterSubsystem:SubsystemBase() {
     val leftFlywheelMotor:CANSparkMax = CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless)
     val rightFlywheelMotor:CANSparkMax = CANSparkMax(12, CANSparkLowLevel.MotorType.kBrushless)
     fun setShoot(speed:Double) {
-        leftFlywheelMotor.set(-speed)
+        leftFlywheelMotor.set(speed)
         rightFlywheelMotor.set(speed)
     }
 
@@ -22,24 +22,30 @@ class ShooterSubsystem:SubsystemBase() {
         return run{
             setShoot(-0.7)
         }.withTimeout(3.0).andThen(runOnce{stop()})
-    }
+        }
 
     fun ampCommand(): Command{
         return run{
-            setShoot(0.5)
-        }.withTimeout(3.0).andThen(runOnce{stop()})
+            setShoot(-0.5)
+        }
     }
 
     fun takeInCommand(): Command {
         return run{
-            setShoot(-0.7)
-        }.withTimeout(3.0)
+            setShoot(0.7)
+        }
     }
 
 
     fun stop() {
         leftFlywheelMotor.stopMotor()
         rightFlywheelMotor.stopMotor()
+    }
+
+    fun stopCommand () : Command {
+        return runOnce{
+            stop()
+        }
     }
     /** This method will be called once per scheduler run  */
     override fun periodic() {

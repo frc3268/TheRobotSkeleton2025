@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.lib.utils.rotation2dFromDeg
 
 class IntakeSubsystem:SubsystemBase() {
@@ -54,31 +55,31 @@ class IntakeSubsystem:SubsystemBase() {
     }
 
     fun setIntake(){
-        intakeMotor.set(0.3)
+        intakeMotor.set(0.5)
     }
 
     fun setOuttake(){
-        intakeMotor.set(-.3)
+        intakeMotor.set(-.5)
     }
 
     fun poweredArmUpCommand():Command{
         return run{
-            armMotor.set(-0.3)
-        }.until { getPoweredArmMeasurement().degrees < 5.0 }.andThen(stopAllCommand())
+            armMotor.set(-0.5)
+        }.until { getPoweredArmMeasurement().degrees < 5.0 }.andThen(runOnce{stopArm()})
     }
 
     fun poweredArmDownCommand():Command{
         return run{
-            armMotor.set(0.3)
-        }.until { getPoweredArmMeasurement().degrees > 265.0 }.andThen(stopAllCommand())
+            armMotor.set(0.5)
+        }.until { getPoweredArmMeasurement().degrees > 270.0 }.andThen(runOnce{stopArm()})
     }
 
     fun takeInCommand():Command{
-        return poweredArmDownCommand().andThen(run{setIntake()}.withTimeout(3.0)).andThen(runOnce { stopIntake() }).andThen(poweredArmUpCommand())
+        return runOnce{setIntake()}.andThen(poweredArmDownCommand()).andThen(WaitCommand(2.0)).andThen(runOnce{stopIntake()}).andThen(poweredArmUpCommand())
     }
 
     fun takeOutCommand():Command{
-        return run{setOuttake()}.withTimeout(3.0).andThen(runOnce{stopIntake()})
+        return poweredArmUpCommand().andThen(runOnce{setOuttake()}.withTimeout(2.0).andThen(runOnce{stopIntake()}))
     }
 
     fun zeroArmEncoderCommand():Command{
