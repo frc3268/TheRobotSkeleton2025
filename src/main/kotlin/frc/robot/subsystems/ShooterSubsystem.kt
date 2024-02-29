@@ -20,7 +20,7 @@ class ShooterSubsystem:SubsystemBase() {
 
     fun shootCommand(): Command {
         return run{
-            setShoot(0.7)
+            setShoot(-0.7)
         }.withTimeout(3.0).andThen(runOnce{stop()})
     }
 
