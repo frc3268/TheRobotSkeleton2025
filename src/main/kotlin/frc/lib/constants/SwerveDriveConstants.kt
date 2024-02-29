@@ -107,7 +107,6 @@ class SwerveDriveConstants {
             ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3,false,true, PIDController(0.008,0.00,0.0007))
         )
     }
-<<<<<<< Updated upstream
 
     object coordinates {
         val blueStartA = Pose2d(.5,2.57305,  Rotation2d.fromDegrees(0.0))
@@ -117,17 +116,4 @@ class SwerveDriveConstants {
         val redStartB = Pose2d(13.2254,4.6305, Rotation2d.fromDegrees(0.0))
         val redStartC = Pose2d(13.2254,7.181312,Rotation2d.fromDegrees(0.0))
     }
-
-=======
-    class startingPositions {
-        val redStart1 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val redStart2 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val redStart3 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val blueStart1 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val blueStart2 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val blieStart3 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-    }
->>>>>>> Stashed changes
-
-
 }
