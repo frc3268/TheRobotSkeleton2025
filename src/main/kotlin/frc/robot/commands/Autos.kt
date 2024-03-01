@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.lib.utils.rotation2dFromDeg
@@ -113,8 +114,11 @@ class Autos private constructor() {
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
                     shooter.shootCommand(),
+                    WaitCommand(0.2),
                     intake.takeOutCommand(),
-                    shooter.stopCommand()
+                    WaitCommand(2.0),
+                    shooter.stopCommand(),
+                    intake.stopIntake()
             )
 
         fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
@@ -135,6 +139,9 @@ class Autos private constructor() {
 
         fun emergencyStopGearIntakeCommand(intake: IntakeSubsystem): Command =
             intake.stopIntake()
+
+        //fun printToConsole(text: String): Command =
+                //runOnce { System.out.println(text) }
 
         //Find Intersection is not complete. FindIntersection and calculateIntersection need testing.
 // I'm sure there's a more efficient way to do this too

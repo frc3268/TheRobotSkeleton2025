@@ -64,16 +64,27 @@ class ClimberSubsystem: SubsystemBase(){
             //setToPositionMeters(0.0)
         }
 
+    fun leftdown() : Command =
+            runOnce{
+                leftMotor.set(0.5)
+            }
+
+
+
     fun climberCentreCommand():Command =
         run {
             //setToPositionMeters(0.2)
         }
 
-    fun stop(){
-        rightMotor.set(0.0)
-        leftMotor.set(0.0)
+    fun stop():Command{
+        return runOnce {
+            rightMotor.set(0.0)
+            leftMotor.set(0.0)
+        }
     }
     
     override fun periodic() {
+
+        System.out.println(leftEncoder.position)
     }
 }

@@ -39,8 +39,9 @@ class RobotContainer {
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
-        { -driverController.getRawAxis(2) },
-        { true }
+        { 0.0 },
+            //-driverController.getRawAxis(2)
+        { false }
     )
 
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
@@ -73,6 +74,8 @@ class RobotContainer {
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Floor Note", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("left go", climberSubsystem.down()).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("left stop", climberSubsystem.stop()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, true, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, false, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
 
@@ -101,12 +104,13 @@ class RobotContainer {
         // Schedule ExampleCommand when exampleCondition changes to true
         //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
 
-        driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
-        driverController.leftBumper().onTrue(intakeSubsystem.poweredArmDownCommand())
-        driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        driverController.button(7).onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
+        driverController.button(5).onTrue(intakeSubsystem.poweredArmDownCommand())
+        driverController.button(8).onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
         driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
         driverController.a().onTrue(intakeSubsystem.poweredArmUpCommand())
         driverController.b().onTrue(intakeSubsystem.stopIntake())
+
     }
 
     /**

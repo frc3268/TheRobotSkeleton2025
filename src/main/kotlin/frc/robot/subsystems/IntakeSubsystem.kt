@@ -53,20 +53,20 @@ class IntakeSubsystem:SubsystemBase() {
         )
 
     fun setIntake(): Command =
-        runOnce { intakeMotor.set(0.5) }
+        runOnce { intakeMotor.set(0.3) }
 
     fun setOuttake(): Command =
-        runOnce { intakeMotor.set(-0.5) }
+        runOnce { intakeMotor.set(-0.3) }
 
     fun poweredArmUpCommand(): Command =
         run {
             armMotor.set(-0.5)
         }
-            .until { getPoweredArmMeasurement().degrees < 5.0 }
+            .until { getPoweredArmMeasurement().degrees < 15.0 }
             .andThen(stopArm())
 
     fun poweredArmDownCommand(): Command =
-        run { armMotor.set(0.5) }
+        run { armMotor.set(0.7) }
             .until { getPoweredArmMeasurement().degrees > 270.0 }
             .andThen(stopArm())
 
@@ -74,7 +74,7 @@ class IntakeSubsystem:SubsystemBase() {
         SequentialCommandGroup(
             setIntake(),
             poweredArmDownCommand(),
-            WaitCommand(2.0),
+            WaitCommand(1.0),
             stopIntake(),
             poweredArmUpCommand()
         )
@@ -82,8 +82,7 @@ class IntakeSubsystem:SubsystemBase() {
     fun takeOutCommand(): Command =
         SequentialCommandGroup(
             poweredArmUpCommand(),
-            setOuttake().withTimeout(2.0),
-            stopIntake()
+            setOuttake()
         )
 
     fun zeroArmEncoderCommand(): Command =
@@ -93,7 +92,6 @@ class IntakeSubsystem:SubsystemBase() {
         armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
-        //System.out.println(armEncoder.position)
 
     }
 
