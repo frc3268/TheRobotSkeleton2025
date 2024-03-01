@@ -18,7 +18,7 @@ import frc.lib.utils.rotation2dFromDeg
 class IntakeSubsystem:SubsystemBase() {
     val intakeMotor = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
     val armMotor = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
-    val armEncoder:RelativeEncoder = armMotor.encoder
+    val armEncoder: RelativeEncoder = armMotor.encoder
     val armPIDController = PIDController(0.005,0.0,0.0)
     //todo: extra motor for powered arm
     val ShuffleboardTab:ShuffleboardTab = Shuffleboard.getTab("intake")
@@ -84,6 +84,12 @@ class IntakeSubsystem:SubsystemBase() {
             poweredArmUpCommand(),
             setOuttake()
         )
+
+    fun toggleArmCommand(): Command =
+        if (getPoweredArmMeasurement().degrees < 100.0)
+            poweredArmUpCommand()
+        else
+            poweredArmDownCommand()
 
     fun zeroArmEncoderCommand(): Command =
         runOnce { armEncoder.position = 0.0 }

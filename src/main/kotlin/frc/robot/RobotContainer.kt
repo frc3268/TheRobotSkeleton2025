@@ -74,7 +74,7 @@ class RobotContainer {
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Floor Note", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("left go", climberSubsystem.down()).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("left go", climberSubsystem.leftdown()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("left stop", climberSubsystem.stop()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, true, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, false, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
