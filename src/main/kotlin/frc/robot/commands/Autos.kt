@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
-import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.lib.utils.rotation2dFromDeg
@@ -96,12 +95,11 @@ class Autos private constructor() {
             )
         }
 
-        fun goToSourceAndIntakeCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem): Command {
-            return SequentialCommandGroup(
+        fun goToSourceAndIntakeCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem): Command =
+            SequentialCommandGroup(
                     goToSourceCommand(drive, closerToBaseLine),
                     sourceIntakeCommand(shooter)
             )
-        }
 
         fun goWithinSpeakerCommand(drive: SwerveDriveBase): Command {
             val color = DriverStation.getAlliance()
@@ -123,43 +121,41 @@ class Autos private constructor() {
         }
 
 
-        fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command {
-            return SequentialCommandGroup(
+        fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
+            SequentialCommandGroup(
                     goToSpeaker(drive),
                     intake.takeOutCommand().alongWith(shooter.shootCommand())
             )
-        }
 
-        fun groundIntakeCommand(intake: IntakeSubsystem): Command {
-            return SequentialCommandGroup(
+        fun intakeAndUpCommand(intake: IntakeSubsystem): Command =
+            SequentialCommandGroup(
                     intake.poweredArmDownCommand(),
                     intake.takeInCommand(),
                     intake.poweredArmUpCommand()
             )
-        }
 
-        fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command {
-            return SequentialCommandGroup(
-                    shooter.shootCommand().andThen(intake.takeOutCommand()).andThen(shooter.stopCommand())
+        fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
+            SequentialCommandGroup(
+                    shooter.shootCommand(),
+                    intake.takeOutCommand(),
+                    shooter.stopCommand()
             )
-        }
 
-        fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command {
-            return SequentialCommandGroup(
-                    shooter.ampCommand().andThen(intake.takeOutCommand()).andThen(shooter.stopCommand())
+        fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
+            SequentialCommandGroup(
+                    shooter.ampCommand(),
+                    intake.takeOutCommand(),
+                    shooter.stopCommand()
             )
-        }
 
-        fun sourceIntakeCommand(shooter: ShooterSubsystem): Command {
-            return shooter.takeInCommand()
-        }
+        fun sourceIntakeCommand(shooter: ShooterSubsystem): Command =
+            shooter.takeInCommand()
 
-        fun driveUpAndIntakeSourceCommand(drive: SwerveDriveBase, shooter: ShooterSubsystem, closerToBaseLine: Boolean): Command {
-            return SequentialCommandGroup(
+        fun driveUpAndIntakeSourceCommand(drive: SwerveDriveBase, shooter: ShooterSubsystem, closerToBaseLine: Boolean): Command =
+            SequentialCommandGroup(
                     goToSourceCommand(drive, closerToBaseLine),//fix closer to baseline
                     shooter.takeInCommand()
             )
-        }
 
         //Find Intersection is not complete. FindIntersection and calculateIntersection need testing.
 // I'm sure there's a more efficient way to do this too

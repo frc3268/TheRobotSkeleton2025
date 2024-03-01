@@ -82,13 +82,11 @@ class IntakeSubsystem:SubsystemBase() {
         return poweredArmUpCommand().andThen(runOnce{setOuttake()}.withTimeout(2.0).andThen(runOnce{stopIntake()}))
     }
 
-    fun zeroArmEncoderCommand():Command{
-        return runOnce{armEncoder.position = 0.0}
-    }
+    fun zeroArmEncoderCommand():Command =
+        runOnce{armEncoder.position = 0.0}
 
-    fun getPoweredArmMeasurement() : Rotation2d{
-        return armEncoder.position.rotation2dFromDeg()
-    }
+    fun getPoweredArmMeasurement() : Rotation2d =
+        armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
         //System.out.println(armEncoder.position)

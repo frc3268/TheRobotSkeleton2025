@@ -1,16 +1,12 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
-import frc.lib.utils.TrajectoryOrchestrator
 import frc.robot.commands.Autos
 import frc.robot.commands.SwerveJoystickDrive
 import frc.robot.subsystems.ClimberSubsystem
@@ -82,7 +78,7 @@ class RobotContainer {
         startingPositionChooser.setDefaultOption("Blue 3", null)
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Floor Note", Autos.groundIntakeCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Get Floor Note", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, true, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, false, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
 
@@ -115,11 +111,9 @@ class RobotContainer {
         // cancelling on release.
         //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand())
         driverController.a().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
-        driverController.b().onTrue(Autos.groundIntakeCommand(intakeSubsystem))
+        driverController.b().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
         driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
         driverController.y().onTrue(Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
-
-
     }
 
     /**
