@@ -153,6 +153,12 @@ class Autos private constructor() {
                 sourceIntakeCommand(shooter)
             )
 
+        fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
+            SequentialCommandGroup(
+                shooter.stopCommand(),
+                intake.stopAllCommand()
+            )
+
         //fun printToConsole(text: String): Command =
                 //runOnce { System.out.println(text) }
 

@@ -134,11 +134,10 @@ class RobotContainer {
          */
         driverController.x().onTrue(intakeSubsystem.toggleArmCommand())
         /*
-        Y: Stop the intake gears AND the arm.
-        (The intention is to be able to prevent damage if the encoder is faulty and damaging the arm or intake.)
+        Y: Stop the intake gears, the arm, and the shooter.
+        (The intention is to be able to prevent damage if the encoder is faulty and damaging any moving parts.)
          */
-        driverController.y().onTrue(intakeSubsystem.stopAllCommand())
-
+        driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem))
     }
 
     /**
