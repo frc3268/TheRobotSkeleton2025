@@ -2,33 +2,32 @@ package frc.robot.subsystems
 
 import com.revrobotics.CANSparkLowLevel
 import com.revrobotics.CANSparkMax
-import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 class ShooterSubsystem: SubsystemBase() {
     val leftFlywheelMotor = CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless)
     val rightFlywheelMotor = CANSparkMax(12, CANSparkLowLevel.MotorType.kBrushless)
 
-    fun setShoot(speed:Double) {
+    fun shootAtSpeed(speed: Double) {
         leftFlywheelMotor.set(speed)
         rightFlywheelMotor.set(speed)
     }
 
+    fun shootAtSpeedCommand(speed: Double): Command =
+        runOnce { shootAtSpeed(speed) }
+
     fun shootCommand(): Command =
-        runOnce { setShoot(-1.0) }
+        runOnce { shootAtSpeed(-1.0) }
 
     fun ampCommand(): Command =
-        runOnce { setShoot(-0.5) }
+        runOnce { shootAtSpeed(-0.5) }
 
     fun takeInCommand(): Command =
-        run { setShoot(0.7) }
+        run { shootAtSpeed(0.7) }
             // TODO Adjust timeout
             .withTimeout(2.0)
             .andThen(stopCommand())
-
 
     fun stop() {
         leftFlywheelMotor.stopMotor()

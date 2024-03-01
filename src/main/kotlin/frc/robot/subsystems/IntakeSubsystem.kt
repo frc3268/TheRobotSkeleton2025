@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.lib.utils.rotation2dFromDeg
 
-class IntakeSubsystem:SubsystemBase() {
+class IntakeSubsystem: SubsystemBase() {
     val intakeMotor = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
     val armMotor = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
     val armEncoder: RelativeEncoder = armMotor.encoder
@@ -24,20 +24,19 @@ class IntakeSubsystem:SubsystemBase() {
     val ShuffleboardTab:ShuffleboardTab = Shuffleboard.getTab("intake")
     val intakeArmEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder(ARM)", 0.0).entry
 
+    companion object {
+        const val INTAKE_SPEED = 0.3
+        const val OUTTAKE_SPEED = -0.3
+        const val SHOOT_AMP_SPEED = -1.0
+    }
+
     init {
         armEncoder.positionConversionFactor = 3 / 2 / 1.0
-        ShuffleboardTab.add("up", poweredArmUpCommand()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("down", poweredArmDownCommand()).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("up", armUpCommand()).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("down", armDownCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("stop", stopAllCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("in", takeInCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("out", takeOutCommand()).withWidget(BuiltInWidgets.kCommand)
-    }
-
-    fun armsetCommand(amount: Double): Command {
-        stopArm()
-        return run {
-            armMotor.set(amount)
-        }
     }
 
     fun stopIntake(): Command =
@@ -46,90 +45,96 @@ class IntakeSubsystem:SubsystemBase() {
     fun stopArm(): Command =
         runOnce { armMotor.stopMotor() }
 
+    /**
+     * Stops both the arm and intake gears immediately.
+     */
     fun stopAllCommand(): Command =
         SequentialCommandGroup(
             stopIntake(),
             stopArm()
         )
 
-    fun basedMomento(): Command =
-            runOnce{intakeMotor.set(-1.0)}
-    fun setIntake(): Command =
-        runOnce { intakeMotor.set(0.3) }
+    /**
+     * Runs the intake gears at [speed].
+     */
+    fun runIntakeAtSpeed(speed: Double): Command =
+        runOnce { intakeMotor.set(speed) }
 
-    fun setOuttake(): Command =
-        runOnce { intakeMotor.set(-0.3) }
-
-    fun poweredArmUpCommand(): Command =
+    fun armUpCommand(): Command =
         run {
-            armMotor.set(armPIDController.calculate(getPoweredArmMeasurement().degrees, -5.0))
+            armMotor.set(armPIDController.calculate(getArmPosition().degrees, -5.0))
         }
-            .until {getPoweredArmMeasurement().degrees < 0.05 }
+            .until { getArmPosition().degrees < 0.05 }
             .andThen(stopArm())
 
-    fun poweredArmDownCommand(): Command =
-        run { armMotor.set(armPIDController.calculate(getPoweredArmMeasurement().degrees, 270.0)) }
-            .until { getPoweredArmMeasurement().degrees > 260.0 }
+    fun armDownCommand(): Command =
+        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, 270.0)) }
+            .until { getArmPosition().degrees > 260.0 }
             .andThen(stopArm())
 
-    fun poweredArmAmpCommand(): Command =
-            run {
-                armMotor.set(armPIDController.calculate(getPoweredArmMeasurement().degrees, 105.0))
-            }
-                    .until { getPoweredArmMeasurement().degrees > 100.0 }
-                    .andThen(stopArm())
+    fun toggleArmCommand(): Command =
+        if (getArmPosition().degrees < 100.0)
+            armUpCommand()
+        else
+            armDownCommand()
 
+    /**
+     * Sets the arm to the amp shoot or source intake angle, which are the same.
+     */
+    fun armToAmpAngleCommand(): Command =
+        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, 105.0)) }
+            .until { getArmPosition().degrees > 100.0 }
+            .andThen(stopArm())
+
+    /**
+     * Brings the arm up to the amp angle and shoots the note into the amp.
+     */
     fun ampCommand(): Command =
-            SequentialCommandGroup(
-                    poweredArmAmpCommand(),
-                    basedMomento(),
-                    WaitCommand(2.0),
-                    stopIntake(),
-                    poweredArmUpCommand()
-            )
+        SequentialCommandGroup(
+            armToAmpAngleCommand(),
+            runIntakeAtSpeed(SHOOT_AMP_SPEED),
+            WaitCommand(2.0),
+            stopIntake(),
+            armUpCommand()
+        )
 
-    fun sourceCommand(): Command =
-            SequentialCommandGroup(
-                    poweredArmAmpCommand(),
-                    setIntake(),
-                    WaitCommand(2.0),
-                    stopIntake(),
-                    poweredArmUpCommand()
-            )
+    /**
+     * Brings the arm up to the source intake angle and then intakes a note.
+     */
+    fun armUpAndIntakeCommand(): Command =
+        SequentialCommandGroup(
+            armToAmpAngleCommand(),
+            runIntakeAtSpeed(INTAKE_SPEED),
+            WaitCommand(2.0),
+            stopIntake(),
+            armUpCommand()
+        )
 
     fun takeInCommand(): Command =
         SequentialCommandGroup(
-            setIntake(),
-            poweredArmDownCommand(),
+            runIntakeAtSpeed(INTAKE_SPEED),
+            armDownCommand(),
             WaitCommand(1.0),
             stopIntake(),
-            poweredArmUpCommand()
+            armUpCommand()
         )
 
     fun takeOutCommand(): Command =
         SequentialCommandGroup(
-            poweredArmUpCommand(),
-            setOuttake()
+            armUpCommand(),
+            runIntakeAtSpeed(OUTTAKE_SPEED)
         )
-
-    fun toggleArmCommand(): Command =
-        if (getPoweredArmMeasurement().degrees < 100.0)
-            poweredArmUpCommand()
-        else
-            poweredArmDownCommand()
 
     fun zeroArmEncoderCommand(): Command =
         runOnce { armEncoder.position = 0.0 }
 
-    fun getPoweredArmMeasurement() : Rotation2d =
+    fun getArmPosition() : Rotation2d =
         armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
-        System.out.println(armEncoder.position)
-
+        println(armEncoder.position)
     }
 
     override fun simulationPeriodic() {
-
     }
 }

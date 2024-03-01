@@ -78,7 +78,7 @@ class RobotContainer {
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Amp Shot", intakeSubsystem.ampCommand()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Source Intake", intakeSubsystem.sourceCommand())
+        ShuffleboardTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
 
 
         UffleboardTab.add("climber down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
