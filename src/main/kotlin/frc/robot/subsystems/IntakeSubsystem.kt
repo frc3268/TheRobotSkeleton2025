@@ -16,10 +16,10 @@ import frc.lib.utils.rotation2dFromDeg
 
 class IntakeSubsystem:SubsystemBase() {
 
-    val intakeMotor:CANSparkMax = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
-    val armMotor:CANSparkMax = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
+    val intakeMotor = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
+    val armMotor = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
     val armEncoder:RelativeEncoder = armMotor.encoder
-    val armPIDController:PIDController = PIDController(0.005,0.0,0.0)
+    val armPIDController = PIDController(0.005,0.0,0.0)
     //todo: extra motor for powered arm
     val ShuffleboardTab:ShuffleboardTab = Shuffleboard.getTab("intake")
     val intakeArmEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder(ARM)", 0.0).entry
@@ -84,16 +84,14 @@ class IntakeSubsystem:SubsystemBase() {
         return (runOnce{setOuttake()}.withTimeout(2.0).andThen(runOnce{stopIntake()}))
     }
 
-    fun zeroArmEncoderCommand():Command{
-        return runOnce{armEncoder.position = 0.0}
-    }
+    fun zeroArmEncoderCommand():Command =
+        runOnce{armEncoder.position = 0.0}
 
-    fun getPoweredArmMeasurement() : Rotation2d{
-        return armEncoder.position.rotation2dFromDeg()
-    }
+    fun getPoweredArmMeasurement() : Rotation2d =
+        armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
-        System.out.println(armEncoder.position)
+        //System.out.println(armEncoder.position)
 
     }
 
