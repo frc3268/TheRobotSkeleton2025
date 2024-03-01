@@ -26,7 +26,7 @@ class ClimberSubsystem: SubsystemBase(){
     init {
         rightMotor.inverted = true
         // TODO test if this is needed
-        rightEncoder.inverted = true
+        //rightEncoder.inverted = true
         
         leftEncoder.positionConversionFactor = 1.0/1.0
         rightEncoder.positionConversionFactor = 1.0/1.0

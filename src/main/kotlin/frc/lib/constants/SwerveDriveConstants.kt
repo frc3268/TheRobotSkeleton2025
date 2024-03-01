@@ -7,7 +7,6 @@ for most constants used in this library.
  */
 package frc.lib.constants
 
-import edu.wpi.first.math.geometry.Pose2d
 import com.revrobotics.CANSparkBase
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.controller.ProfiledPIDController
@@ -18,6 +17,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.math.util.Units
 import frc.lib.constants.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_METERS
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.wpilibj.DriverStation
 
 class SwerveDriveConstants {
     data class ModuleConstants(
@@ -107,7 +107,6 @@ class SwerveDriveConstants {
             ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3,false,true, PIDController(0.008,0.00,0.0007))
         )
     }
-<<<<<<< Updated upstream
 
     object coordinates {
         val blueStartA = Pose2d(.5,2.57305,  Rotation2d.fromDegrees(0.0))
@@ -118,16 +117,6 @@ class SwerveDriveConstants {
         val redStartC = Pose2d(13.2254,7.181312,Rotation2d.fromDegrees(0.0))
     }
 
-=======
-    class startingPositions {
-        val redStart1 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val redStart2 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val redStart3 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val blueStart1 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val blueStart2 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val blieStart3 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-    }
->>>>>>> Stashed changes
 
 
 }
