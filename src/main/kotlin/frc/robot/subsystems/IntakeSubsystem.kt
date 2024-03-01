@@ -132,7 +132,7 @@ class IntakeSubsystem: SubsystemBase() {
         armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
-        println(armEncoder.position)
+        println("Arm encoder position: " + armEncoder.position)
     }
 
     override fun simulationPeriodic() {

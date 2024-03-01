@@ -18,10 +18,10 @@ class ShooterSubsystem: SubsystemBase() {
         runOnce { shootAtSpeed(speed) }
 
     fun shootCommand(): Command =
-        runOnce { shootAtSpeed(-1.0) }
+        shootAtSpeedCommand(-1.0)
 
     fun ampCommand(): Command =
-        runOnce { shootAtSpeed(-0.5) }
+        shootAtSpeedCommand(-0.5)
 
     fun takeInCommand(): Command =
         run { shootAtSpeed(0.7) }
