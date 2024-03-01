@@ -102,7 +102,7 @@ class RobotContainer {
         //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
 
         driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
-        driverController.leftBumper().onTrue(intakeSubsystem.poweredArmDownCommand())
+        driverController.leftBumper().onTrue(intakeSubsystem.toggleArmCommand())
         driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
         driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
         driverController.a().onTrue(intakeSubsystem.poweredArmUpCommand())
