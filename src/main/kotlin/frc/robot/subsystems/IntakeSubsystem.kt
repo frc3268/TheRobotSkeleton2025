@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.lib.utils.rotation2dFromDeg
 
 class IntakeSubsystem:SubsystemBase() {
-
     val intakeMotor = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
     val armMotor = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
     val armEncoder:RelativeEncoder = armMotor.encoder
@@ -57,7 +56,7 @@ class IntakeSubsystem:SubsystemBase() {
         runOnce { intakeMotor.set(0.5) }
 
     fun setOuttake(): Command =
-        runOnce { intakeMotor.set(-.5) }
+        runOnce { intakeMotor.set(-0.5) }
 
     fun poweredArmUpCommand(): Command =
         run {
