@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
+import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.TrajectoryOrchestrator
@@ -120,7 +121,6 @@ class Autos private constructor() {
                     drive, Pose2d(to.x + cos(theta.radians) * c, to.y + sin(theta.radians) * c, theta + pose.rotation))
         }
 
-
         fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
                     goToSpeaker(drive),
@@ -156,6 +156,9 @@ class Autos private constructor() {
                     goToSourceCommand(drive, closerToBaseLine),//fix closer to baseline
                     shooter.takeInCommand()
             )
+
+        fun emergencyStopGearIntakeCommand(intake: IntakeSubsystem): Command =
+            intake.stopIntake()
 
         //Find Intersection is not complete. FindIntersection and calculateIntersection need testing.
 // I'm sure there's a more efficient way to do this too

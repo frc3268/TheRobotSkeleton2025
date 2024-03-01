@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
 import frc.robot.commands.Autos
@@ -24,31 +25,24 @@ class RobotContainer {
     private val ShuffleboardTab = Shuffleboard.getTab("General")
     private val TroubleShootingTab = Shuffleboard.getTab("TroubleShooting")
 
-
-
-
-    // The robot's subsystems and commands are defined here...
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
     val shooterSubsystem = ShooterSubsystem()
     val climberSubsystem = ClimberSubsystem()
 
-
-    // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
     val autochooser = SendableChooser<Command>()
     val startingPositionChooser = SendableChooser<Pose2d?>()
 
-
-    //this is the command called when teleop mode is enabled
-     val teleopCommand = SwerveJoystickDrive(
+    val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
         { -driverController.getRawAxis(2) },
-        { !driverController.leftBumper().asBoolean }
+        { true }
     )
+
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
         driveSubsystem.defaultCommand = teleopCommand
@@ -107,13 +101,12 @@ class RobotContainer {
         // Schedule ExampleCommand when exampleCondition changes to true
         //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
 
-        // Schedule exampleMethodCommand when the Xbox controller's B button is pressed,
-        // cancelling on release.
-        //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand())
-        driverController.a().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
-        driverController.b().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
-        driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
-        driverController.y().onTrue(Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
+        driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
+        driverController.leftBumper().onTrue(intakeSubsystem.poweredArmDownCommand())
+        driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
+        driverController.a().onTrue(intakeSubsystem.poweredArmUpCommand())
+        driverController.b().onTrue(intakeSubsystem.stopIntake())
     }
 
     /**

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.lib.utils.rotation2dFromDeg
@@ -35,55 +36,59 @@ class IntakeSubsystem:SubsystemBase() {
 
     fun armsetCommand(amount: Double): Command {
         stopArm()
-        return run{
+        return run {
             armMotor.set(amount)
         }
     }
 
-    fun stopIntake() {
-        intakeMotor.stopMotor()
-    }
-    fun stopArm() {
-        armMotor.stopMotor()
-    }
+    fun stopIntake(): Command =
+        runOnce { intakeMotor.stopMotor() }
 
-    fun stopAllCommand():Command{
-        return runOnce{
-            stopIntake()
+    fun stopArm(): Command =
+        runOnce { armMotor.stopMotor() }
+
+    fun stopAllCommand(): Command =
+        SequentialCommandGroup(
+            stopIntake(),
             stopArm()
-        }
-    }
+        )
 
-    fun setIntake(){
-        intakeMotor.set(0.5)
-    }
+    fun setIntake(): Command =
+        runOnce { intakeMotor.set(0.5) }
 
-    fun setOuttake(){
-        intakeMotor.set(-.5)
-    }
+    fun setOuttake(): Command =
+        runOnce { intakeMotor.set(-.5) }
 
-    fun poweredArmUpCommand():Command{
-        return run{
+    fun poweredArmUpCommand(): Command =
+        run {
             armMotor.set(-0.5)
-        }.until { getPoweredArmMeasurement().degrees < 5.0 }.andThen(runOnce{stopArm()})
-    }
+        }
+            .until { getPoweredArmMeasurement().degrees < 5.0 }
+            .andThen(stopArm())
 
-    fun poweredArmDownCommand():Command{
-        return run{
-            armMotor.set(0.5)
-        }.until { getPoweredArmMeasurement().degrees > 270.0 }.andThen(runOnce{stopArm()})
-    }
+    fun poweredArmDownCommand(): Command =
+        run { armMotor.set(0.5) }
+            .until { getPoweredArmMeasurement().degrees > 270.0 }
+            .andThen(stopArm())
 
-    fun takeInCommand():Command{
-        return runOnce{setIntake()}.andThen(poweredArmDownCommand()).andThen(WaitCommand(2.0)).andThen(runOnce{stopIntake()}).andThen(poweredArmUpCommand())
-    }
+    fun takeInCommand(): Command =
+        SequentialCommandGroup(
+            setIntake(),
+            poweredArmDownCommand(),
+            WaitCommand(2.0),
+            stopIntake(),
+            poweredArmUpCommand()
+        )
 
-    fun takeOutCommand():Command{
-        return poweredArmUpCommand().andThen(runOnce{setOuttake()}.withTimeout(2.0).andThen(runOnce{stopIntake()}))
-    }
+    fun takeOutCommand(): Command =
+        SequentialCommandGroup(
+            poweredArmUpCommand(),
+            setOuttake().withTimeout(2.0),
+            stopIntake()
+        )
 
-    fun zeroArmEncoderCommand():Command =
-        runOnce{armEncoder.position = 0.0}
+    fun zeroArmEncoderCommand(): Command =
+        runOnce { armEncoder.position = 0.0 }
 
     fun getPoweredArmMeasurement() : Rotation2d =
         armEncoder.position.rotation2dFromDeg()
