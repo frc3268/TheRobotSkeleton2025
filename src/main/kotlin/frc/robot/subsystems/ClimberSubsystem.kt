@@ -66,7 +66,22 @@ class ClimberSubsystem: SubsystemBase(){
 
     fun leftdown() : Command =
             runOnce{
+                leftMotor.set(-0.5)
+            }
+
+    fun leftup() : Command =
+            runOnce{
                 leftMotor.set(0.5)
+            }
+
+    fun rightdown() : Command =
+            runOnce{
+                rightMotor.set(-0.5)
+            }
+
+    fun rightup() : Command =
+            runOnce{
+                rightMotor.set(0.5)
             }
 
 
@@ -85,6 +100,6 @@ class ClimberSubsystem: SubsystemBase(){
     
     override fun periodic() {
 
-        System.out.println(leftEncoder.position)
+        System.out.println(rightEncoder.position)
     }
 }
