@@ -26,7 +26,7 @@ class RobotContainer {
     private val ShuffleboardTab = Shuffleboard.getTab("General")
     private val TroubleShootingTab = Shuffleboard.getTab("TroubleShooting")
 
-    private val UffleboardTab = Shuffleboard.getTab("Uffleboard")
+    private val ClimberTab = Shuffleboard.getTab("Climber")
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
@@ -82,10 +82,10 @@ class RobotContainer {
         ShuffleboardTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
 
 
-        UffleboardTab.add("climber down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        UffleboardTab.add("climber up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        UffleboardTab.add("climber reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        UffleboardTab.add("climber stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
+        ClimberTab.add("climber down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ClimberTab.add("climber up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ClimberTab.add("climber reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ClimberTab.add("climber stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
         /*
       TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
       URGENT URGENT!
