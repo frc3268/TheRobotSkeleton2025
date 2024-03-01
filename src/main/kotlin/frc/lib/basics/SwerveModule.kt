@@ -19,23 +19,21 @@ Set: Module state
 class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
     //shuffleboard
-    private val ShuffleboardTab = Shuffleboard.getTab("Swerve Module" + (moduleConstants.MODULE_NUMBER))
+    private val ShuffleboardTab = Shuffleboard.getTab("Swerve Module " + moduleConstants.MODULE_NUMBER)
     val setPointEntry:GenericEntry = ShuffleboardTab.add("Setpoint", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
-    val angleEncoderEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder(Relative)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
+    val angleEncoderEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder (Relative)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
+    val absoluteEncoderEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder (Absolute)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
-    val absoluteEncoderEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder(Absolute)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
+    private val driveMotor = CANSparkMax(moduleConstants.DRIVE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
+    private val angleMotor = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
 
+    private val driveEncoder: RelativeEncoder = driveMotor.encoder
+    private val angleEncoder: RelativeEncoder = angleMotor.encoder
 
-    private val driveMotor:CANSparkMax = CANSparkMax(moduleConstants.DRIVE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
-    private val angleMotor:CANSparkMax = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
+    private val absoluteEncoder: AnalogEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
 
-    private val driveEncoder:RelativeEncoder = driveMotor.encoder
-    private val angleEncoder:RelativeEncoder = angleMotor.encoder
-
-    private val absoluteEncoder:AnalogEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
-
-    private var turnController:PIDController = moduleConstants.PID_CONTROLLER
+    private var turnController: PIDController = moduleConstants.PID_CONTROLLER
 
     init {
         absoluteEncoder.distancePerRotation =
@@ -54,15 +52,11 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveMotor.setOpenLoopRampRate(0.9)
         angleMotor.setOpenLoopRampRate(0.9)
 
-        turnController.enableContinuousInput(
-            -180.0, 180.0
-        )
+        turnController.enableContinuousInput(-180.0, 180.0)
 
         driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
         //todo: fix? below
         angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
-
-
     }
 
     fun updateShuffleboard(){
@@ -74,11 +68,12 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveEncoder.position = 0.0
         angleEncoder.position = getAbsoluteEncoderMeasurement().degrees
     }
-    private fun getAbsoluteEncoderMeasurement() : Rotation2d = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
-    fun getState() : SwerveModuleState = SwerveModuleState(driveEncoder.velocity, (angleEncoder.position.IEEErem(360.0).rotation2dFromDeg()))
-    fun getPosition() : SwerveModulePosition = SwerveModulePosition(driveEncoder.position, angleEncoder.position.IEEErem(360.0).rotation2dFromDeg())
 
-    fun setDesiredState(desiredState:SwerveModuleState){
+    private fun getAbsoluteEncoderMeasurement(): Rotation2d = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
+    fun getState() = SwerveModuleState(driveEncoder.velocity, (angleEncoder.position.IEEErem(360.0).rotation2dFromDeg()))
+    fun getPosition() = SwerveModulePosition(driveEncoder.position, angleEncoder.position.IEEErem(360.0).rotation2dFromDeg())
+
+    fun setDesiredState(desiredState: SwerveModuleState){
         if (abs(desiredState.speedMetersPerSecond) < 0.01){
             stop()
             return

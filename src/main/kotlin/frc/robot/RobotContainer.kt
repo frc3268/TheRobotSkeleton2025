@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
-import frc.lib.constants.SwerveDriveConstants
 import frc.robot.commands.*
 import frc.robot.subsystems.*
 
@@ -18,10 +17,7 @@ import frc.robot.subsystems.*
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
-
-    private val ShuffleboardTab = Shuffleboard.getTab("General")
-    private val TroubleShootingTab = Shuffleboard.getTab("TroubleShooting")
-    private val ClimberTab = Shuffleboard.getTab("Climber")
+    private val GeneralTab = Shuffleboard.getTab("General")
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
@@ -46,34 +42,32 @@ class RobotContainer {
     init {
         driveSubsystem.defaultCommand = teleopCommand
 
-        ShuffleboardTab
+        GeneralTab
             .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
             .withSize(2, 1)
 
         autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
-        autochooser.addOption("Do nothing for 1 sec", WaitCommand(1.0))
+        autochooser.addOption("Wait 1 sec", WaitCommand(1.0))
         autochooser.addOption("Shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
 
-        ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Amp Shot", intakeSubsystem.ampCommand()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
+        GeneralTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("Shoot amp", intakeSubsystem.ampCommand()).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
 
-        ClimberTab.add("Climber down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ClimberTab.add("Climber up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ClimberTab.add("Climber reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ClimberTab.add("Climber stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBER down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBER up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBER reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBER stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
+
+        GeneralTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
+
         /*
       TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
       URGENT URGENT!
        */
-
-
-        TroubleShootingTab.add("Zero arm encoder", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
-
-
 
         // Configure the trigger bindings
         configureBindings()

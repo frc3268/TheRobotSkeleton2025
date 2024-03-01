@@ -20,7 +20,7 @@ import kotlin.math.*
 
 class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     val field = Field2d()
-    private val ShuffleboardTab = Shuffleboard.getTab("Dirvetrain")
+    private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
 
     var poseEstimator: SwerveDrivePoseEstimator
     val camera:Camera
