@@ -10,14 +10,14 @@ package frc.lib.constants
 import com.revrobotics.CANSparkBase
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.controller.ProfiledPIDController
+import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.math.util.Units
 import frc.lib.constants.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_METERS
-import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.wpilibj.DriverStation
+
 
 class SwerveDriveConstants {
     data class ModuleConstants(
@@ -116,7 +116,4 @@ class SwerveDriveConstants {
         val redStartB = Pose2d(13.2254,4.6305, Rotation2d.fromDegrees(0.0))
         val redStartC = Pose2d(13.2254,7.181312,Rotation2d.fromDegrees(0.0))
     }
-
-
-
 }

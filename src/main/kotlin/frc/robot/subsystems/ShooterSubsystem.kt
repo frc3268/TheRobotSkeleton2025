@@ -8,35 +8,23 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
-class ShooterSubsystem:SubsystemBase() {
-
+class ShooterSubsystem: SubsystemBase() {
     val leftFlywheelMotor = CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless)
     val rightFlywheelMotor = CANSparkMax(12, CANSparkLowLevel.MotorType.kBrushless)
+
     fun setShoot(speed:Double) {
         leftFlywheelMotor.set(speed)
         rightFlywheelMotor.set(speed)
     }
 
+    fun shootCommand(): Command =
+        runOnce { setShoot(-0.7) }
 
-    fun shootCommand(): Command {
-        return runOnce {
-            setShoot(
-                    -0.7
-            )
-        }
-    }
+    fun ampCommand(): Command =
+        runOnce { setShoot(-0.5) }
 
-    fun ampCommand(): Command{
-        return runOnce{
-            setShoot(-0.5)
-        }
-    }
-
-    fun takeInCommand(): Command {
-        return run{
-            setShoot(0.7)
-        }
-    }
+    fun takeInCommand(): Command =
+        run { setShoot(0.7) }
 
 
     fun stop() {
@@ -44,11 +32,9 @@ class ShooterSubsystem:SubsystemBase() {
         rightFlywheelMotor.stopMotor()
     }
 
-    fun stopCommand () : Command {
-        return runOnce{
-            stop()
-        }
-    }
+    fun stopCommand (): Command =
+        runOnce { stop() }
+
     /** This method will be called once per scheduler run  */
     override fun periodic() {
     }
