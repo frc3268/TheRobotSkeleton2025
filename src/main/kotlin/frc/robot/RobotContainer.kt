@@ -25,6 +25,8 @@ class RobotContainer {
     private val ShuffleboardTab = Shuffleboard.getTab("General")
     private val TroubleShootingTab = Shuffleboard.getTab("TroubleShooting")
 
+    private val UffleboardTab = Shuffleboard.getTab("Uffleboard")
+
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
     val shooterSubsystem = ShooterSubsystem()
@@ -74,14 +76,16 @@ class RobotContainer {
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Floor Note", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("left down", climberSubsystem.leftdown()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("left up", climberSubsystem.leftup()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("right up", climberSubsystem.rightup()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("right down", climberSubsystem.rightdown()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("climber stop", climberSubsystem.stop()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, true, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, false, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
 
+
+
+        UffleboardTab.add("left down", climberSubsystem.leftdown()).withWidget(BuiltInWidgets.kCommand)
+        UffleboardTab.add("left up", climberSubsystem.leftup()).withWidget(BuiltInWidgets.kCommand)
+        UffleboardTab.add("right up", climberSubsystem.rightup()).withWidget(BuiltInWidgets.kCommand)
+        UffleboardTab.add("right down", climberSubsystem.rightdown()).withWidget(BuiltInWidgets.kCommand)
+        UffleboardTab.add("climber stop", climberSubsystem.stop()).withWidget(BuiltInWidgets.kCommand)
         /*
       TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
       URGENT URGENT!
