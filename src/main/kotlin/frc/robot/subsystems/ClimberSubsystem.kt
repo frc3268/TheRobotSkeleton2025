@@ -16,11 +16,8 @@ class ClimberSubsystem: SubsystemBase(){
 
     /* CONSTANTS */
 
-    // TODO determine conversion
     private val metersPerRotation: Double = 0.0
     private val minPositionMeters: Double = 0.0
-    // TODO determine max position
-    // TODO 34 cm real max
     private val maxPositionMeters: Double = 0.34
     
     init {
@@ -57,23 +54,20 @@ class ClimberSubsystem: SubsystemBase(){
         }
     }
 
-    fun climberUpCommand():Command{
-        return run{
+    fun climberUpCommand(): Command =
+        run {
             //setToPositionMeters(1.0)
         }
-    }
     
-    fun climberDownCommand():Command{
-        return run{
+    fun climberDownCommand():Command =
+        run {
             //setToPositionMeters(0.0)
         }
-    }
 
-    fun climberCentreCommand():Command{
-        return run{
+    fun climberCentreCommand():Command =
+        run {
             //setToPositionMeters(0.2)
         }
-    }
 
     fun stop(){
         rightMotor.set(0.0)
@@ -81,7 +75,5 @@ class ClimberSubsystem: SubsystemBase(){
     }
     
     override fun periodic() {
-        
     }
-    
 }
