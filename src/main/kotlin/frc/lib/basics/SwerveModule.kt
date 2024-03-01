@@ -1,20 +1,15 @@
 package frc.lib.basics
 
-import com.revrobotics.CANSparkLowLevel
-import com.revrobotics.CANSparkMax
-import com.revrobotics.RelativeEncoder
+import com.revrobotics.*
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.kinematics.SwerveModulePosition
-import edu.wpi.first.math.kinematics.SwerveModuleState
+import edu.wpi.first.math.kinematics.*
 import edu.wpi.first.networktables.GenericEntry
 import edu.wpi.first.wpilibj.AnalogEncoder
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.shuffleboard.*
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.rotation2dFromDeg
-import kotlin.math.IEEErem
-import kotlin.math.abs
+import kotlin.math.*
 
 /*
 Props: drive motor, drive encoder, angle motor, angle encoder, absolute encoder

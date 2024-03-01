@@ -1,9 +1,7 @@
 package frc.robot.subsystems
 
-import com.revrobotics.CANSparkLowLevel
-import com.revrobotics.CANSparkMax
-import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.SubsystemBase
+import com.revrobotics.*
+import edu.wpi.first.wpilibj2.command.*
 
 class ShooterSubsystem: SubsystemBase() {
     val leftFlywheelMotor = CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless)

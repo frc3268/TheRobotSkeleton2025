@@ -1,19 +1,14 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.constants.SwerveDriveConstants
-import frc.robot.commands.Autos
-import frc.robot.commands.SwerveJoystickDrive
-import frc.robot.subsystems.LeftClimberSubsystem
-import frc.robot.subsystems.IntakeSubsystem
-import frc.robot.subsystems.RightClimberSubsystem
-import frc.robot.subsystems.ShooterSubsystem
+import frc.robot.commands.*
+import frc.robot.subsystems.*
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,7 +20,6 @@ class RobotContainer {
 
     private val ShuffleboardTab = Shuffleboard.getTab("General")
     private val TroubleShootingTab = Shuffleboard.getTab("TroubleShooting")
-
     private val ClimberTab = Shuffleboard.getTab("Climber")
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
