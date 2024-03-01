@@ -28,68 +28,52 @@ class Autos private constructor() {
             return Commands.sequence(subsystem.exampleMethodCommand(), ExampleCommand(subsystem))
         }
 
-        fun taxiAuto(drive: SwerveDriveBase): Command {
-            val color = DriverStation.getAlliance()
-            var to = Pose2d(2.1336, 0.0, Rotation2d.fromDegrees(0.0)).relativeTo(drive.getPose())
-            color?.ifPresent { color ->
-                if (color == DriverStation.Alliance.Red) {
-                    to = Pose2d(-2.1336, 0.0, Rotation2d.fromDegrees(0.0)).relativeTo(drive.getPose())
-                }
-
-            }
-            return TrajectoryOrchestrator.beelineCommand(
-                    drive,
-                    to
-            )
-
-        }
-
-        fun goToSpeaker(drive: SwerveDriveBase): Command {
-            val color = DriverStation.getAlliance()
-            //todo: fix x
-            var to = Pose2d(1.0, 5.547868, 0.0.rotation2dFromDeg())
-            color?.ifPresent { color ->
-                if (color == DriverStation.Alliance.Red) {
-                    to = Pose2d(15.579342, 5.547868, 180.0.rotation2dFromDeg())
-                }
-            }
-            return TrajectoryOrchestrator.beelineCommand(
-                    drive,
-                    to
-            )
-
-        }
-
-        fun goToAmpCommand(drive: SwerveDriveBase): Command {
-            val color = DriverStation.getAlliance()
-            //todo: fix x
-            var to = Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
-            color?.ifPresent { color ->
-                if (color == DriverStation.Alliance.Red) {
-                    to = Pose2d(14.929358, 8.2042, 270.0.rotation2dFromDeg())
-                }
-            }
-            return TrajectoryOrchestrator.beelineCommand(
-                    drive,
-                    to
-            )
-
-        }
-
-        fun goToSourceCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean): Command {
+        /**
+         * Drives to [goalIfRed] if the robot is on the red team, otherwise [goalOtherwise].
+         *
+         * [goalOtherwise] is the default if there is no color.
+         */
+        fun goto(drive: SwerveDriveBase, goalIfRed: Pose2d, goalOtherwise: Pose2d): Command {
             val color = DriverStation.getAlliance()
             val to =
-                if (color.isPresent && color.get() == DriverStation.Alliance.Blue)
-                    if (closerToBaseLine) Pose2d(15.079472, 0.245872, 120.0.rotation2dFromDeg())
-                    else Pose2d(16.185134, 0.883666, 120.0.rotation2dFromDeg())
+                if (color.isPresent && color.get() == DriverStation.Alliance.Red)
+                    goalIfRed
                 else
-                    if (closerToBaseLine) Pose2d(0.356108, 0.883666, 60.0.rotation2dFromDeg())
-                    else Pose2d(1.461516, 0.245872, 60.0.rotation2dFromDeg())
-
-            return TrajectoryOrchestrator.beelineCommand(
-                    drive, to
-            )
+                    goalOtherwise
+            return TrajectoryOrchestrator.beelineCommand(drive, to)
         }
+
+        fun taxiAuto(drive: SwerveDriveBase): Command =
+            goto(
+                drive,
+                Pose2d(-2.1336, 0.0, Rotation2d.fromDegrees(0.0)).relativeTo(drive.getPose()),
+                Pose2d(2.1336, 0.0, Rotation2d.fromDegrees(0.0)).relativeTo(drive.getPose())
+            )
+
+        fun goToSpeaker(drive: SwerveDriveBase): Command =
+            goto(
+                drive,
+                Pose2d(15.579342, 5.547868, 180.0.rotation2dFromDeg()),
+                Pose2d(1.0, 5.547868, 0.0.rotation2dFromDeg())
+            )
+
+        fun goToAmpCommand(drive: SwerveDriveBase): Command =
+            goto(
+                drive,
+                Pose2d(14.929358, 8.2042, 270.0.rotation2dFromDeg()),
+                Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
+            )
+
+        fun goToSourceCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean): Command =
+            goto(
+                drive,
+
+                if (closerToBaseLine) Pose2d(0.356108, 0.883666, 60.0.rotation2dFromDeg())
+                else Pose2d(1.461516, 0.245872, 60.0.rotation2dFromDeg()),
+
+                if (closerToBaseLine) Pose2d(15.079472, 0.245872, 120.0.rotation2dFromDeg())
+                else Pose2d(16.185134, 0.883666, 120.0.rotation2dFromDeg())
+            )
 
         fun goToSourceAndIntakeCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
