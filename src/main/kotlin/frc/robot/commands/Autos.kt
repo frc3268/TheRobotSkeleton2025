@@ -37,15 +37,15 @@ class Autos private constructor() {
         fun taxiAuto(drive: SwerveDriveBase): Command =
             goto(
                 drive,
-                Pose2d(-2.1336, 0.0, Rotation2d.fromDegrees(0.0)).relativeTo(drive.getPose()),
-                Pose2d(2.1336, 0.0, Rotation2d.fromDegrees(0.0)).relativeTo(drive.getPose())
+                Pose2d(drive.getPose().x-2.1336, drive.getPose().y, Rotation2d.fromDegrees(0.0)),
+                Pose2d(drive.getPose().x + 2.1336, drive.getPose().y, Rotation2d.fromDegrees(180.0))
             )
 
         fun goToSpeakerCommand(drive: SwerveDriveBase): Command =
             goto(
                 drive,
-                Pose2d(16.274542, 5.547868, 180.0.rotation2dFromDeg()),
-                Pose2d(1.6096, 5.547868, 0.0.rotation2dFromDeg())
+                Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
+                Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
             )
 
         fun goToAmpCommand(drive: SwerveDriveBase): Command =
@@ -66,10 +66,10 @@ class Autos private constructor() {
                 else Pose2d(16.185134, 0.883666, 120.0.rotation2dFromDeg())
             )
 
-        fun goToSourceAndIntakeCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem): Command =
+        fun goToSourceAndIntakeCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
             SequentialCommandGroup(
                 goToSourceCommand(drive, closerToBaseLine),
-                sourceIntakeCommand(shooter)
+                sourceIntakeCommand(shooter, intake)
             )
 
         fun goWithinSpeakerCommand(drive: SwerveDriveBase): Command {
@@ -137,13 +137,18 @@ class Autos private constructor() {
                 shooter.stopCommand()
             )
 
-        fun sourceIntakeCommand(shooter: ShooterSubsystem): Command =
-            shooter.takeInCommand()
+        fun sourceIntakeCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command {
+            return SequentialCommandGroup(
+                    intake.armUpCommand(),
+                    shooter.takeInCommand(),
+                    intake.takeInCommand()
+            )
+        }
 
-        fun driveUpAndIntakeSourceCommand(drive: SwerveDriveBase, shooter: ShooterSubsystem, closerToBaseLine: Boolean): Command =
+        fun driveUpAndIntakeSourceCommand(drive: SwerveDriveBase, shooter: ShooterSubsystem, closerToBaseLine: Boolean, intake: IntakeSubsystem): Command =
             SequentialCommandGroup(
                 goToSourceCommand(drive, closerToBaseLine),//fix closer to baseline
-                sourceIntakeCommand(shooter)
+                sourceIntakeCommand(shooter, intake)
             )
 
         fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =

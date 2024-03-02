@@ -17,7 +17,9 @@ import frc.robot.subsystems.*
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
-    private val generalTab = Shuffleboard.getTab("General")
+    private val GeneralTab = Shuffleboard.getTab("General")
+    private val TroubleshootingTab = Shuffleboard.getTab("Troubleshooting")
+
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
@@ -42,7 +44,7 @@ class RobotContainer {
     init {
         driveSubsystem.defaultCommand = teleopCommand
 
-        generalTab
+        GeneralTab
             .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
@@ -51,18 +53,28 @@ class RobotContainer {
         autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
         autochooser.addOption("Wait 1 sec", WaitCommand(1.0))
         autochooser.addOption("Shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
+        //TODO: Manny's code should replace this
+        autochooser.addOption("Shoot, Intake, Shoot", WaitCommand(1.0))
 
-        generalTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        generalTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        generalTab.add("Shoot amp", intakeSubsystem.ampCommand()).withWidget(BuiltInWidgets.kCommand)
-        generalTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
+        GeneralTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
 
-        generalTab.add("CLIMBER down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        generalTab.add("CLIMBER up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        generalTab.add("CLIMBER reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        generalTab.add("CLIMBER stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBER down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBER up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBER stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
 
-        generalTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
+
+        //troubleshooting tab holds manual controls for the climber and a reset for the arm encoder
+        TroubleshootingTab.add("left down", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("left up", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
+
+        TroubleshootingTab.add("right down", rightClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("right up", rightClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
+
+        TroubleshootingTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBER reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+
 
         /*
       TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
@@ -101,7 +113,7 @@ class RobotContainer {
         /*
         RB: Intake note from source
          */
-        driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
+        driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
         /*
         X: Bring the arm down if it's up, otherwise bring it up.
         (For emergency use)
@@ -112,6 +124,12 @@ class RobotContainer {
         (The intention is to be able to prevent damage if the encoder is faulty and damaging any moving parts.)
          */
         driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem))
+
+
+        driverController.a().onTrue(intakeSubsystem.runOnceIntake())
+
+        driverController.b().onTrue(intakeSubsystem.runOnceOuttake())
+
     }
 
     /**
