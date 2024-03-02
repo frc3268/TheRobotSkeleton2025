@@ -3,21 +3,21 @@ package frc.robot.subsystems
 import com.revrobotics.*
 import edu.wpi.first.wpilibj2.command.*
 
-class LeftClimberSubsystem: SubsystemBase(){
-    val motor = CANSparkMax(14, CANSparkLowLevel.MotorType.kBrushless)
+abstract class ClimberSubsystem(motorCanID: Int, encoderConversionFactor: Double): SubsystemBase() {
+    val motor = CANSparkMax(motorCanID, CANSparkLowLevel.MotorType.kBrushless)
     val encoder: RelativeEncoder = motor.encoder
 
     /* CONSTANTS */
     private val metersPerRotation: Double = 0.0
     private val minPositionMeters: Double = 0.0
     private val maxPositionMeters: Double = 0.34
-    
+
     init {
         motor.inverted = true
         // TODO test if this is needed
         //rightEncoder.inverted = true
-        
-        encoder.positionConversionFactor = 1.0/530
+
+        encoder.positionConversionFactor = encoderConversionFactor
         encoder.position = 0.0
     }
 
@@ -39,11 +39,9 @@ class LeftClimberSubsystem: SubsystemBase(){
     fun reset(): Command =
         runOnce { encoder.position = 0.0 }
 
-    fun testup():Command =
-            runOnce() { motor.set(0.2) }
-
-    fun testdown():Command =
-            runOnce { motor.set(-0.2) }
+    fun climberCentreCommand(): Command =
+        run { //setToPositionMeters(0.2)
+        }
 
     fun stop(): Command =
         runOnce { motor.set(0.0) }

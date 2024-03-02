@@ -16,7 +16,6 @@ class Camera(name:String, path:String): SubsystemBase(){
     var frame = PhotonPipelineResult()
     var poseEstimator: PhotonPoseEstimator? = null
 
-
     init {
         try {
             poseEstimator =
@@ -38,32 +37,22 @@ class Camera(name:String, path:String): SubsystemBase(){
     }
 
     //call periodically
-    fun captureFrame() : PhotonPipelineResult {
-        return limelight.latestResult
-    }
-
-
+    fun captureFrame() : PhotonPipelineResult =
+        limelight.latestResult
 
     fun getAprilTagTarget():PhotonTrackedTarget? {
         limelight.pipelineIndex = 1
-        if(!frame.hasTargets()){
-            return null
-        }
-        return frame.bestTarget
+        return if(frame.hasTargets()) frame.bestTarget else null
     }
 
     fun getReflectiveTapeTarget():PhotonTrackedTarget?{
         limelight.pipelineIndex = 0
-        if(!frame.hasTargets()){
-            return null
-        }
-        return frame.bestTarget
+        return if(frame.hasTargets()) frame.bestTarget else null
     }
     
     // New code (hope this works and is what you meant
-    fun getEstimatedPose(): Optional<EstimatedRobotPose>?  {
-        return poseEstimator?.update()
-    }
+    fun getEstimatedPose(): Optional<EstimatedRobotPose>? =
+        poseEstimator?.update()
 
     //stolen from  photonvision(blatantly)
     fun getEstimationStdDevs(estimatedPose: Pose2d): Matrix<N3, N1> {

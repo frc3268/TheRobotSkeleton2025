@@ -20,6 +20,7 @@ class RobotContainer {
     private val GeneralTab = Shuffleboard.getTab("General")
     private val TroubleshootingTab = Shuffleboard.getTab("Troubleshooting")
 
+
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
     val shooterSubsystem = ShooterSubsystem()
@@ -55,7 +56,6 @@ class RobotContainer {
 
         GeneralTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         GeneralTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("Shoot amp", intakeSubsystem.ampCommand()).withWidget(BuiltInWidgets.kCommand)
         GeneralTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
 
         GeneralTab.add("CLIMBER down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
