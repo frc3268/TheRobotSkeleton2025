@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.math.MathUtil
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.constants.SwerveDriveConstants
-import java.util.function.DoubleSupplier
-import java.util.function.BooleanSupplier
+import java.util.function.*
 
 import frc.robot.Constants
 

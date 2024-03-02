@@ -1,20 +1,12 @@
 package frc.robot.commands
 
-import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.*
 import edu.wpi.first.wpilibj.DriverStation
-import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.Commands
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
-import edu.wpi.first.wpilibj2.command.WaitCommand
+import edu.wpi.first.wpilibj2.command.*
 import frc.lib.basics.SwerveDriveBase
-import frc.lib.utils.TrajectoryOrchestrator
-import frc.lib.utils.rotation2dFromDeg
+import frc.lib.utils.*
 import frc.robot.subsystems.*
-import kotlin.math.atan
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 
 class Autos private constructor() {
     init {

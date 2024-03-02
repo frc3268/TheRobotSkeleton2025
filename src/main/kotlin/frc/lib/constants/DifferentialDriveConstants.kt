@@ -2,7 +2,6 @@ package frc.lib.constants
 
 import com.revrobotics.CANSparkMax
 
-
 class DifferentialDriveConstants {
     object MotorIDs {
         val FRONT_LEFT = 0

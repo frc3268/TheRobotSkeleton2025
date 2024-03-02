@@ -1,34 +1,22 @@
 package frc.lib.basics
 
-
 import com.kauailabs.navx.frc.AHRS
-import edu.wpi.first.math.Matrix
 import edu.wpi.first.math.VecBuilder
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
-import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.kinematics.ChassisSpeeds
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics
-import edu.wpi.first.math.kinematics.SwerveModulePosition
-import edu.wpi.first.math.kinematics.SwerveModuleState
-import edu.wpi.first.math.numbers.N1
-import edu.wpi.first.math.numbers.N3
+import edu.wpi.first.math.geometry.*
+import edu.wpi.first.math.kinematics.*
 import edu.wpi.first.networktables.GenericEntry
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
-import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.SubsystemBase
+import edu.wpi.first.wpilibj2.command.*
 import frc.lib.constants.SwerveDriveConstants
-import frc.lib.utils.Camera
-import frc.lib.utils.rotation2dFromDeg
+import frc.lib.utils.*
 import org.photonvision.EstimatedRobotPose
 import java.util.*
-import kotlin.math.IEEErem
-import kotlin.math.abs
+import kotlin.math.*
 
 class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     val field = Field2d()
