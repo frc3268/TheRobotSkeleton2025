@@ -54,10 +54,6 @@ class Robot: TimedRobot() {
         autonomousCommand = robotContainer?.autochooser?.selected
         robotContainer?.driveSubsystem?.zeroYaw()
 
-        if(robotContainer?.startingPositionChooser?.selected != null){
-            robotContainer?.driveSubsystem?.zeroPoseToFieldPositionCommand(robotContainer?.startingPositionChooser?.selected!!)
-        }
-
         robotContainer?.driveSubsystem?.zeroPoseToFieldPositionCommand(
             SwerveDriveConstants.startCoordinates
                 [DriverStation.getAlliance().get()]!!

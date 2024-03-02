@@ -8,7 +8,7 @@ class RightClimberSubsystem: LeftClimberSubsystem(){
     override val motor = CANSparkMax(15, CANSparkLowLevel.MotorType.kBrushless)
 
     init{
-        encoder.positionConversionFactor = 1.0/1500
+        encoder.positionConversionFactor = 1.0/1.0
     }
 
 }
