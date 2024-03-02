@@ -25,6 +25,9 @@ class ShooterSubsystem: SubsystemBase() {
 
     fun takeInCommand(): Command =
         run { setShoot(0.7) }
+            // TODO Adjust timeout
+            .withTimeout(2.0)
+            .andThen(stopCommand())
 
 
     fun stop() {

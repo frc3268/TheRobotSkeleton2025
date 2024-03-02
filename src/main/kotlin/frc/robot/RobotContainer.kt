@@ -110,12 +110,34 @@ class RobotContainer {
         // Schedule ExampleCommand when exampleCondition changes to true
         //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
 
+        /*
+        LT:
+            1) Arm down if not already down
+            2) Intake
+            3) Arm up
+         */
         driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
-        driverController.leftBumper().onTrue(intakeSubsystem.poweredArmDownCommand())
+        /*
+        RT:
+            1) Rev up shooter
+            2) Run intake in reverse to feed it into shooter
+            This assumes the arm is already up. If it's down, the note will be shot back onto the ground.
+         */
         driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        /*
+        RB: Intake note from source
+         */
         driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
-        driverController.a().onTrue(intakeSubsystem.poweredArmUpCommand())
-        driverController.b().onTrue(intakeSubsystem.stopIntake())
+        /*
+        X: Bring the arm down if it's up, otherwise bring it up.
+        (For emergency use)
+         */
+        driverController.x().onTrue(intakeSubsystem.toggleArmCommand())
+        /*
+        Y: Stop the intake gears AND the arm.
+        (The intention is to be able to prevent damage if the encoder is faulty and damaging the arm or intake.)
+         */
+        driverController.y().onTrue(intakeSubsystem.stopAllCommand())
 
     }
 
