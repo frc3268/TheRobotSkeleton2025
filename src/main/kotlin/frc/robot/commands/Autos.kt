@@ -44,8 +44,8 @@ class Autos private constructor() {
         fun goToSpeakerCommand(drive: SwerveDriveBase): Command =
             goto(
                 drive,
-                Pose2d(15.579342, 5.547868, 180.0.rotation2dFromDeg()),
-                Pose2d(1.0, 5.547868, 0.0.rotation2dFromDeg())
+                Pose2d(16.274542, 5.547868, 180.0.rotation2dFromDeg()),
+                Pose2d(1.6096, 5.547868, 0.0.rotation2dFromDeg())
             )
 
         fun goToAmpCommand(drive: SwerveDriveBase): Command =
