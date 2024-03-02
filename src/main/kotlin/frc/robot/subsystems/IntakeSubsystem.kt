@@ -114,7 +114,7 @@ class IntakeSubsystem: SubsystemBase() {
         SequentialCommandGroup(
             runIntakeAtSpeed(INTAKE_SPEED),
             armDownCommand(),
-            WaitCommand(1.0),
+            WaitCommand(0.5),
         )
 
     fun takeOutCommand(): Command =

@@ -18,7 +18,7 @@ class ShooterSubsystem: SubsystemBase() {
         runOnce { shootAtSpeed(speed) }
 
     fun shootCommand(): Command =
-        runOnce { shootAtSpeed(-0.7) }
+        runOnce { shootAtSpeed(-1.0) }
 
     fun ampCommand(): Command =
         shootAtSpeedCommand(-0.5)
@@ -26,7 +26,7 @@ class ShooterSubsystem: SubsystemBase() {
     fun takeInCommand(): Command =
         run { shootAtSpeed(0.7) }
             // TODO Adjust timeout
-            .withTimeout(2.0)
+            .withTimeout(0.5)
             .andThen(stopCommand())
 
     fun stop() {

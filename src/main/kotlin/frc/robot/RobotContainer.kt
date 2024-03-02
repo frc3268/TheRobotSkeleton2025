@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.constants.SwerveDriveConstants
@@ -59,6 +60,7 @@ class RobotContainer {
             .withSize(2, 1)
 
         autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
+        autochooser.addOption("nothing", WaitCommand(1.0))
         autochooser.addOption("shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
 
         ShuffleboardTab

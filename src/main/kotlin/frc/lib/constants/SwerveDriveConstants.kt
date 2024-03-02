@@ -109,11 +109,11 @@ class SwerveDriveConstants {
     }
 
     object coordinates {
-        val blueStartA = Pose2d(.5,2.57305,  Rotation2d.fromDegrees(0.0))
-        val blueStartB = Pose2d(.5,4.6305, Rotation2d.fromDegrees(0.0))
-        val blueStartC = Pose2d(.5,7.181312,Rotation2d.fromDegrees(0.0))
-        val redStartA = Pose2d(13.2254,2.57305,  Rotation2d.fromDegrees(0.0))
-        val redStartB = Pose2d(13.2254,4.6305, Rotation2d.fromDegrees(0.0))
-        val redStartC = Pose2d(13.2254,7.181312,Rotation2d.fromDegrees(0.0))
+        val blueStartA = Pose2d(-.5,2.57305,  Rotation2d.fromDegrees(0.0))
+        val blueStartB = Pose2d(-.5,4.6305, Rotation2d.fromDegrees(0.0))
+        val blueStartC = Pose2d(-.5,7.181312,Rotation2d.fromDegrees(0.0))
+        val redStartA = Pose2d(-13.2254,2.57305,  Rotation2d.fromDegrees(0.0))
+        val redStartB = Pose2d(-13.2254,4.6305, Rotation2d.fromDegrees(0.0))
+        val redStartC = Pose2d(-13.2254,7.181312,Rotation2d.fromDegrees(0.0))
     }
 }
