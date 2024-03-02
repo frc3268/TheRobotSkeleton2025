@@ -106,7 +106,8 @@ class Autos private constructor() {
             SequentialCommandGroup(
                     intake.armDownCommand(),
                     intake.takeInCommand(),
-                    intake.armUpCommand()
+                    intake.stopIntake(),
+                    intake.armUpCommand(),
             )
 
         fun climberUp(left: LeftClimberSubsystem, right: RightClimberSubsystem): ParallelCommandGroup =
