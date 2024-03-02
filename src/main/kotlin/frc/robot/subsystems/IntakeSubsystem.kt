@@ -14,7 +14,8 @@ class IntakeSubsystem: SubsystemBase() {
 
     companion object {
         const val INTAKE_SPEED = 0.3
-        const val OUTTAKE_SPEED = -0.3
+        const val OUTTAKE_ADJUST_SPEED = -0.3
+        const val OUTTAKE_SPEED = -0.9
         const val SHOOT_AMP_SPEED = -1.0
     }
 
@@ -51,8 +52,8 @@ class IntakeSubsystem: SubsystemBase() {
             .andThen(stopArm())
 
     fun armDownCommand(): Command =
-        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, 270.0)) }
-            .until { getArmPosition().degrees > 260.0 }
+        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, 280.0)) }
+            .until { getArmPosition().degrees > 275.0 }
             .andThen(stopArm())
 
     fun toggleArmCommand(): Command =
@@ -97,7 +98,7 @@ class IntakeSubsystem: SubsystemBase() {
         SequentialCommandGroup(
             runIntakeAtSpeed(INTAKE_SPEED),
             armDownCommand(),
-            WaitCommand(0.5),
+            WaitCommand(0.8),
         )
 
     fun takeOutCommand(): Command =
@@ -105,6 +106,12 @@ class IntakeSubsystem: SubsystemBase() {
             armUpCommand(),
             runIntakeAtSpeed(OUTTAKE_SPEED)
         )
+
+    fun runOnceIntake(): Command =
+            runIntakeAtSpeed(INTAKE_SPEED).andThen(stopIntake())
+
+    fun runOnceOuttake(): Command =
+            runIntakeAtSpeed(OUTTAKE_ADJUST_SPEED).andThen(stopIntake())
 
     fun zeroArmEncoderCommand(): Command =
         runOnce { armEncoder.position = 0.0 }

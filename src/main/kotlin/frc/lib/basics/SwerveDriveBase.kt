@@ -40,12 +40,6 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
 
     var yawOffset:Double = 0.0
     init {
-        DriverStation.getAlliance().ifPresent {
-            color ->
-            if(color == DriverStation.Alliance.Blue){
-                yawOffset = 180.0
-            }
-        }
 
 
         gyro.reset()
@@ -93,6 +87,8 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
             modules[x].setPointEntry.setDouble(state.angle.degrees)
         }
     }
+
+
 
 
     fun zeroYaw() {
@@ -174,6 +170,12 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
 
     fun zeroPoseToFieldPositionCommand(startingPose: Pose2d){
+        DriverStation.getAlliance().ifPresent {
+            color ->
+            if(color == DriverStation.Alliance.Blue){
+                yawOffset = 180.0
+            }
+        }
             resetModulesToAbsolute()
             poseEstimator.resetPosition(getYaw(), getModulePositions(), startingPose)
     }

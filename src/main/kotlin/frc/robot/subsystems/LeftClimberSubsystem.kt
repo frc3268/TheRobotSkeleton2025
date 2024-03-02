@@ -39,9 +39,11 @@ class LeftClimberSubsystem: SubsystemBase(){
     fun reset(): Command =
         runOnce { encoder.position = 0.0 }
 
-    fun climberCentreCommand(): Command =
-        run { //setToPositionMeters(0.2)
-        }
+    fun testup():Command =
+            runOnce() { motor.set(0.2) }
+
+    fun testdown():Command =
+            runOnce { motor.set(-0.2) }
 
     fun stop(): Command =
         runOnce { motor.set(0.0) }

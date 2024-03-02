@@ -16,7 +16,8 @@ class RightClimberSubsystem: SubsystemBase(){
         motor.inverted = true
         // TODO test if this is needed
         //rightEncoder.inverted = true
-        encoder.positionConversionFactor = 1.0/1.0
+        encoder.positionConversionFactor = 1.0/224.0
+        encoder.position = 0.0
     }
 
     /**
@@ -25,26 +26,28 @@ class RightClimberSubsystem: SubsystemBase(){
      */
 
     fun down(): Command =
-        run { motor.set(-0.7) }
+        run { motor.set(-0.5) }
             .until { encoder.position < 0.1 }
             .andThen(runOnce { motor.stopMotor() })
 
     fun up(): Command =
-        run { motor.set(0.7) }
+        run { motor.set(0.5) }
             .until { encoder.position > 0.9 }
             .andThen(runOnce { motor.stopMotor() })
 
     fun reset(): Command =
         runOnce { encoder.position = 0.0 }
 
-    fun climberCentreCommand(): Command =
-        run { //setToPositionMeters(0.2)
-        }
+    fun testup():Command =
+            run { motor.set(0.2) }
+
+    fun testdown():Command =
+            run { motor.set(-0.2) }
 
     fun stop(): Command =
         runOnce { motor.set(0.0) }
 
     override fun periodic() {
-        System.out.println("Left climber: " + encoder.position)
+        System.out.println("Right climber: " + encoder.position)
     }
 }

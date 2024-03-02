@@ -66,10 +66,10 @@ class Autos private constructor() {
                 else Pose2d(16.185134, 0.883666, 120.0.rotation2dFromDeg())
             )
 
-        fun goToSourceAndIntakeCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem): Command =
+        fun goToSourceAndIntakeCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
             SequentialCommandGroup(
                 goToSourceCommand(drive, closerToBaseLine),
-                sourceIntakeCommand(shooter)
+                sourceIntakeCommand(shooter, intake)
             )
 
         fun goWithinSpeakerCommand(drive: SwerveDriveBase): Command {
@@ -137,13 +137,18 @@ class Autos private constructor() {
                 shooter.stopCommand()
             )
 
-        fun sourceIntakeCommand(shooter: ShooterSubsystem): Command =
-            shooter.takeInCommand()
+        fun sourceIntakeCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command {
+            return SequentialCommandGroup(
+                    intake.armUpCommand(),
+                    shooter.takeInCommand(),
+                    intake.takeInCommand()
+            )
+        }
 
-        fun driveUpAndIntakeSourceCommand(drive: SwerveDriveBase, shooter: ShooterSubsystem, closerToBaseLine: Boolean): Command =
+        fun driveUpAndIntakeSourceCommand(drive: SwerveDriveBase, shooter: ShooterSubsystem, closerToBaseLine: Boolean, intake: IntakeSubsystem): Command =
             SequentialCommandGroup(
                 goToSourceCommand(drive, closerToBaseLine),//fix closer to baseline
-                sourceIntakeCommand(shooter)
+                sourceIntakeCommand(shooter, intake)
             )
 
         fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
