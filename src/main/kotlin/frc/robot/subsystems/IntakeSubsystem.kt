@@ -13,9 +13,6 @@ class IntakeSubsystem: SubsystemBase() {
     val armMotor = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
     val armEncoder: RelativeEncoder = armMotor.encoder
     val armPIDController = PIDController(1.0/50,0.0,0.0)
-    //todo: extra motor for powered arm
-    val ShuffleboardTab: ShuffleboardTab = Shuffleboard.getTab("Intake")
-    val intakeArmEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder(ARM)", 0.0).entry
 
     companion object {
         const val INTAKE_SPEED = 0.3
@@ -25,11 +22,6 @@ class IntakeSubsystem: SubsystemBase() {
 
     init {
         armEncoder.positionConversionFactor = 3 / 2 / 1.0
-        ShuffleboardTab.add("Up", armUpCommand()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Down", armDownCommand()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Stop arm + intake", stopAllCommand()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Take in", takeInCommand()).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Take out", takeOutCommand()).withWidget(BuiltInWidgets.kCommand)
     }
 
     fun stopIntake(): Command =
