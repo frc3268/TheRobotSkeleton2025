@@ -136,7 +136,7 @@ class Autos private constructor() {
                     shooter.shootCommand(),
                     WaitCommand(1.5),
                     intake.takeOutCommand(),
-                    WaitCommand(1.5),
+                    WaitCommand(0.75),
                     shooter.stopCommand(),
                     intake.stopIntake()
             )

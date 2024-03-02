@@ -58,7 +58,7 @@ class IntakeSubsystem:SubsystemBase() {
         runOnce { intakeMotor.set(0.3) }
 
     fun setOuttake(): Command =
-        runOnce { intakeMotor.set(-0.5) }
+        runOnce { intakeMotor.set(-0.3) }
 
     fun poweredArmUpCommand(): Command =
         run {
