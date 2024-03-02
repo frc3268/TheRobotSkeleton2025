@@ -5,13 +5,13 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
 import frc.robot.commands.Autos
 import frc.robot.commands.SwerveJoystickDrive
-import frc.robot.subsystems.ClimberSubsystem
+import frc.robot.subsystems.LeftClimberSubsystem
 import frc.robot.subsystems.IntakeSubsystem
+import frc.robot.subsystems.RightClimberSubsystem
 import frc.robot.subsystems.ShooterSubsystem
 
 /**
@@ -30,7 +30,8 @@ class RobotContainer {
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
     val shooterSubsystem = ShooterSubsystem()
-    val climberSubsystem = ClimberSubsystem()
+    val leftClimberSubsystem = LeftClimberSubsystem()
+    val rightClimberSubsystem = RightClimberSubsystem()
 
     private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
@@ -41,9 +42,9 @@ class RobotContainer {
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
-        { 0.0 },
+        { -driverController.getRawAxis(4) },
             //-driverController.getRawAxis(2)
-        { false }
+        { true }
     )
 
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
@@ -75,17 +76,15 @@ class RobotContainer {
         startingPositionChooser.setDefaultOption("Blue 3", null)
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Floor Note", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, true, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, false, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Amp Shot", intakeSubsystem.ampCommand()).withWidget(BuiltInWidgets.kCommand)
+        ShuffleboardTab.add("Source Intake", intakeSubsystem.sourceCommand())
 
 
-
-        UffleboardTab.add("left down", climberSubsystem.leftdown()).withWidget(BuiltInWidgets.kCommand)
-        UffleboardTab.add("left up", climberSubsystem.leftup()).withWidget(BuiltInWidgets.kCommand)
-        UffleboardTab.add("right up", climberSubsystem.rightup()).withWidget(BuiltInWidgets.kCommand)
-        UffleboardTab.add("right down", climberSubsystem.rightdown()).withWidget(BuiltInWidgets.kCommand)
-        UffleboardTab.add("climber stop", climberSubsystem.stop()).withWidget(BuiltInWidgets.kCommand)
+        UffleboardTab.add("climber down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        UffleboardTab.add("climber up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        UffleboardTab.add("climber reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        UffleboardTab.add("climber stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
         /*
       TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
       URGENT URGENT!
@@ -111,9 +110,9 @@ class RobotContainer {
         // Schedule ExampleCommand when exampleCondition changes to true
         //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
 
-        driverController.button(7).onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
-        driverController.button(5).onTrue(intakeSubsystem.poweredArmDownCommand())
-        driverController.button(8).onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
+        driverController.leftBumper().onTrue(intakeSubsystem.poweredArmDownCommand())
+        driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
         driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
         driverController.a().onTrue(intakeSubsystem.poweredArmUpCommand())
         driverController.b().onTrue(intakeSubsystem.stopIntake())

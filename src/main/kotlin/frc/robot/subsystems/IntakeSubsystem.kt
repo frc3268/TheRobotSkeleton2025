@@ -19,7 +19,7 @@ class IntakeSubsystem:SubsystemBase() {
     val intakeMotor = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
     val armMotor = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
     val armEncoder: RelativeEncoder = armMotor.encoder
-    val armPIDController = PIDController(0.005,0.0,0.0)
+    val armPIDController = PIDController(1.0/50,0.0,0.0)
     //todo: extra motor for powered arm
     val ShuffleboardTab:ShuffleboardTab = Shuffleboard.getTab("intake")
     val intakeArmEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder(ARM)", 0.0).entry
@@ -52,23 +52,50 @@ class IntakeSubsystem:SubsystemBase() {
             stopArm()
         )
 
+    fun basedMomento(): Command =
+            runOnce{intakeMotor.set(-1.0)}
     fun setIntake(): Command =
         runOnce { intakeMotor.set(0.3) }
 
     fun setOuttake(): Command =
-        runOnce { intakeMotor.set(-0.3) }
+        runOnce { intakeMotor.set(-0.5) }
 
     fun poweredArmUpCommand(): Command =
         run {
-            armMotor.set(-0.5)
+            armMotor.set(armPIDController.calculate(getPoweredArmMeasurement().degrees, -5.0))
         }
-            .until { getPoweredArmMeasurement().degrees < 15.0 }
+            .until {getPoweredArmMeasurement().degrees < 0.05 }
             .andThen(stopArm())
 
     fun poweredArmDownCommand(): Command =
-        run { armMotor.set(0.7) }
-            .until { getPoweredArmMeasurement().degrees > 270.0 }
+        run { armMotor.set(armPIDController.calculate(getPoweredArmMeasurement().degrees, 270.0)) }
+            .until { getPoweredArmMeasurement().degrees > 260.0 }
             .andThen(stopArm())
+
+    fun poweredArmAmpCommand(): Command =
+            run {
+                armMotor.set(armPIDController.calculate(getPoweredArmMeasurement().degrees, 105.0))
+            }
+                    .until { getPoweredArmMeasurement().degrees > 100.0 }
+                    .andThen(stopArm())
+
+    fun ampCommand(): Command =
+            SequentialCommandGroup(
+                    poweredArmAmpCommand(),
+                    basedMomento(),
+                    WaitCommand(2.0),
+                    stopIntake(),
+                    poweredArmUpCommand()
+            )
+
+    fun sourceCommand(): Command =
+            SequentialCommandGroup(
+                    poweredArmAmpCommand(),
+                    setIntake(),
+                    WaitCommand(2.0),
+                    stopIntake(),
+                    poweredArmUpCommand()
+            )
 
     fun takeInCommand(): Command =
         SequentialCommandGroup(
@@ -98,6 +125,7 @@ class IntakeSubsystem:SubsystemBase() {
         armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
+        System.out.println(armEncoder.position)
 
     }
 

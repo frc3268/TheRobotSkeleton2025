@@ -6,14 +6,13 @@ import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.Commands.runOnce
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.TrajectoryOrchestrator
 import frc.lib.utils.rotation2dFromDeg
-import frc.robot.subsystems.ExampleSubsystem
-import frc.robot.subsystems.IntakeSubsystem
-import frc.robot.subsystems.ShooterSubsystem
+import frc.robot.subsystems.*
 import kotlin.math.atan
 import kotlin.math.cos
 import kotlin.math.sin
@@ -111,12 +110,33 @@ class Autos private constructor() {
                     intake.poweredArmUpCommand()
             )
 
+        fun climberUp(left: LeftClimberSubsystem, right: RightClimberSubsystem): ParallelCommandGroup =
+                ParallelCommandGroup(
+                        left.up(),
+                        right.up()
+                )
+
+
+        fun climberDown(left: LeftClimberSubsystem, right: RightClimberSubsystem): ParallelCommandGroup =
+                ParallelCommandGroup(
+                        left.down(),
+                        right.down()
+                )
+
+
+        fun climberStop(left: LeftClimberSubsystem, right: RightClimberSubsystem): ParallelCommandGroup =
+                ParallelCommandGroup(
+                        left.stop(),
+                        right.stop()
+                )
+
+
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
                     shooter.shootCommand(),
-                    WaitCommand(0.2),
+                    WaitCommand(1.5),
                     intake.takeOutCommand(),
-                    WaitCommand(2.0),
+                    WaitCommand(1.5),
                     shooter.stopCommand(),
                     intake.stopIntake()
             )
