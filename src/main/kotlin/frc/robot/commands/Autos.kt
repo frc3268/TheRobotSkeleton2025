@@ -37,15 +37,15 @@ class Autos private constructor() {
         fun taxiAuto(drive: SwerveDriveBase): Command =
             goto(
                 drive,
-                Pose2d(-2.1336, 0.0, Rotation2d.fromDegrees(0.0)).relativeTo(drive.getPose()),
-                Pose2d(2.1336, 0.0, Rotation2d.fromDegrees(0.0)).relativeTo(drive.getPose())
+                Pose2d(drive.getPose().x-2.1336, drive.getPose().y, Rotation2d.fromDegrees(0.0)),
+                Pose2d(drive.getPose().x + 2.1336, drive.getPose().y, Rotation2d.fromDegrees(180.0))
             )
 
         fun goToSpeakerCommand(drive: SwerveDriveBase): Command =
             goto(
                 drive,
-                Pose2d(16.274542, 5.547868, 180.0.rotation2dFromDeg()),
-                Pose2d(1.6096, 5.547868, 0.0.rotation2dFromDeg())
+                Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
+                Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
             )
 
         fun goToAmpCommand(drive: SwerveDriveBase): Command =
