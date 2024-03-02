@@ -134,9 +134,9 @@ class Autos private constructor() {
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
                     shooter.shootCommand(),
-                    WaitCommand(1.5),
+                    WaitCommand(1.0),
                     intake.takeOutCommand(),
-                    WaitCommand(0.75),
+                    WaitCommand(1.2),
                     shooter.stopCommand(),
                     intake.stopIntake()
             )

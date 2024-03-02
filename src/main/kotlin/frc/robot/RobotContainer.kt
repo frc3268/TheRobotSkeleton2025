@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
+import frc.lib.constants.SwerveDriveConstants
 import frc.robot.commands.Autos
 import frc.robot.commands.SwerveJoystickDrive
 import frc.robot.subsystems.LeftClimberSubsystem
@@ -68,12 +69,12 @@ class RobotContainer {
 
         //todo! make these into the real poses from the field. How? idk
         startingPositionChooser.setDefaultOption("None", null)
-        startingPositionChooser.setDefaultOption("Red 1", null)
-        startingPositionChooser.setDefaultOption("Red 2", null)
-        startingPositionChooser.setDefaultOption("Red 3", null)
-        startingPositionChooser.setDefaultOption("Blue 1", null)
-        startingPositionChooser.setDefaultOption("Blue 2", null)
-        startingPositionChooser.setDefaultOption("Blue 3", null)
+        startingPositionChooser.setDefaultOption("Red 1", SwerveDriveConstants.coordinates.redStartA)
+        startingPositionChooser.setDefaultOption("Red 2", SwerveDriveConstants.coordinates.redStartB)
+        startingPositionChooser.setDefaultOption("Red 3", SwerveDriveConstants.coordinates.redStartC)
+        startingPositionChooser.setDefaultOption("Blue 1", SwerveDriveConstants.coordinates.blueStartA)
+        startingPositionChooser.setDefaultOption("Blue 2", SwerveDriveConstants.coordinates.blueStartB)
+        startingPositionChooser.setDefaultOption("Blue 3", SwerveDriveConstants.coordinates.blueStartC)
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)

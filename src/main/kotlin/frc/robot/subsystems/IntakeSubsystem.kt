@@ -101,7 +101,7 @@ class IntakeSubsystem:SubsystemBase() {
         SequentialCommandGroup(
             setIntake(),
             poweredArmDownCommand(),
-            WaitCommand(1.0),
+            WaitCommand(1.5),
             stopIntake(),
             poweredArmUpCommand()
         )
