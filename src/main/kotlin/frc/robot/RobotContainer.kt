@@ -17,7 +17,7 @@ import frc.robot.subsystems.*
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
-    private val GeneralTab = Shuffleboard.getTab("General")
+    private val generalTab = Shuffleboard.getTab("General")
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
@@ -42,7 +42,7 @@ class RobotContainer {
     init {
         driveSubsystem.defaultCommand = teleopCommand
 
-        GeneralTab
+        generalTab
             .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
@@ -52,17 +52,17 @@ class RobotContainer {
         autochooser.addOption("Wait 1 sec", WaitCommand(1.0))
         autochooser.addOption("Shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
 
-        GeneralTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("Shoot amp", intakeSubsystem.ampCommand()).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
+        generalTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        generalTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        generalTab.add("Shoot amp", intakeSubsystem.ampCommand()).withWidget(BuiltInWidgets.kCommand)
+        generalTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
 
-        GeneralTab.add("CLIMBER down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("CLIMBER up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("CLIMBER reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("CLIMBER stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
+        generalTab.add("CLIMBER down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        generalTab.add("CLIMBER up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        generalTab.add("CLIMBER reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        generalTab.add("CLIMBER stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
 
-        GeneralTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
+        generalTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
 
         /*
       TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
