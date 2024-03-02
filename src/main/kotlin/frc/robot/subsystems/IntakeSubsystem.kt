@@ -17,6 +17,7 @@ class IntakeSubsystem: SubsystemBase() {
         const val OUTTAKE_ADJUST_SPEED = -0.3
         const val OUTTAKE_SPEED = -0.9
         const val SHOOT_AMP_SPEED = -1.0
+        //based momento...
     }
 
     init {
