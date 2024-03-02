@@ -49,7 +49,7 @@ class Autos private constructor() {
                 Pose2d(2.1336, 0.0, Rotation2d.fromDegrees(0.0)).relativeTo(drive.getPose())
             )
 
-        fun goToSpeaker(drive: SwerveDriveBase): Command =
+        fun goToSpeakerCommand(drive: SwerveDriveBase): Command =
             goto(
                 drive,
                 Pose2d(15.579342, 5.547868, 180.0.rotation2dFromDeg()),
@@ -76,8 +76,8 @@ class Autos private constructor() {
 
         fun goToSourceAndIntakeCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
-                    goToSourceCommand(drive, closerToBaseLine),
-                    sourceIntakeCommand(shooter)
+                goToSourceCommand(drive, closerToBaseLine),
+                sourceIntakeCommand(shooter)
             )
 
         fun goWithinSpeakerCommand(drive: SwerveDriveBase): Command {
@@ -98,8 +98,8 @@ class Autos private constructor() {
 
         fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
-                    goToSpeaker(drive),
-                    intake.takeOutCommand().alongWith(shooter.shootCommand())
+                goToSpeakerCommand(drive),
+                shootSpeakerCommand(intake, shooter)
             )
 
         fun intakeAndUpCommand(intake: IntakeSubsystem): Command =
@@ -111,25 +111,22 @@ class Autos private constructor() {
             )
 
         fun climberUp(left: LeftClimberSubsystem, right: RightClimberSubsystem): ParallelCommandGroup =
-                ParallelCommandGroup(
-                        left.up(),
-                        right.up()
-                )
-
+            ParallelCommandGroup(
+                left.up(),
+                right.up()
+            )
 
         fun climberDown(left: LeftClimberSubsystem, right: RightClimberSubsystem): ParallelCommandGroup =
-                ParallelCommandGroup(
-                        left.down(),
-                        right.down()
-                )
-
+            ParallelCommandGroup(
+                left.down(),
+                right.down()
+            )
 
         fun climberStop(left: LeftClimberSubsystem, right: RightClimberSubsystem): ParallelCommandGroup =
-                ParallelCommandGroup(
-                        left.stop(),
-                        right.stop()
-                )
-
+            ParallelCommandGroup(
+                left.stop(),
+                right.stop()
+            )
 
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
@@ -143,9 +140,9 @@ class Autos private constructor() {
 
         fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
-                    shooter.ampCommand(),
-                    intake.takeOutCommand(),
-                    shooter.stopCommand()
+                shooter.ampCommand(),
+                intake.takeOutCommand(),
+                shooter.stopCommand()
             )
 
         fun sourceIntakeCommand(shooter: ShooterSubsystem): Command =
@@ -153,12 +150,15 @@ class Autos private constructor() {
 
         fun driveUpAndIntakeSourceCommand(drive: SwerveDriveBase, shooter: ShooterSubsystem, closerToBaseLine: Boolean): Command =
             SequentialCommandGroup(
-                    goToSourceCommand(drive, closerToBaseLine),//fix closer to baseline
-                    shooter.takeInCommand()
+                goToSourceCommand(drive, closerToBaseLine),//fix closer to baseline
+                sourceIntakeCommand(shooter)
             )
 
-        fun emergencyStopGearIntakeCommand(intake: IntakeSubsystem): Command =
-            intake.stopIntake()
+        fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
+            SequentialCommandGroup(
+                shooter.stopCommand(),
+                intake.stopAllCommand()
+            )
 
         //fun printToConsole(text: String): Command =
                 //runOnce { System.out.println(text) }

@@ -34,7 +34,7 @@ class ShooterSubsystem: SubsystemBase() {
         rightFlywheelMotor.stopMotor()
     }
 
-    fun stopCommand (): Command =
+    fun stopCommand(): Command =
         runOnce { stop() }
 
     /** This method will be called once per scheduler run  */
