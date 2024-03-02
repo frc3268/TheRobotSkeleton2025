@@ -4,8 +4,8 @@ import com.revrobotics.*
 import edu.wpi.first.wpilibj2.command.*
 
 open class LeftClimberSubsystem: SubsystemBase(){
-    private val motor = CANSparkMax(14, CANSparkLowLevel.MotorType.kBrushless)
-    private val encoder: RelativeEncoder = motor.encoder
+    open val motor = CANSparkMax(14, CANSparkLowLevel.MotorType.kBrushless)
+    open val encoder: RelativeEncoder = motor.encoder
 
     /* CONSTANTS */
     private val metersPerRotation: Double = 0.0

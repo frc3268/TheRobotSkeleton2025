@@ -97,10 +97,10 @@ class SwerveDriveConstants {
     }
     object modules{
         val list = listOf<ModuleConstants>(
-            ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0,false,true, PIDController(0.008,0.00,0.0007)),
-            ModuleConstants(2, Rotation2d.fromDegrees(-11.66), 3, 4, 1,false,true, PIDController(0.008,0.00,0.0007)),
-            ModuleConstants(3, Rotation2d.fromDegrees(-179.53), 5, 6, 2,false,true, PIDController(0.008,0.00,0.0007)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3,false,true, PIDController(0.008,0.00,0.0007))
+            ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0,false,true, PIDController(0.006,0.002,0.0007)),
+            ModuleConstants(2, Rotation2d.fromDegrees(-11.66), 3, 4, 1,false,true, PIDController(0.006,0.002,0.0007)),
+            ModuleConstants(3, Rotation2d.fromDegrees(-179.53), 5, 6, 2,false,true, PIDController(0.006,0.002,0.0007)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3,false,true, PIDController(0.006,0.002,0.0007))
         )
     }
 
