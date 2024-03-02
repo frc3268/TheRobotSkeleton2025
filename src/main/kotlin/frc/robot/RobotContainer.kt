@@ -51,29 +51,28 @@ class RobotContainer {
             .withSize(2, 1)
 
         autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
-        autochooser.addOption("Wait 1 sec", WaitCommand(1.0))
+        autochooser.addOption("Do nothing", WaitCommand(1.0))
         autochooser.addOption("Shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
         //TODO: Manny's code should replace this
-        autochooser.addOption("Shoot, Intake, Shoot", WaitCommand(1.0))
+        autochooser.addOption("Shoot, Intake, Shoot", Autos.driveUpShootSpeakerAndReturnToRingsCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
 
-        GeneralTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
+        GeneralTab.add("Drive and shoot speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("Ground intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("Source Intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
 
-        GeneralTab.add("CLIMBER down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("CLIMBER up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("CLIMBER stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBERS down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBERS up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBERS stop", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
 
+        // Troubleshooting tab holds manual controls for the climber and a reset for the arm encoder
+        TroubleshootingTab.add("CLIMBER L down", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBER L up", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
 
-        //troubleshooting tab holds manual controls for the climber and a reset for the arm encoder
-        TroubleshootingTab.add("left down", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
-        TroubleshootingTab.add("left up", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
-
-        TroubleshootingTab.add("right down", rightClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
-        TroubleshootingTab.add("right up", rightClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBER R down", rightClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBER R up", rightClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
 
         TroubleshootingTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
-        TroubleshootingTab.add("CLIMBER reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBERS reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
 
 
         /*
