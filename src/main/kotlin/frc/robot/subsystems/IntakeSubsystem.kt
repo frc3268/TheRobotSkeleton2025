@@ -18,6 +18,9 @@ class IntakeSubsystem: SubsystemBase() {
         const val OUTTAKE_SPEED = -0.9
         const val SHOOT_AMP_SPEED = -1.0
         //based momento...
+
+        const val UP_ANGLE = 0.05
+        const val DOWN_ANGLE = 275.0
     }
 
     init {
@@ -46,15 +49,13 @@ class IntakeSubsystem: SubsystemBase() {
         runOnce { intakeMotor.set(speed) }
 
     fun armUpCommand(): Command =
-        run {
-            armMotor.set(armPIDController.calculate(getArmPosition().degrees, -3.0))
-        }
-            .until { getArmPosition().degrees < 0.05 }
+        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, UP_ANGLE)) }
+            .until { getArmPosition().degrees < UP_ANGLE }
             .andThen(stopArm())
 
     fun armDownCommand(): Command =
-        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, 280.0)) }
-            .until { getArmPosition().degrees > 275.0 }
+        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, DOWN_ANGLE)) }
+            .until { getArmPosition().degrees > DOWN_ANGLE }
             .andThen(stopArm())
 
     fun toggleArmCommand(): Command =
@@ -109,10 +110,10 @@ class IntakeSubsystem: SubsystemBase() {
         )
 
     fun runOnceIntake(): Command =
-            runIntakeAtSpeed(INTAKE_SPEED).andThen(stopIntake())
+        runIntakeAtSpeed(INTAKE_SPEED).andThen(stopIntake())
 
     fun runOnceOuttake(): Command =
-            runIntakeAtSpeed(OUTTAKE_ADJUST_SPEED).andThen(stopIntake())
+        runIntakeAtSpeed(OUTTAKE_ADJUST_SPEED).andThen(stopIntake())
 
     fun zeroArmEncoderCommand(): Command =
         runOnce { armEncoder.position = 0.0 }
@@ -121,7 +122,11 @@ class IntakeSubsystem: SubsystemBase() {
         armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
-        println("Arm encoder position: " + armEncoder.position)
+        println("Arm angle: " + getArmPosition().degrees)
+
+        // Stop arm guard in case it screws itself over
+        if (getArmPosition().degrees !in -4.0..290.0)
+            stopArm()
     }
 
     override fun simulationPeriodic() {
