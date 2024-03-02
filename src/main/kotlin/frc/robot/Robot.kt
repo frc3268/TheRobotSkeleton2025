@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
+import frc.lib.constants.SwerveDriveConstants
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -12,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-class Robot : TimedRobot() {
+class Robot: TimedRobot() {
     private var autonomousCommand: Command? = null
     private var robotContainer: RobotContainer? = null
 
@@ -56,6 +57,12 @@ class Robot : TimedRobot() {
         if(robotContainer?.startingPositionChooser?.selected != null){
             robotContainer?.driveSubsystem?.zeroPoseToFieldPositionCommand(robotContainer?.startingPositionChooser?.selected!!)
         }
+
+        robotContainer?.driveSubsystem?.zeroPoseToFieldPositionCommand(
+            SwerveDriveConstants.startCoordinates
+                [DriverStation.getAlliance().get()]!!
+                [DriverStation.getLocation().asInt - 1]
+        )
 
         // Schedule the autonomous command (example)
         // Note the Kotlin safe-call(?.), this ensures autonomousCommand is not null before scheduling it

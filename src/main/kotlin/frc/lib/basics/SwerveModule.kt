@@ -39,14 +39,14 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
     init {
         absoluteEncoder.distancePerRotation =
-            SwerveDriveConstants.EncoderConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
+            SwerveDriveConstants.Encoder.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
         absoluteEncoder.positionOffset = moduleConstants.ANGLE_OFFSET.degrees
         driveEncoder.positionConversionFactor =
-            SwerveDriveConstants.DriveMotorConsts.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION
+            SwerveDriveConstants.DriveMotor.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION
         driveEncoder.velocityConversionFactor =
-            SwerveDriveConstants.DriveMotorConsts.VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND
+            SwerveDriveConstants.DriveMotor.VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND
         angleEncoder.positionConversionFactor =
-            SwerveDriveConstants.AngleMotorConsts.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
+            SwerveDriveConstants.AngleMotor.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
 
         driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
         angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED

@@ -25,7 +25,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     var poseEstimator: SwerveDrivePoseEstimator
     val camera:Camera
     private val modules: List<SwerveModule> =
-        SwerveDriveConstants.modules.list.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
+        SwerveDriveConstants.modules.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
     private val gyro = AHRS(SPI.Port.kMXP)
 
     private var joystickControlledEntry: GenericEntry = ShuffleboardTab

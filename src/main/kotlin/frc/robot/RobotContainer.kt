@@ -32,7 +32,6 @@ class RobotContainer {
     private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
     val autochooser = SendableChooser<Command>()
-    val startingPositionChooser = SendableChooser<Pose2d?>()
 
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
@@ -53,35 +52,19 @@ class RobotContainer {
             .withPosition(0, 0)
             .withSize(2, 1)
 
-        autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
-        autochooser.addOption("nothing", WaitCommand(1.0))
-        autochooser.addOption("shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
-
-        ShuffleboardTab
-            .add("Starting Position", startingPositionChooser)
-            .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withPosition(0, 1)
-            .withSize(2, 1)
-
-        //todo! make these into the real poses from the field. How? idk
-        startingPositionChooser.setDefaultOption("None", null)
-        startingPositionChooser.setDefaultOption("Red 1", SwerveDriveConstants.coordinates.redStartA)
-        startingPositionChooser.setDefaultOption("Red 2", SwerveDriveConstants.coordinates.redStartB)
-        startingPositionChooser.setDefaultOption("Red 3", SwerveDriveConstants.coordinates.redStartC)
-        startingPositionChooser.setDefaultOption("Blue 1", SwerveDriveConstants.coordinates.blueStartA)
-        startingPositionChooser.setDefaultOption("Blue 2", SwerveDriveConstants.coordinates.blueStartB)
-        startingPositionChooser.setDefaultOption("Blue 3", SwerveDriveConstants.coordinates.blueStartC)
+        autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
+        autochooser.addOption("Do nothing for 1 sec", WaitCommand(1.0))
+        autochooser.addOption("Shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
 
         ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Ground Intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Amp Shot", intakeSubsystem.ampCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Source Intake", intakeSubsystem.armUpAndIntakeCommand())
 
-
-        ClimberTab.add("climber down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ClimberTab.add("climber up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ClimberTab.add("climber reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ClimberTab.add("climber stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
+        ClimberTab.add("Climber down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ClimberTab.add("Climber up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ClimberTab.add("Climber reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        ClimberTab.add("Climber stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
         /*
       TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
       URGENT URGENT!
