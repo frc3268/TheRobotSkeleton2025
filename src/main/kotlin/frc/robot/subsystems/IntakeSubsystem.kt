@@ -20,7 +20,7 @@ class IntakeSubsystem: SubsystemBase() {
         //based momento...
 
         const val UP_ANGLE = 0.05
-        const val DOWN_ANGLE = 275.0
+        const val DOWN_ANGLE = 270.0
     }
 
     init {
@@ -49,12 +49,12 @@ class IntakeSubsystem: SubsystemBase() {
         runOnce { intakeMotor.set(speed) }
 
     fun armUpCommand(): Command =
-        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, UP_ANGLE)) }
+        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, UP_ANGLE-5.0)) }
             .until { getArmPosition().degrees < UP_ANGLE }
             .andThen(stopArm())
 
     fun armDownCommand(): Command =
-        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, DOWN_ANGLE)) }
+        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, DOWN_ANGLE+5.0)) }
             .until { getArmPosition().degrees > DOWN_ANGLE }
             .andThen(stopArm())
 
@@ -108,6 +108,9 @@ class IntakeSubsystem: SubsystemBase() {
             armUpCommand(),
             runIntakeAtSpeed(OUTTAKE_SPEED)
         )
+
+    fun runIntakeCommand():Command =
+        runIntakeAtSpeed(INTAKE_SPEED)
 
     fun runOnceIntake(): Command =
         runIntakeAtSpeed(INTAKE_SPEED).andThen(stopIntake())

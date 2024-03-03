@@ -141,7 +141,9 @@ class Autos private constructor() {
             return SequentialCommandGroup(
                     intake.armUpCommand(),
                     shooter.takeInCommand(),
-                    intake.takeInCommand()
+                    intake.runIntakeCommand(),
+                WaitCommand(0.5),
+                intake.stopIntake()
             )
         }
 
@@ -151,7 +153,26 @@ class Autos private constructor() {
                 sourceIntakeCommand(shooter, intake)
             )
 
-        fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
+        fun driveUpShootSpeakerAndReturnToRingsCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
+            SequentialCommandGroup(
+                goToSpeakerCommand(drive),
+                shootSpeakerCommand(intake, shooter),
+                /** 8.2927 - 0.1524 - 0.3556 math for blue, 8.2927 + 0.1524 + 0.3556 math for red
+                these should be correct but someone should check my math
+                the y should be correct and the x was found by adding the width of the starting zone + the width of the distance from the
+                starting zone to the ring, then depending on what team we are on the width of the ring + about half a foot is added or subtracted**/
+                goto(drive, Pose2d(8.8007, 0.752856, 0.0.rotation2dFromDeg()), Pose2d(7.7847, 0.752856, 0.0.rotation2dFromDeg())),
+                intakeAndUpCommand(intake),
+                goToSpeakerCommand(drive),
+                shootSpeakerCommand(intake, shooter)
+
+            )
+
+
+
+
+
+    fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
             SequentialCommandGroup(
                 shooter.stopCommand(),
                 intake.stopAllCommand()
