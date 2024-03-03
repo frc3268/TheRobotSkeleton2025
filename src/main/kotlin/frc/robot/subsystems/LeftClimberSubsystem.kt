@@ -32,7 +32,7 @@ class LeftClimberSubsystem: SubsystemBase(){
             .andThen(runOnce { motor.stopMotor() })
 
     fun up(): Command =
-        run { motor.set(0.7) }
+        run { motor.set(0.9) }
             .until { encoder.position > 0.9 }
             .andThen(runOnce { motor.stopMotor() })
 
