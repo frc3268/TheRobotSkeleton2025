@@ -53,12 +53,16 @@ class Robot: TimedRobot() {
     /** This autonomous runs the autonomous command selected by your [RobotContainer] class.  */
     override fun autonomousInit() {
         autonomousCommand = robotContainer?.autochooser?.selected
-
+        robotContainer?.driveSubsystem?.zeroYaw()
+        /*
+        TODO: this may need to be deleted
         robotContainer?.driveSubsystem?.zeroPoseToFieldPositionCommand(
             SwerveDriveConstants.startCoordinates
                 [DriverStation.getAlliance().get()]!!
                 [DriverStation.getLocation().asInt - 1]
         )
+        */
+
 
         // Schedule the autonomous command (example)
         // Note the Kotlin safe-call(?.), this ensures autonomousCommand is not null before scheduling it

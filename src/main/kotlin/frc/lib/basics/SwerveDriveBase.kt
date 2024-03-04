@@ -37,10 +37,13 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
 
     private var poseYEntry = ShuffleboardTab.add("Pose Y", 0.0).entry
 
-    var yawOffset:Double = 0.0
+    private var yawOffset:Double = 0.0
+
+    private val camera:Camera
+
+
     init {
-
-
+        camera = Camera("hawkeye", "")
         gyro.reset()
        //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
@@ -58,12 +61,18 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     }
 
     override fun periodic() {
+        //estimate robot pose based on what the encoders say
         poseEstimator.update(getYaw(), getModulePositions())
+        //estimate robot pose based on what the camera sees
+        val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
+        visionEst?.ifPresent { est ->
+           poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, camera.getEstimationStdDevs(est.estimatedPose.toPose2d()))
+        }
+        //update module tabs on shuffleboard
         for (mod in modules){
             mod.updateShuffleboard()
         }
-        //estimate robot pose based on what the camera sees
-
+        //update drivetrain tab on shuffleboard
         field.robotPose = getPose()
         poseXEntry.setDouble(getPose().x)
         poseYEntry.setDouble(getPose().y)
@@ -76,9 +85,6 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
             modules[x].setPointEntry.setDouble(state.angle.degrees)
         }
     }
-
-
-
 
     fun zeroYaw() {
         gyro.reset()
@@ -144,7 +150,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         return run {
             setModuleStates(
                 constructModuleStatesFromChassisSpeeds(
-                -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
+                SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
                 SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.y),
                 SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getYaw().degrees,  endPose.rotation.degrees),
                 true
@@ -154,15 +160,21 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
 
     fun getYaw(): Rotation2d = (gyro.rotation2d.degrees + yawOffset).IEEErem(360.0).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
-    fun getPose():Pose2d = Pose2d(-poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
+    fun getPose():Pose2d = Pose2d(poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
     fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
 
-    fun zeroPoseToFieldPositionCommand(startingPose: Pose2d){
+    fun zeroPoseToFieldPosition(startingPose: Pose2d){
+        yawOffset = startingPose.rotation.degrees
+        resetModulesToAbsolute()
+        poseEstimator.resetPosition(getYaw(), getModulePositions(), startingPose)
+    }
 
-        yawOffset = 180.0
-            resetModulesToAbsolute()
-            poseEstimator.resetPosition(getYaw(), getModulePositions(), startingPose)
+    fun zeroPoseToCameraPosition(){
+        val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
+        visionEst?.ifPresent { est ->
+            zeroPoseToFieldPosition(est.estimatedPose.toPose2d())
+        }
     }
 
 }

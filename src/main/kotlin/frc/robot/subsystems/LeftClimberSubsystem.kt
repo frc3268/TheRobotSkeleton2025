@@ -40,7 +40,7 @@ class LeftClimberSubsystem: SubsystemBase(){
         runOnce { encoder.position = 0.0 }
 
     fun testup():Command =
-            runOnce() { motor.set(0.2) }
+            runOnce { motor.set(0.2) }
 
     fun testdown():Command =
             runOnce { motor.set(-0.2) }
