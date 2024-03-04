@@ -70,7 +70,7 @@ object SwerveDriveConstants {
         const val VOLTAGE_COMPENSATION: Double = 12.0
 
         /* Swerve Profiling Values */
-        const val MAX_SPEED_METERS_PER_SECOND = 4.0
+        const val MAX_SPEED_METERS_PER_SECOND = 5.0
         const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 200.0
         const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2.0
 
@@ -96,10 +96,10 @@ object SwerveDriveConstants {
         )
     }
     val modules = listOf<ModuleConstants>(
-        ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0, false, true, PIDController(0.008, 0.002, 0.0003)),
-        ModuleConstants(2, Rotation2d.fromDegrees(-11.66), 3, 4, 1, false, true, PIDController(0.008, 0.002, 0.0003)),
-        ModuleConstants(3, Rotation2d.fromDegrees(-179.53), 5, 6, 2, false, true, PIDController(0.008, 0.002, 0.0003)),
-        ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, true, PIDController(0.008, 0.002, 0.0003))
+        ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0, false, true, PIDController(0.009, 0.003, 0.0003)),
+        ModuleConstants(2, Rotation2d.fromDegrees(-11.66), 3, 4, 1, false, true, PIDController(0.009, 0.003, 0.0003)),
+        ModuleConstants(3, Rotation2d.fromDegrees(-179.53), 5, 6, 2, false, true, PIDController(0.009, 0.003, 0.0003)),
+        ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, true, PIDController(0.009, 0.003, 0.0003))
     )
     val startCoordinates = mapOf(
         // Starting x values

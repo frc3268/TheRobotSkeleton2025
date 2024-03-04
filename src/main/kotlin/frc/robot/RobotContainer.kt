@@ -21,6 +21,8 @@ class RobotContainer {
     private val TroubleshootingTab = Shuffleboard.getTab("Troubleshooting")
 
 
+
+
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
     val shooterSubsystem = ShooterSubsystem()
@@ -52,11 +54,11 @@ class RobotContainer {
 
         autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
         autochooser.addOption("Do nothing", WaitCommand(1.0))
-        autochooser.addOption("Shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
-        //TODO: Manny's code should replace this
+        autochooser.addOption("Shoot to speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        autochooser.addOption("Shoot to speaker + taxi", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem).andThen(Autos.taxiAuto(driveSubsystem)))
         autochooser.addOption("Shoot, Intake, Shoot", Autos.driveUpShootSpeakerAndReturnToRingsCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
 
-        GeneralTab.add("Drive and shoot speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("shoot speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         GeneralTab.add("Ground intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
         GeneralTab.add("Source Intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
 
@@ -76,10 +78,6 @@ class RobotContainer {
         TroubleshootingTab.add("CLIMBERS reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
         TroubleshootingTab.add("CLIMBERS stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
 
-        /*
-      TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
-      URGENT URGENT!
-       */
 
         // Configure the trigger bindings
         configureBindings()
@@ -97,39 +95,46 @@ class RobotContainer {
         //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
 
         /*
-        LT:
+        LT (Intake):
             1) Arm down if not already down
             2) Intake
             3) Arm up
          */
         driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
+
         /*
-        RT:
+        RT (Shoot):
             1) Rev up shooter
             2) Run intake in reverse to feed it into shooter
             This assumes the arm is already up. If it's down, the note will be shot back onto the ground.
          */
         driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+
         /*
-        RB: Intake note from source
+        LB: Intake note from source
          */
-        driverController.rightBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
+        driverController.leftBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
+
         /*
-        X: Bring the arm down if it's up, otherwise bring it up.
-        (For emergency use)
-         */
-        driverController.x().onTrue(intakeSubsystem.toggleArmCommand())
-        /*
-        Y: Stop the intake gears, the arm, and the shooter.
+        Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
         (The intention is to be able to prevent damage if the encoder is faulty and damaging any moving parts.)
          */
         driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem))
 
-
+        /*
+        A and B run intake in and out respectively
+         */
         driverController.a().onTrue(intakeSubsystem.runOnceIntake())
+        driverController.a().onFalse(intakeSubsystem.stopIntake())
 
         driverController.b().onTrue(intakeSubsystem.runOnceOuttake())
+        driverController.b().onFalse(intakeSubsystem.stopIntake())
 
+        /*
+        POV up and down bring arm up and down
+         */
+        driverController.povUp().onTrue(intakeSubsystem.armUpCommand())
+        driverController.povDown().onTrue(intakeSubsystem.armDownCommand())
     }
 
     /**

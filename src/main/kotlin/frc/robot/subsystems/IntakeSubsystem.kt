@@ -48,6 +48,7 @@ class IntakeSubsystem: SubsystemBase() {
     fun runIntakeAtSpeed(speed: Double): Command =
         runOnce { intakeMotor.set(speed) }
 
+
     fun armUpCommand(): Command =
         run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, UP_ANGLE-5.0)) }
             .until { getArmPosition().degrees < UP_ANGLE }
@@ -59,7 +60,7 @@ class IntakeSubsystem: SubsystemBase() {
             .andThen(stopArm())
 
     fun toggleArmCommand(): Command =
-        if (getArmPosition().degrees < 100.0)
+        if (getArmPosition().degrees > 100.0)
             armUpCommand()
         else
             armDownCommand()
@@ -113,10 +114,10 @@ class IntakeSubsystem: SubsystemBase() {
         runIntakeAtSpeed(INTAKE_SPEED)
 
     fun runOnceIntake(): Command =
-        runIntakeAtSpeed(INTAKE_SPEED).andThen(stopIntake())
+        runIntakeAtSpeed(INTAKE_SPEED)
 
     fun runOnceOuttake(): Command =
-        runIntakeAtSpeed(OUTTAKE_ADJUST_SPEED).andThen(stopIntake())
+        runIntakeAtSpeed(OUTTAKE_ADJUST_SPEED)
 
     fun zeroArmEncoderCommand(): Command =
         runOnce { armEncoder.position = 0.0 }
@@ -125,11 +126,15 @@ class IntakeSubsystem: SubsystemBase() {
         armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
-        println("Arm angle: " + getArmPosition().degrees)
+       // println("Arm angle: " + getArmPosition().degrees)
 
         // Stop arm guard in case it screws itself over
-        if (getArmPosition().degrees !in -4.0..290.0)
-            stopArm()
+        if (getArmPosition().degrees >= 290.0){
+            armUpCommand().schedule()
+        } else if (getArmPosition().degrees <= -10.0){
+            armDownCommand().schedule()
+        }
+
     }
 
     override fun simulationPeriodic() {

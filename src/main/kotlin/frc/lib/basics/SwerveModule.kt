@@ -49,8 +49,8 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
         angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
 
-        driveMotor.setOpenLoopRampRate(0.9)
-        angleMotor.setOpenLoopRampRate(0.9)
+        driveMotor.setOpenLoopRampRate(SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS)
+        angleMotor.setOpenLoopRampRate(SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS)
 
         turnController.enableContinuousInput(-180.0, 180.0)
 
@@ -70,8 +70,8 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     }
 
     private fun getAbsoluteEncoderMeasurement(): Rotation2d = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
-    fun getState() = SwerveModuleState(driveEncoder.velocity, (angleEncoder.position.IEEErem(360.0).rotation2dFromDeg()))
-    fun getPosition() = SwerveModulePosition(driveEncoder.position, angleEncoder.position.IEEErem(360.0).rotation2dFromDeg())
+    fun getState() = SwerveModuleState(driveEncoder.velocity, ( getAbsoluteEncoderMeasurement().degrees.IEEErem(360.0).rotation2dFromDeg()))
+    fun getPosition() = SwerveModulePosition(driveEncoder.position, getAbsoluteEncoderMeasurement().degrees.IEEErem(360.0).rotation2dFromDeg())
 
     fun setDesiredState(desiredState: SwerveModuleState){
         if (abs(desiredState.speedMetersPerSecond) < 0.01){

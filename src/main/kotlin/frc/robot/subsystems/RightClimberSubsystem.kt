@@ -48,6 +48,10 @@ class RightClimberSubsystem: SubsystemBase(){
         runOnce { motor.set(0.0) }
 
     override fun periodic() {
-        System.out.println("Right climber: " + encoder.position)
+        //System.out.println("Right climber: " + encoder.position)
+
+        if(encoder.position !in -0.1..1.1){
+            //stop().schedule()
+        }
     }
 }

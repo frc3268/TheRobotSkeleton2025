@@ -49,6 +49,9 @@ class LeftClimberSubsystem: SubsystemBase(){
         runOnce { motor.set(0.0) }
 
     override fun periodic() {
-        System.out.println("Left climber: " + encoder.position)
+        //System.out.println("Left climber: " + encoder.position)
+        if(encoder.position !in -0.1..1.1){
+            //stop().schedule()
+        }
     }
 }

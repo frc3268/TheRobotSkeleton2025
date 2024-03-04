@@ -159,12 +159,8 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
     fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
 
     fun zeroPoseToFieldPositionCommand(startingPose: Pose2d){
-        DriverStation.getAlliance().ifPresent {
-            color ->
-            if(color == DriverStation.Alliance.Blue){
-                yawOffset = 180.0
-            }
-        }
+
+        yawOffset = 180.0
             resetModulesToAbsolute()
             poseEstimator.resetPosition(getYaw(), getModulePositions(), startingPose)
     }

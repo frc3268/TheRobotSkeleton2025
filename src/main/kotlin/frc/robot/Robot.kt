@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
+import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import frc.lib.constants.SwerveDriveConstants
 
 /**
@@ -52,7 +53,6 @@ class Robot: TimedRobot() {
     /** This autonomous runs the autonomous command selected by your [RobotContainer] class.  */
     override fun autonomousInit() {
         autonomousCommand = robotContainer?.autochooser?.selected
-        robotContainer?.driveSubsystem?.zeroYaw()
 
         robotContainer?.driveSubsystem?.zeroPoseToFieldPositionCommand(
             SwerveDriveConstants.startCoordinates
@@ -80,7 +80,10 @@ class Robot: TimedRobot() {
     }
 
     /** This function is called periodically during operator control.  */
-    override fun teleopPeriodic() {}
+    override fun teleopPeriodic() {
+
+
+    }
 
     /** This function is called once when test mode is enabled.  */
     override fun testInit() {
