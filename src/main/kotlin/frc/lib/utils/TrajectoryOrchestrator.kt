@@ -29,10 +29,7 @@ class TrajectoryOrchestrator {
         }
 
         //go directly to a point given by the argument "to"
-        fun beelineCommand(drive:SwerveDriveBase, to:Pose2d): SequentialCommandGroup  = SequentialCommandGroup(
-                drive.moveToPoseCommand(to),
-                InstantCommand({drive.stop()})
-            )
+
     }
 
 

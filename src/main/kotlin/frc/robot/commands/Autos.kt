@@ -31,7 +31,10 @@ class Autos private constructor() {
                     goalIfRed
                 else
                     goalOtherwise
-            return TrajectoryOrchestrator.beelineCommand(drive, to)
+            return SequentialCommandGroup(
+            drive.moveToPoseCommand(to),
+            InstantCommand({drive.stop()})
+            )
         }
 
         fun taxiAuto(drive: SwerveDriveBase): Command =
@@ -84,8 +87,9 @@ class Autos private constructor() {
             val pose = drive.getPose()
             val c = 1.0
             val theta = atan((pose.y - to.y) / (pose.x - to.x)).rotation2dFromDeg()
-            return TrajectoryOrchestrator.beelineCommand(
-                    drive, Pose2d(to.x + cos(theta.radians) * c, to.y + sin(theta.radians) * c, theta + pose.rotation))
+            return SequentialCommandGroup( drive.moveToPoseCommand(Pose2d(to.x + cos(theta.radians) * c, to.y + sin(theta.radians) * c, theta + pose.rotation)),
+            InstantCommand({drive.stop()}))
+
         }
 
         fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
