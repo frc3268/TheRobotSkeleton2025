@@ -19,23 +19,20 @@ class TrajectoryOrchestrator {
             // but I may hvae messed up. Please check the git history and roll back if it doesn't work.
             // -- Weiju
             val scg = SequentialCommandGroup(
-                drive.robotPoseToBCommand(startPose),
-                *points.map { drive.robotPoseToBCommand(Pose2d(it, drive.getYaw())) }.toTypedArray(),
-                drive.robotPoseToBCommand(endPose),
+                drive.moveToPoseCommand(startPose),
+                *points.map { drive.moveToPoseCommand(Pose2d(it, drive.getYaw())) }.toTypedArray(),
+                drive.moveToPoseCommand(endPose),
                 InstantCommand({ drive.stop() })
             )
             scg.addRequirements(drive)
             return scg
         }
 
-        fun beelineCommand(drive:SwerveDriveBase, to:Pose2d): SequentialCommandGroup {
-            val scg = SequentialCommandGroup(
-                drive.robotPoseToBCommand(to),
+        //go directly to a point given by the argument "to"
+        fun beelineCommand(drive:SwerveDriveBase, to:Pose2d): SequentialCommandGroup  = SequentialCommandGroup(
+                drive.moveToPoseCommand(to),
                 InstantCommand({drive.stop()})
             )
-            scg.addRequirements(drive)
-            return scg
-        }
     }
 
 

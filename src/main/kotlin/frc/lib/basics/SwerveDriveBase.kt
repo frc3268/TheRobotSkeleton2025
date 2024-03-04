@@ -6,7 +6,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.math.kinematics.*
 import edu.wpi.first.networktables.GenericEntry
-import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.*
@@ -43,6 +42,9 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
 
 
     init {
+        SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
+            360.0, 0.0
+        )
         camera = Camera("hawkeye", "")
         gyro.reset()
        //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
@@ -94,7 +96,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
             mod.resetToAbsolute()
         }
     }
-
+    
     fun setModuleStates(desiredStates: Array<SwerveModuleState>) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
 
@@ -136,17 +138,14 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
             }.until {joystickControlledEntry.getBoolean(true)})
     }
 
+    //reset yaw on gyro so that wherever the gyro is pointing is the new forward(0) value
     fun zeroHeadingCommand(): Command {
-        // Inline construction of command goes here.
-        // runOnce implicitly requires this subsystem.
         return runOnce { zeroYaw() }
     }
 
 
-    fun robotPoseToBCommand(endPose: Pose2d): Command{
-        SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
-            360.0, 0.0
-        )
+    //move robot to pose given in endpose argument
+    fun moveToPoseCommand(endPose: Pose2d): Command{
         return run {
             setModuleStates(
                 constructModuleStatesFromChassisSpeeds(
@@ -158,18 +157,21 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.05 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
     }
 
+    //getters
     fun getYaw(): Rotation2d = (gyro.rotation2d.degrees + yawOffset).IEEErem(360.0).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = Pose2d(poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
     fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
 
+    //sets poseEstimator's recorded position to a pose2d given in startingpose argument
     fun zeroPoseToFieldPosition(startingPose: Pose2d){
         yawOffset = startingPose.rotation.degrees
         resetModulesToAbsolute()
         poseEstimator.resetPosition(getYaw(), getModulePositions(), startingPose)
     }
 
+    //does the same thing as previous but with the camera finding the starting pose
     fun zeroPoseToCameraPosition(){
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
