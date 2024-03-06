@@ -171,13 +171,44 @@ class Autos private constructor() {
                 these should be correct but someone should check my math
                 the y should be correct and the x was found by adding the width of the starting zone + the width of the distance from the
                 starting zone to the ring, then depending on what team we are on the width of the ring + about half a foot is added or subtracted**/
-                goto(drive, Pose2d(8.8007, 0.752856, 0.0.rotation2dFromDeg()), Pose2d(7.7847, 0.752856, 0.0.rotation2dFromDeg())),
+                goto(drive, Pose2d(8.8007, 0.752856, 180.0.rotation2dFromDeg()), Pose2d(7.7847, 0.752856, 0.0.rotation2dFromDeg())),
                 intakeAndUpCommand(intake),
                 goToSpeakerCommand(drive),
                 shootSpeakerCommand(intake, shooter)
 
             )
-
+        /* This Auto Should shoot in the speaker, then go collect the three starting rings and shoot them
+        * however, we should only go for rings that we need to and our teamates cannot go to
+        * ex: we need to go to rings A & C but not B so we pass in [True, False, True]
+        * once the goToSpeakerCommand is updated adjust this function to use location*/
+        fun collectStartingRingsAndShoot(drive: SwerveDriveBase, intake: IntakeSubsytem, shooter: ShooterSubsytem, location: Int, rings:Array): Command {
+            val sequence:SequentialCommandGroup = SequentialCommandGroup()
+            sequence.add(goToSpeakerCommand(drive))
+            sequence.add(shootSpeakerCommand())
+            // ring closest to 0, 0
+            if (rings[0]) {
+                sequence.add(goto(drive, Pose2d(0.0, 0.0, 180.0.rotation2dFromDeg(), Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg()))))
+                sequence.add(intakeAndUpCommand(intake))
+                sequence.add(goToSpeakerCommand(drive))
+                sequence.add(shootSpeakerCommand(intake, shooter))
+            }
+            // ring above that
+            if (rings[1]) {
+                sequence.add(goto(drive, Pose2d(0.0, 0.0, 180.0.rotation2dFromDeg(), Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg()))))
+                sequence.add(intakeAndUpCommand(intake))
+                sequence.add(goToSpeakerCommand(drive))
+                sequence.add(shootSpeakerCommand(intake, shooter))
+            }
+            // ring above that
+            if (rings[2]) {
+                sequence.add(goto(drive, Pose2d(0.0, 0.0, 180.0.rotation2dFromDeg(), Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg()))))
+                sequence.add(intakeAndUpCommand(intake))
+                sequence.add(goToSpeakerCommand(drive))
+                sequence.add(shootSpeakerCommand(intake, shooter))
+            }
+            sequence.add(goto(drive, Pose2d(0.0, 0.0, 180.0.rotation2dFromDeg()), Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg())))
+            return sequence
+        }
 
 
 
