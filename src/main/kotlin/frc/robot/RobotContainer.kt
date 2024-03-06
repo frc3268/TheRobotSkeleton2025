@@ -1,21 +1,14 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.geometry.Translation2d
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
-import frc.lib.utils.TrajectoryOrchestrator
-import frc.robot.commands.Autos
-import frc.robot.commands.SwerveJoystickDrive
-import frc.robot.subsystems.ClimberSubsystem
-import frc.robot.subsystems.IntakeSubsystem
-import frc.robot.subsystems.ShooterSubsystem
+import frc.robot.commands.*
+import frc.robot.subsystems.*
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,76 +17,66 @@ import frc.robot.subsystems.ShooterSubsystem
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
-
-    private val ShuffleboardTab = Shuffleboard.getTab("General")
-    private val TroubleShootingTab = Shuffleboard.getTab("TroubleShooting")
-
+    private val GeneralTab = Shuffleboard.getTab("General")
+    private val TroubleshootingTab = Shuffleboard.getTab("Troubleshooting")
 
 
 
-    // The robot's subsystems and commands are defined here...
+
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
     val shooterSubsystem = ShooterSubsystem()
-    val climberSubsystem = ClimberSubsystem()
+    val leftClimberSubsystem = LeftClimberSubsystem()
+    val rightClimberSubsystem = RightClimberSubsystem()
 
-
-    // Replace with CommandPS4Controller or CommandJoystick if needed
     private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
     val autochooser = SendableChooser<Command>()
-    val startingPositionChooser = SendableChooser<Pose2d?>()
 
-
-    //this is the command called when teleop mode is enabled
-     val teleopCommand = SwerveJoystickDrive(
+    val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
-        { -driverController.getRawAxis(2) },
-        { !driverController.leftBumper().asBoolean }
+        { -driverController.getRawAxis(4) },
+            //-driverController.getRawAxis(2)
+        { true }
     )
+
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
         driveSubsystem.defaultCommand = teleopCommand
 
-        ShuffleboardTab
+        GeneralTab
             .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
             .withSize(2, 1)
 
-        autochooser.setDefaultOption("taxi", Autos.taxiAuto(driveSubsystem))
-        autochooser.addOption("shoot to speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
+        autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
+        autochooser.addOption("Do nothing", WaitCommand(1.0))
+        autochooser.addOption("Shoot to speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        autochooser.addOption("Shoot to speaker + taxi", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem).andThen(Autos.taxiAuto(driveSubsystem)))
+        autochooser.addOption("Shoot, Intake, Shoot", Autos.driveUpShootSpeakerAndReturnToRingsCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
 
-        ShuffleboardTab
-            .add("Starting Position", startingPositionChooser)
-            .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withPosition(0, 1)
-            .withSize(2, 1)
+        GeneralTab.add("shoot speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("Ground intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("Source Intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
 
-        //todo! make these into the real poses from the field. How? idk
-        startingPositionChooser.setDefaultOption("None", null)
-        startingPositionChooser.setDefaultOption("Red 1", null)
-        startingPositionChooser.setDefaultOption("Red 2", null)
-        startingPositionChooser.setDefaultOption("Red 3", null)
-        startingPositionChooser.setDefaultOption("Blue 1", null)
-        startingPositionChooser.setDefaultOption("Blue 2", null)
-        startingPositionChooser.setDefaultOption("Blue 3", null)
+        GeneralTab.add("CLIMBERS down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBERS up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("CLIMBERS stop", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
 
-        ShuffleboardTab.add("Drive and Shoot: Speaker", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Floor Note", Autos.groundIntakeCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Source Note: Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, true, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        ShuffleboardTab.add("Get Source Note: Not Closer To Baseline", Autos.goToSourceAndIntakeCommand(driveSubsystem, false, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        // Troubleshooting tab holds manual controls for the climber and a reset for the arm encoder
+        TroubleshootingTab.add("CLIMBER L down", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBER L up", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
 
-        /*
-      TODO: add 3 buttons (pos 1, 2, 3), to reset the robot's pose in the event of a camera failure
-      URGENT URGENT!
-       */
+        TroubleshootingTab.add("CLIMBER R down", rightClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBER R up", rightClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
 
+        TroubleshootingTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
 
-        TroubleShootingTab.add("Zero arm encoder", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
-
+        TroubleshootingTab.add("CLIMBERS reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBERS stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
 
 
         // Configure the trigger bindings
@@ -111,15 +94,47 @@ class RobotContainer {
         // Schedule ExampleCommand when exampleCondition changes to true
         //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
 
-        // Schedule exampleMethodCommand when the Xbox controller's B button is pressed,
-        // cancelling on release.
-        //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand())
-        driverController.a().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
-        driverController.b().onTrue(Autos.groundIntakeCommand(intakeSubsystem))
-        driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem))
-        driverController.y().onTrue(Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
+        /*
+        LT (Intake):
+            1) Arm down if not already down
+            2) Intake
+            3) Arm up
+         */
+        driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
 
+        /*
+        RT (Shoot):
+            1) Rev up shooter
+            2) Run intake in reverse to feed it into shooter
+            This assumes the arm is already up. If it's down, the note will be shot back onto the ground.
+         */
+        driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
 
+        /*
+        LB: Intake note from source
+         */
+        driverController.leftBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
+
+        /*
+        Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
+        (The intention is to be able to prevent damage if the encoder is faulty and damaging any moving parts.)
+         */
+        driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem))
+
+        /*
+        A and B run intake in and out respectively
+         */
+        driverController.a().onTrue(intakeSubsystem.runOnceIntake())
+        driverController.a().onFalse(intakeSubsystem.stopIntake())
+
+        driverController.b().onTrue(intakeSubsystem.runOnceOuttake())
+        driverController.b().onFalse(intakeSubsystem.stopIntake())
+
+        /*
+        POV up and down bring arm up and down
+         */
+        driverController.povUp().onTrue(intakeSubsystem.armUpCommand())
+        driverController.povDown().onTrue(intakeSubsystem.armDownCommand())
     }
 
     /**

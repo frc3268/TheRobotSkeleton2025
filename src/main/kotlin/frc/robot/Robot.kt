@@ -1,9 +1,12 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
+import edu.wpi.first.wpilibj2.command.Commands.runOnce
+import frc.lib.constants.SwerveDriveConstants
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -11,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-class Robot : TimedRobot() {
+class Robot: TimedRobot() {
     private var autonomousCommand: Command? = null
     private var robotContainer: RobotContainer? = null
 
@@ -51,10 +54,15 @@ class Robot : TimedRobot() {
     override fun autonomousInit() {
         autonomousCommand = robotContainer?.autochooser?.selected
         robotContainer?.driveSubsystem?.zeroYaw()
+        /*
+        TODO: this may need to be deleted
+        robotContainer?.driveSubsystem?.zeroPoseToFieldPositionCommand(
+            SwerveDriveConstants.startCoordinates
+                [DriverStation.getAlliance().get()]!!
+                [DriverStation.getLocation().asInt - 1]
+        )
+        */
 
-        if(robotContainer?.startingPositionChooser?.selected != null){
-            robotContainer?.driveSubsystem?.zeroPoseToFieldPositionCommand(robotContainer?.startingPositionChooser?.selected!!)
-        }
 
         // Schedule the autonomous command (example)
         // Note the Kotlin safe-call(?.), this ensures autonomousCommand is not null before scheduling it
@@ -76,7 +84,10 @@ class Robot : TimedRobot() {
     }
 
     /** This function is called periodically during operator control.  */
-    override fun teleopPeriodic() {}
+    override fun teleopPeriodic() {
+
+
+    }
 
     /** This function is called once when test mode is enabled.  */
     override fun testInit() {

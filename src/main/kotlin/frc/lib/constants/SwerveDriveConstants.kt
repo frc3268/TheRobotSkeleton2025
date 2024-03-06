@@ -7,19 +7,15 @@ for most constants used in this library.
  */
 package frc.lib.constants
 
-import edu.wpi.first.math.geometry.Pose2d
 import com.revrobotics.CANSparkBase
 import edu.wpi.first.math.controller.PIDController
-import edu.wpi.first.math.controller.ProfiledPIDController
-import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.math.geometry.*
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics
-import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.math.util.Units
+import edu.wpi.first.wpilibj.DriverStation
 import frc.lib.constants.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_METERS
-import edu.wpi.first.math.geometry.Pose2d
 
-class SwerveDriveConstants {
+object SwerveDriveConstants {
     data class ModuleConstants(
         val MODULE_NUMBER: Int,
         val ANGLE_OFFSET: Rotation2d,
@@ -38,7 +34,7 @@ class SwerveDriveConstants {
         const val DRIVE_KA: Double = 0.0
     }
 
-    object DriveMotorConsts {
+    object DriveMotor {
         const val GEAR_RATIO: Double = 8.14 / 1.0
         const val CONTINUOUS_CURRENT_LIMIT: Int = 80
         const val POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION: Double =
@@ -48,14 +44,14 @@ class SwerveDriveConstants {
         const val INVERT: Boolean = false
     }
 
-    object AngleMotorConsts {
+    object AngleMotor {
         //for some reason 10:1 delivers the most accurate results
         private const val GEAR_RATIO: Double = -((150.0 / 7.0) / 1.0)
         const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 16.8
 
     }
 
-    object EncoderConsts {
+    object Encoder {
         const val INVERT:Boolean = false
         const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION:Double = 360.0
     }
@@ -74,60 +70,45 @@ class SwerveDriveConstants {
         const val VOLTAGE_COMPENSATION: Double = 12.0
 
         /* Swerve Profiling Values */
-        const val MAX_SPEED_METERS_PER_SECOND = 4.0
+        const val MAX_SPEED_METERS_PER_SECOND = 5.0
         const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 200.0
         const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2.0
 
-        var turnController:PIDController = PIDController(
+        var turnController = PIDController(
             //tentative!
             0.01,
             0.0,
             0.0
         )
-        val xPIDController:PIDController = PIDController(3.0,0.6,0.0)
-        val yPIDController:PIDController = PIDController(3.5,0.8,0.5)
-        val thetaPIDController:PIDController = PIDController(3.5,1.0,0.0)
+        val xPIDController = PIDController(3.0,0.6,0.0)
+        val yPIDController = PIDController(3.5,0.8,0.5)
+        val thetaPIDController = PIDController(3.5,1.0,0.0)
 
         //in the order they appear in modules list
         //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
-        val kinematics: SwerveDriveKinematics =
+        val kinematics =
             SwerveDriveKinematics(
                 Translation2d(WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
-                Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
+                    Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
                 Translation2d(-WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
-                Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0)
+                        Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0)
 
-            )
-    }
-    object modules{
-        val list = listOf<ModuleConstants>(
-            ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0,false,true, PIDController(0.008,0.00,0.0007)),
-            ModuleConstants(2, Rotation2d.fromDegrees(-11.66), 3, 4, 1,true,true, PIDController(0.008,0.00,0.0007)),
-            ModuleConstants(3, Rotation2d.fromDegrees(-179.53), 5, 6, 2,false,true, PIDController(0.008,0.00,0.0007)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3,false,true, PIDController(0.008,0.00,0.0007))
         )
     }
-<<<<<<< Updated upstream
-
-    object coordinates {
-        val blueStartA = Pose2d(.5,2.57305,  Rotation2d.fromDegrees(0.0))
-        val blueStartB = Pose2d(.5,4.6305, Rotation2d.fromDegrees(0.0))
-        val blueStartC = Pose2d(.5,7.181312,Rotation2d.fromDegrees(0.0))
-        val redStartA = Pose2d(13.2254,2.57305,  Rotation2d.fromDegrees(0.0))
-        val redStartB = Pose2d(13.2254,4.6305, Rotation2d.fromDegrees(0.0))
-        val redStartC = Pose2d(13.2254,7.181312,Rotation2d.fromDegrees(0.0))
-    }
-
-=======
-    class startingPositions {
-        val redStart1 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val redStart2 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val redStart3 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val blueStart1 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val blueStart2 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-        val blieStart3 = Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg());
-    }
->>>>>>> Stashed changes
-
-
+    val modules = listOf<ModuleConstants>(
+        ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0, false, true, PIDController(0.009, 0.003, 0.0003)),
+        ModuleConstants(2, Rotation2d.fromDegrees(-11.66), 3, 4, 1, false, true, PIDController(0.009, 0.003, 0.0003)),
+        ModuleConstants(3, Rotation2d.fromDegrees(-179.53), 5, 6, 2, false, true, PIDController(0.009, 0.003, 0.0003)),
+        ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, true, PIDController(0.009, 0.003, 0.0003))
+    )
+    val startCoordinates = mapOf(
+        // Starting x values
+        DriverStation.Alliance.Blue to -0.5,
+        DriverStation.Alliance.Red to -13.2254
+    )
+        .mapValues { colorEntry ->
+            // Starting y values
+            listOf(2.57305, 4.6305, 7.181312)
+                .map { Pose2d(colorEntry.value, it, Rotation2d.fromDegrees(0.0))}
+        }
 }
