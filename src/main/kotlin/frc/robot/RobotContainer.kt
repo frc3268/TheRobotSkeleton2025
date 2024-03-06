@@ -96,11 +96,11 @@ class RobotContainer {
 
         /*
         LT (Intake):
-            1) Arm down if not already down
-            2) Intake
-            3) Arm up
+            runs intake
+            (not arm!)
          */
-        driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
+        driverController.leftTrigger().onTrue(Autos.intakeNoteCommand(intakeSubsystem))
+        //driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
 
         /*
         RT (Shoot):
@@ -111,9 +111,14 @@ class RobotContainer {
         driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
 
         /*
-        LB: Intake note from source
+        LB: Arm up
          */
-        driverController.leftBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
+        driverController.leftTrigger().onTrue(intakeSubsystem.armUpCommand())
+        //driverController.leftBumper().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
+
+        /*
+        RB: Arm Up
+         */
 
         /*
         Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
@@ -122,19 +127,19 @@ class RobotContainer {
         driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem))
 
         /*
-        A and B run intake in and out respectively
+        A runs outake
          */
-        driverController.a().onTrue(intakeSubsystem.runOnceIntake())
+        driverController.a().onTrue(intakeSubsystem.runOnceOuttake())
         driverController.a().onFalse(intakeSubsystem.stopIntake())
 
-        driverController.b().onTrue(intakeSubsystem.runOnceOuttake())
-        driverController.b().onFalse(intakeSubsystem.stopIntake())
+        //driverController.b().onTrue(intakeSubsystem.runOnceOuttake())
+        //driverController.b().onFalse(intakeSubsystem.stopIntake())
 
         /*
         POV up and down bring arm up and down
          */
-        driverController.povUp().onTrue(intakeSubsystem.armUpCommand())
-        driverController.povDown().onTrue(intakeSubsystem.armDownCommand())
+        //driverController.povUp().onTrue(intakeSubsystem.armUpCommand())
+        //driverController.povDown().onTrue(intakeSubsystem.armDownCommand())
     }
 
     /**
