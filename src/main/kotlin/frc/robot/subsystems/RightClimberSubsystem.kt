@@ -39,10 +39,10 @@ class RightClimberSubsystem: SubsystemBase(){
         runOnce { encoder.position = 0.0 }
 
     fun testup():Command =
-            run { motor.set(0.2) }
+        run { motor.set(0.2) }
 
     fun testdown():Command =
-            run { motor.set(-0.2) }
+        run { motor.set(-0.2) }
 
     fun stop(): Command =
         runOnce { motor.set(0.0) }
