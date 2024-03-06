@@ -45,13 +45,28 @@ class Autos private constructor() {
                 Pose2d(1.0, 0.0, 0.0.rotation2dFromDeg()),
             )
 
-        fun goToSpeakerCommand(drive: SwerveDriveBase): Command =
-            goto(
-                drive,
-                Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
-                Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
-            )
+        fun goToSpeakerCommand(drive: SwerveDriveBase, location:int?): Command {
+            if (location == null || location > 3 || location < 1) {
+                location = 1
+            }
+            // location maps to one of three points on the subwoofer
+            // 1 -> closer to the the source
+            // 2 -> in the middle
+            // 3 -> furthest from the source
+            when (location) {
+                1 -> return // add a goto statement after the retrun
+                2 -> return goto(
+                        drive,
+                        Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
+                        Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
+                )
+                3 -> return // add a goto statement after the retrun
+            }
 
+
+
+            return
+        }
         fun goToAmpCommand(drive: SwerveDriveBase): Command =
             goto(
                 drive,
