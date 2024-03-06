@@ -112,12 +112,12 @@ class RobotContainer {
         /*
         LB: Arm up
          */
-        driverController.leftBumper().onTrue(intakeSubsystem.armUpCommand())
+        driverController.leftBumper().onTrue(intakeSubsystem.armDownCommand())
 
         /*
         RB: Arm Up
          */
-        driverController.rightBumper().onTrue(intakeSubsystem.armDownCommand())
+        driverController.rightBumper().onTrue(intakeSubsystem.armUpCommand())
 
         /*
         Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
@@ -132,7 +132,7 @@ class RobotContainer {
         driverController.a().onFalse(intakeSubsystem.stopIntake())
 
         /*
-        Y does source intake
+        X does source intake
         arm up
         run shooter in reverse
         intake
@@ -142,8 +142,9 @@ class RobotContainer {
         driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
 
        /*
-       B does nothing right now
+       B does arm down, intake note, arm up
         */
+        driverController.b().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
 
         /*
         POV up and down bring arm up and down
