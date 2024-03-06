@@ -113,9 +113,6 @@ class IntakeSubsystem: SubsystemBase() {
     fun runIntakeCommand():Command =
         runIntakeAtSpeed(INTAKE_SPEED)
 
-    fun runOnceIntake(): Command =
-        runIntakeAtSpeed(INTAKE_SPEED)
-
     fun runOnceOuttake(): Command =
         runIntakeAtSpeed(OUTTAKE_ADJUST_SPEED)
 
