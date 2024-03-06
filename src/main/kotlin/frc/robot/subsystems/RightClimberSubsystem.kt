@@ -51,7 +51,7 @@ class RightClimberSubsystem: SubsystemBase(){
         //System.out.println("Right climber: " + encoder.position)
 
         if(encoder.position !in -0.1..1.1){
-            //stop().schedule()
+            stop().schedule()
         }
     }
 }

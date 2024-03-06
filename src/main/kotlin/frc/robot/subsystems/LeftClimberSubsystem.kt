@@ -51,7 +51,7 @@ class LeftClimberSubsystem: SubsystemBase(){
     override fun periodic() {
         //System.out.println("Left climber: " + encoder.position)
         if(encoder.position !in -0.1..1.1){
-            //stop().schedule()
+            stop().schedule()
         }
     }
 }
