@@ -40,6 +40,7 @@ class Autos private constructor() {
         fun taxiAuto(drive: SwerveDriveBase): Command =
             goto(
                 drive,
+                // should make the robot move around 2 meters as the starting zone is ~193 cm or 1.93m
                 Pose2d(1.0, 0.0, 0.0.rotation2dFromDeg()),
                 Pose2d(1.0, 0.0, 0.0.rotation2dFromDeg()),
             )
@@ -100,10 +101,15 @@ class Autos private constructor() {
 
         fun intakeAndUpCommand(intake: IntakeSubsystem): Command =
             SequentialCommandGroup(
-                    intake.armDownCommand(),
-                    intake.takeInCommand(),
-                    intake.stopIntake(),
-                    intake.armUpCommand(),
+                intake.armDownCommand(),
+                intake.takeInCommand(),
+                intake.stopIntake(),
+                intake.armUpCommand(),
+            )
+        fun intakeNoteCommand(intake: IntakeSubsystem): Command =
+            SequentialCommandGroup(
+                intake.takeInCommand(),
+                intake.stopIntake()
             )
 
         fun climberUp(left: LeftClimberSubsystem, right: RightClimberSubsystem): ParallelCommandGroup =
@@ -126,12 +132,12 @@ class Autos private constructor() {
 
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
-                    shooter.shootCommand(),
-                    WaitCommand(1.0),
-                    intake.takeOutCommand(),
-                    WaitCommand(1.2),
-                    shooter.stopCommand(),
-                    intake.stopIntake()
+                shooter.shootCommand(),
+                WaitCommand(1.0),
+                intake.takeOutCommand(),
+                WaitCommand(1.2),
+                shooter.stopCommand(),
+                intake.stopIntake()
             )
 
         fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
@@ -141,11 +147,11 @@ class Autos private constructor() {
                 shooter.stopCommand()
             )
 
-        fun sourceIntakeCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command {
-            return SequentialCommandGroup(
-                    intake.armUpCommand(),
-                    shooter.takeInCommand(),
-                    intake.runIntakeCommand(),
+        fun sourceIntakeCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
+            SequentialCommandGroup(
+                intake.armUpCommand(),
+                shooter.takeInCommand(),
+                intake.runIntakeCommand(),
                 WaitCommand(0.5),
                 intake.stopIntake()
             )
@@ -171,10 +177,6 @@ class Autos private constructor() {
                 shootSpeakerCommand(intake, shooter)
 
             )
-
-
-
-
 
     fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
             SequentialCommandGroup(

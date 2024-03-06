@@ -35,10 +35,10 @@ class RightClimberSubsystem: SubsystemBase(){
         runOnce { encoder.position = 0.0 }
 
     fun testup():Command =
-            run { motor.set(0.2) }
+        run { motor.set(0.2) }
 
     fun testdown():Command =
-            run { motor.set(-0.2) }
+        run { motor.set(-0.2) }
 
     fun stop(): Command =
         runOnce { motor.set(0.0) }
@@ -47,7 +47,7 @@ class RightClimberSubsystem: SubsystemBase(){
         //System.out.println("Right climber: " + encoder.position)
 
         if(encoder.position !in -0.1..1.1){
-            //stop().schedule()
+            stop().schedule()
         }
     }
 }

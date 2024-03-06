@@ -70,8 +70,8 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     }
 
     private fun getAbsoluteEncoderMeasurement(): Rotation2d = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
-    fun getState() = SwerveModuleState(driveEncoder.velocity, ( getAbsoluteEncoderMeasurement().degrees.IEEErem(360.0).rotation2dFromDeg()))
-    fun getPosition() = SwerveModulePosition(driveEncoder.position, getAbsoluteEncoderMeasurement().degrees.IEEErem(360.0).rotation2dFromDeg())
+    fun getState() = SwerveModuleState(-driveEncoder.velocity, ( (-getAbsoluteEncoderMeasurement().degrees).IEEErem(360.0).rotation2dFromDeg()))
+    fun getPosition() = SwerveModulePosition(-driveEncoder.position, (-getAbsoluteEncoderMeasurement().degrees).IEEErem(360.0).rotation2dFromDeg())
 
     fun setDesiredState(desiredState: SwerveModuleState){
         if (abs(desiredState.speedMetersPerSecond) < 0.01){
