@@ -99,7 +99,8 @@ class RobotContainer {
             runs intake
             (not arm!)
          */
-        driverController.leftTrigger().onTrue(Autos.intakeNoteCommand(intakeSubsystem))
+        driverController.leftTrigger().onTrue(intakeSubsystem.runOnceIntake())
+        driverController.leftTrigger().onFalse(intakeSubsystem.stopIntake())
 
         /*
         RT (Shoot):
