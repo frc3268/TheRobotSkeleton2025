@@ -40,6 +40,7 @@ class Autos private constructor() {
         fun taxiAuto(drive: SwerveDriveBase): Command =
             goto(
                 drive,
+                // should make the robot move around 2 meters as the starting zone is ~193 cm or 1.93m
                 Pose2d(1.0, 0.0, 0.0.rotation2dFromDeg()),
                 Pose2d(1.0, 0.0, 0.0.rotation2dFromDeg()),
             )
@@ -104,6 +105,11 @@ class Autos private constructor() {
                     intake.takeInCommand(),
                     intake.stopIntake(),
                     intake.armUpCommand(),
+            )
+        fun intakeNoteCommand(intake: IntakeSubsystem): Command =
+            SequentialCommandGroup(
+                intake.takeInCommand(),
+                intake.stopIntake()
             )
 
         fun climberUp(left: LeftClimberSubsystem, right: RightClimberSubsystem): ParallelCommandGroup =
