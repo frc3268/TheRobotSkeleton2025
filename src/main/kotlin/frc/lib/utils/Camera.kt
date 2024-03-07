@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFields
 import edu.wpi.first.math.*
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.math.numbers.*
+import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import org.photonvision.*
@@ -24,7 +25,7 @@ class Camera(name:String, path:String): SubsystemBase(){
                     PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     limelight,
                     //todo: this!
-                    Transform3d()
+                    Transform3d(Translation3d(Units.inchesToMeters(12.0), Units.inchesToMeters(12.0), Units.inchesToMeters(15.0)), Rotation3d())
                 )
         } catch (e: IOException) {
             DriverStation.reportError("AprilTag: Failed to Load", e.stackTrace)
