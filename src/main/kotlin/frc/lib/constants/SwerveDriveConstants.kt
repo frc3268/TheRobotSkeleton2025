@@ -80,26 +80,27 @@ object SwerveDriveConstants {
             0.0,
             0.0
         )
-        val xPIDController = PIDController(3.0,0.6,0.0)
-        val yPIDController = PIDController(3.5,0.8,0.5)
-        val thetaPIDController = PIDController(3.5,1.0,0.0)
+        val xPIDController = PIDController(1.5,0.2,0.0)
+        val yPIDController = PIDController(1.5,0.2,0.0)
+        val thetaPIDController = PIDController(1.5,0.0,0.0)
 
         //in the order they appear in modules list
         //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
         val kinematics =
             SwerveDriveKinematics(
-                Translation2d(WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
-                    Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
+                    Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
                 Translation2d(-WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
-                        Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0)
+                    Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
+                    Translation2d(WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
+
 
         )
     }
     val modules = listOf<ModuleConstants>(
-        ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0, false, true, PIDController(0.009, 0.003, 0.0003)),
-        ModuleConstants(2, Rotation2d.fromDegrees(-11.66), 3, 4, 1, false, true, PIDController(0.009, 0.003, 0.0003)),
-        ModuleConstants(3, Rotation2d.fromDegrees(-179.53), 5, 6, 2, false, true, PIDController(0.009, 0.003, 0.0003)),
-        ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, true, PIDController(0.009, 0.003, 0.0003))
+        ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0, false, false, PIDController(0.009, 0.003, 0.0003)),
+        ModuleConstants(2, Rotation2d.fromDegrees(-7.66), 3, 4, 1, false, false, PIDController(0.009, 0.003, 0.0003)),
+        ModuleConstants(3, Rotation2d.fromDegrees(-182.53), 5, 6, 2, false, false, PIDController(0.009, 0.003, 0.0003)),
+        ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, false, PIDController(0.009, 0.003, 0.0003))
     )
     val startCoordinates = mapOf(
         // Starting x values

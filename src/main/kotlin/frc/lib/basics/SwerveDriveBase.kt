@@ -46,10 +46,9 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
             360.0, 0.0
         )
         camera = Camera("hawkeye", "")
-        gyro.reset()
+        zeroYaw()
        //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
-        zeroYaw()
         resetModulesToAbsolute()
         ShuffleboardTab.add("Stop", stopCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
@@ -149,16 +148,16 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         return run {
             setModuleStates(
                 constructModuleStatesFromChassisSpeeds(
-                SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
-                SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.y),
-                SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getYaw().degrees,  endPose.rotation.degrees),
+                -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
+                -SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.y),
+                -SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getYaw().degrees,  endPose.rotation.degrees),
                 true
             ))
-        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.05 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
+        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.02 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
     }
 
     //getters
-    fun getYaw(): Rotation2d = (gyro.rotation2d.degrees + yawOffset).IEEErem(360.0).rotation2dFromDeg()
+    fun getYaw(): Rotation2d = -(gyro.rotation2d.degrees + yawOffset).IEEErem(360.0).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = Pose2d(poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
