@@ -14,6 +14,8 @@ class Autos private constructor() {
     }
 
     companion object {
+
+
         /** Example static factory for an autonomous command.  */
         fun exampleAuto(subsystem: ExampleSubsystem): Command {
             return Commands.sequence(subsystem.exampleMethodCommand(), ExampleCommand(subsystem))
