@@ -25,7 +25,7 @@ class Camera(name:String, path:String): SubsystemBase(){
                     PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     limelight,
                     //todo: this!
-                    Transform3d(Translation3d(Units.inchesToMeters(12.0), Units.inchesToMeters(12.0), Units.inchesToMeters(15.0)), Rotation3d())
+                    Transform3d(Translation3d(Units.inchesToMeters(12.0), Units.inchesToMeters(0.0), Units.inchesToMeters(15.0)), Rotation3d(0.0, 45.0, 0.0))
                 )
         } catch (e: IOException) {
             DriverStation.reportError("AprilTag: Failed to Load", e.stackTrace)
