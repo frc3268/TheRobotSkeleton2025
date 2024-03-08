@@ -17,14 +17,14 @@ import frc.lib.constants.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_ME
 
 object SwerveDriveConstants {
     data class ModuleConstants(
-        val MODULE_NUMBER: Int,
-        val ANGLE_OFFSET: Rotation2d,
-        val DRIVE_MOTOR_ID: Int,
-        val ANGLE_MOTOR_ID: Int,
-        val ENCODER_ID: Int,
-        val DRIVE_MOTOR_REVERSED: Boolean,
-        val ANGLE_MOTOR_REVERSED: Boolean,
-        val PID_CONTROLLER:PIDController
+            val MODULE_NUMBER: Int,
+            val ANGLE_OFFSET: Rotation2d,
+            val DRIVE_MOTOR_ID: Int,
+            val ANGLE_MOTOR_ID: Int,
+            val ENCODER_ID: Int,
+            val DRIVE_MOTOR_REVERSED: Boolean,
+            val ANGLE_MOTOR_REVERSED: Boolean,
+            val PID_CONTROLLER: PIDController
     )
 
     object ModuleGains {
@@ -38,7 +38,7 @@ object SwerveDriveConstants {
         const val GEAR_RATIO: Double = 8.14 / 1.0
         const val CONTINUOUS_CURRENT_LIMIT: Int = 80
         const val POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION: Double =
-            (WHEEL_DIAMETER_METERS * Math.PI) / GEAR_RATIO
+                (WHEEL_DIAMETER_METERS * Math.PI) / GEAR_RATIO
         const val VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND = POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION / 60.0
         val NEUTRAL_MODE: CANSparkBase.IdleMode = CANSparkBase.IdleMode.kBrake
         const val INVERT: Boolean = false
@@ -52,8 +52,8 @@ object SwerveDriveConstants {
     }
 
     object Encoder {
-        const val INVERT:Boolean = false
-        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION:Double = 360.0
+        const val INVERT: Boolean = false
+        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION: Double = 360.0
     }
 
     object DrivetrainConsts {        /* Drivetrain Constants */
@@ -75,41 +75,42 @@ object SwerveDriveConstants {
         const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2.0
 
         var turnController = PIDController(
-            //tentative!
-            0.01,
-            0.0,
-            0.0
+                //tentative!
+                0.01,
+                0.0,
+                0.0
         )
-        val xPIDController = PIDController(1.5,0.2,0.0)
-        val yPIDController = PIDController(1.5,0.2,0.0)
-        val thetaPIDController = PIDController(1.5,0.0,0.0)
+        val xPIDController = PIDController(1.5, 0.2, 0.0)
+        val yPIDController = PIDController(1.5, 0.2, 0.0)
+        val thetaPIDController = PIDController(1.5, 0.0, 0.0)
 
         //in the order they appear in modules list
         //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
         val kinematics =
-            SwerveDriveKinematics(
-                    Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
-                Translation2d(-WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
-                    Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
-                    Translation2d(WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
+                SwerveDriveKinematics(
+                        Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
+                        Translation2d(-WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
+                        Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
+                        Translation2d(WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
 
 
-        )
+                        )
     }
+
     val modules = listOf<ModuleConstants>(
-        ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0, false, false, PIDController(0.009, 0.003, 0.0003)),
-        ModuleConstants(2, Rotation2d.fromDegrees(-7.66), 3, 4, 1, false, false, PIDController(0.009, 0.003, 0.0003)),
-        ModuleConstants(3, Rotation2d.fromDegrees(-182.53), 5, 6, 2, false, false, PIDController(0.009, 0.003, 0.0003)),
-        ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, false, PIDController(0.009, 0.003, 0.0003))
+            ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0, false, false, PIDController(0.009, 0.003, 0.0003)),
+            ModuleConstants(2, Rotation2d.fromDegrees(-7.66), 3, 4, 1, false, false, PIDController(0.009, 0.003, 0.0003)),
+            ModuleConstants(3, Rotation2d.fromDegrees(-182.53), 5, 6, 2, false, false, PIDController(0.009, 0.003, 0.0003)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, false, PIDController(0.009, 0.003, 0.0003))
     )
     val startCoordinates = mapOf(
-        // Starting x values
-        DriverStation.Alliance.Blue to -0.5,
-        DriverStation.Alliance.Red to -13.2254
+            // Starting x values
+            DriverStation.Alliance.Blue to -0.5,
+            DriverStation.Alliance.Red to -13.2254
     )
-        .mapValues { colorEntry ->
-            // Starting y values
-            listOf(2.57305, 4.6305, 7.181312)
-                .map { Pose2d(colorEntry.value, it, Rotation2d.fromDegrees(0.0))}
-        }
+            .mapValues { colorEntry ->
+                // Starting y values
+                listOf(2.57305, 4.6305, 7.181312)
+                        .map { Pose2d(colorEntry.value, it, Rotation2d.fromDegrees(0.0)) }
+            }
 }
