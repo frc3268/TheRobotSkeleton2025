@@ -40,12 +40,37 @@ object Autos {
             Pose2d(1.0, 0.0, 0.0.rotation2dFromDeg()),
         )
 
-    fun goToSpeakerCommand(drive: SwerveDriveBase): Command =
-        goto(
-            drive,
-            Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
-            Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
-        )
+    fun goToSpeakerCommand(drive: SwerveDriveBase, location: Int?): Command {
+
+        /*
+        Location exists as a parameter to decide what part of the speaker to go to
+        0 -> midpoint of the side farthest from the  source
+        1 -> midpoint of the side facing the other speaker
+        2 -> midpoint of the side closest to the  source
+         */
+        var option = 0
+        if (!(location == null||location> 2||location < 0)) { option = location}
+
+        when (option) {
+             0 -> return goto( //the side furthest from the source
+                 drive,
+                 Pose2d(16.0824625,6.5950364,(-60.0).rotation2dFromDeg()),
+                 Pose2d(0.4587875,6.5950364,60.0.rotation2dFromDeg())
+             )
+
+             1 -> return goto( //the side straight across from the other speaker
+                 drive,
+                 Pose2d(15.624175,5.7351,0.0.rotation2dFromDeg()),
+                 Pose2d(0.917575,5.7531,180.0.rotation2dFromDeg())
+             )
+            2 -> return goto( // the side closest to the source
+                drive,
+                Pose2d(16.0824625,4.96116891,60.0.rotation2dFromDeg()),
+                Pose2d(0.4587875,4.96116891,(-60.0).rotation2dFromDeg())
+            )
+        }
+
+    }
 
     fun goToAmpCommand(drive: SwerveDriveBase): Command =
         goto(
