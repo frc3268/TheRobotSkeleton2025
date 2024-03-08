@@ -36,9 +36,8 @@ class RobotContainer {
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
         { driverController.getRawAxis(1) },
-        { driverController.getRawAxis(0) },
-        { driverController.getRawAxis(4) },
-            //-driverController.getRawAxis(4)
+        { -driverController.getRawAxis(0) },
+        { -driverController.getRawAxis(4) },
         { true }
     )
 
@@ -108,7 +107,7 @@ class RobotContainer {
             2) Run intake in reverse to feed it into shooter
             This assumes the arm is already up. If it's down, the note will be shot back onto the ground.
          */
-        driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
+        driverController.rightTrigger().onTrue(shooterSubsystem.shootCommand())
 
         /*
         LB: Arm up

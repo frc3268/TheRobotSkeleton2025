@@ -36,6 +36,8 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
 
     private var poseYEntry = ShuffleboardTab.add("Pose Y", 0.0).entry
 
+    private var seesAprilTag = ShuffleboardTab.add("Sees April Tag?", false).withWidget(BuiltInWidgets.kBooleanBox).entry
+
     private var yawOffset:Double = 0.0
 
     private val camera:Camera
@@ -65,8 +67,10 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         //estimate robot pose based on what the encoders say
         poseEstimator.update(getYaw(), getModulePositions())
         //estimate robot pose based on what the camera sees
+        seesAprilTag.setBoolean(camera.captureFrame().hasTargets())
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
+
            poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, camera.getEstimationStdDevs(est.estimatedPose.toPose2d()))
         }
         //update module tabs on shuffleboard
