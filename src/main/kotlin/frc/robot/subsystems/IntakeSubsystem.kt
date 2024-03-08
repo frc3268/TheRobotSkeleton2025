@@ -3,6 +3,8 @@ package frc.robot.subsystems
 import com.revrobotics.*
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.wpilibj.DigitalInput
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.*
 import frc.lib.utils.rotation2dFromDeg
 
@@ -11,6 +13,12 @@ class IntakeSubsystem: SubsystemBase() {
     val armMotor = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
     val armEncoder: RelativeEncoder = armMotor.encoder
     val armPIDController = PIDController(1.0/50,0.0,0.0)
+
+    val shuffleboardTab = Shuffleboard.getTab("General")
+    val intakeSwitchEntry = shuffleboardTab.add("Intake lim switch", 0.0).entry
+
+    // TODO replace with actual channel
+    val limitSwitch = DigitalInput(0)
 
     companion object {
         const val INTAKE_SPEED = 0.3
@@ -47,7 +55,6 @@ class IntakeSubsystem: SubsystemBase() {
      */
     fun runIntakeAtSpeed(speed: Double): Command =
         runOnce { intakeMotor.set(speed) }
-
 
     fun armUpCommand(): Command =
         run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, UP_ANGLE-5.0)) }
@@ -126,12 +133,11 @@ class IntakeSubsystem: SubsystemBase() {
         // println("Arm angle: " + getArmPosition().degrees)
 
         // Stop arm guard in case it screws itself over
-        if (getArmPosition().degrees >= 290.0){
-            armUpCommand().schedule()
-        } else if (getArmPosition().degrees <= -10.0){
-            armDownCommand().schedule()
-        }
+        if (getArmPosition().degrees >= 290.0) armUpCommand()
+        else if (getArmPosition().degrees <= -10.0)
+            armDownCommand()
 
+        intakeSwitchEntry.setBoolean(limitSwitch.get())
     }
 
     override fun simulationPeriodic() {

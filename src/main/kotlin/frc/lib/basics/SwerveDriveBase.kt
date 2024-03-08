@@ -17,7 +17,7 @@ import org.photonvision.EstimatedRobotPose
 import java.util.*
 import kotlin.math.*
 
-class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
+class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     val field = Field2d()
     private val ShuffleboardTab = Shuffleboard.getTab("Drivetrain")
 
@@ -33,9 +33,7 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         .getEntry()
 
     private var poseXEntry = ShuffleboardTab.add("Pose X", 0.0).entry
-
     private var poseYEntry = ShuffleboardTab.add("Pose Y", 0.0).entry
-
     private var seesAprilTag = ShuffleboardTab.add("Sees April Tag?", false).withWidget(BuiltInWidgets.kBooleanBox).entry
 
     private var yawOffset:Double = 0.0
@@ -56,6 +54,8 @@ class SwerveDriveBase(var startingPose: Pose2d) : SubsystemBase() {
         ShuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Dig In", digInCommand()).withWidget(BuiltInWidgets.kCommand)
         ShuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
+
+
 
 
         ShuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)

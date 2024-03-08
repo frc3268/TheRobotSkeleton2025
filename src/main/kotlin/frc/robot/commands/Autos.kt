@@ -48,13 +48,30 @@ class Autos private constructor() {
                         Pose2d(1.0, 0.0, 0.0.rotation2dFromDeg()),
                 )
 
-        fun goToSpeakerCommand(drive: SwerveDriveBase): Command =
-                goto(
+//todo! this needs to be finished
+        fun goToSpeakerCommand(drive: SwerveDriveBase, location:Int?): Command {
+            var locationVar = location
+            if (locationVar == null || locationVar > 3 || locationVar < 1) {
+                locationVar = 1
+            }
+            // location maps to one of three points on the subwoofer
+            // 1 -> closer to the the source
+            // 2 -> in the middle
+            // 3 -> furthest from the source
+            when (location) {
+                1 -> return WaitCommand(1.0) // add a goto statement after the retrun
+                2 -> return goto(
                         drive,
                         Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
                         Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
                 )
+                3 -> return WaitCommand(1.0)// add a goto statement after the retrun
+            }
 
+
+
+            return WaitCommand(1.0)
+        }
         fun goToAmpCommand(drive: SwerveDriveBase): Command =
                 goto(
                         drive,
@@ -98,7 +115,7 @@ class Autos private constructor() {
 
         fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
                 SequentialCommandGroup(
-                        goToSpeakerCommand(drive),
+                        goToSpeakerCommand(drive, 1),
                         shootSpeakerCommand(intake, shooter)
                 )
 
@@ -168,7 +185,7 @@ class Autos private constructor() {
 
         fun driveUpShootSpeakerAndReturnToRingsCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
                 SequentialCommandGroup(
-                        goToSpeakerCommand(drive),
+                        goToSpeakerCommand(drive, 1),
                         shootSpeakerCommand(intake, shooter),
                         /** 8.2927 - 0.1524 - 0.3556 math for blue, 8.2927 + 0.1524 + 0.3556 math for red
                         these should be correct but someone should check my math
@@ -176,7 +193,7 @@ class Autos private constructor() {
                         starting zone to the ring, then depending on what team we are on the width of the ring + about half a foot is added or subtracted**/
                         goto(drive, Pose2d(8.8007, 0.752856, 0.0.rotation2dFromDeg()), Pose2d(7.7847, 0.752856, 0.0.rotation2dFromDeg())),
                         intakeAndUpCommand(intake),
-                        goToSpeakerCommand(drive),
+                        goToSpeakerCommand(drive, 1),
                         shootSpeakerCommand(intake, shooter)
 
                 )

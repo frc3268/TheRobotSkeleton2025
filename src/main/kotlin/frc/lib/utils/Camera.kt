@@ -24,7 +24,6 @@ class Camera(name:String, path:String): SubsystemBase(){
                     AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(),
                     PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     limelight,
-                    //todo: this!
                     Transform3d(
                             Translation3d(
                                     Units.inchesToMeters(0.0),

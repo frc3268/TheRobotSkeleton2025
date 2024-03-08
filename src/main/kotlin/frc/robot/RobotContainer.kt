@@ -20,9 +20,6 @@ class RobotContainer {
     private val GeneralTab = Shuffleboard.getTab("General")
     private val TroubleshootingTab = Shuffleboard.getTab("Troubleshooting")
 
-
-
-
     val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
     val shooterSubsystem = ShooterSubsystem()
