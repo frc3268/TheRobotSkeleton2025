@@ -113,9 +113,6 @@ class IntakeSubsystem: SubsystemBase() {
     fun runIntakeCommand():Command =
         runIntakeAtSpeed(INTAKE_SPEED)
 
-    fun runOnceIntake(): Command =
-        runIntakeAtSpeed(INTAKE_SPEED)
-
     fun runOnceOuttake(): Command =
         runIntakeAtSpeed(OUTTAKE_ADJUST_SPEED)
 
@@ -126,7 +123,7 @@ class IntakeSubsystem: SubsystemBase() {
         armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
-       // println("Arm angle: " + getArmPosition().degrees)
+        // println("Arm angle: " + getArmPosition().degrees)
 
         // Stop arm guard in case it screws itself over
         if (getArmPosition().degrees >= 290.0){
