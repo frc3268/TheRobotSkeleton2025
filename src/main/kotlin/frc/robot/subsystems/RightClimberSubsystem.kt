@@ -20,6 +20,10 @@ class RightClimberSubsystem: SubsystemBase(){
         encoder.position = 0.0
     }
 
+    /**
+     * TODO make a func that converts meters to rotations and a function that converts rotations to meters
+     * TODO using these functions rotate the motors on the arms accordingly while accounting for min and max heights
+     */
 
     fun down(): Command =
         run { motor.set(-0.5) }
@@ -35,10 +39,10 @@ class RightClimberSubsystem: SubsystemBase(){
         runOnce { encoder.position = 0.0 }
 
     fun testup():Command =
-        run { motor.set(0.2) }
+            run { motor.set(0.2) }
 
     fun testdown():Command =
-        run { motor.set(-0.2) }
+            run { motor.set(-0.2) }
 
     fun stop(): Command =
         runOnce { motor.set(0.0) }

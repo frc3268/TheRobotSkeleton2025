@@ -130,7 +130,7 @@ class IntakeSubsystem: SubsystemBase() {
         armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
-        // println("Arm angle: " + getArmPosition().degrees)
+       // println("Arm angle: " + getArmPosition().degrees)
 
         // Stop arm guard in case it screws itself over
         if (getArmPosition().degrees >= 290.0) armUpCommand()
