@@ -49,11 +49,13 @@ class RobotContainer {
             .withPosition(0, 0)
             .withSize(2, 1)
 
+
         autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
         autochooser.addOption("Do nothing", WaitCommand(1.0))
         autochooser.addOption("Shoot to speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
         autochooser.addOption("Shoot to speaker + taxi", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem).andThen(Autos.taxiAuto(driveSubsystem)))
         autochooser.addOption("Shoot, Intake, Shoot", Autos.driveUpShootSpeakerAndReturnToRingsCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
+        //autochooser.addOption("test Shooter only", Autos.testShooterCommand(shooterSubsystem))
 
         GeneralTab.add("shoot speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         GeneralTab.add("Ground intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
@@ -96,8 +98,8 @@ class RobotContainer {
             runs intake
             (not arm!)
          */
-        driverController.leftTrigger().onTrue(intakeSubsystem.runIntakeCommand())
-        driverController.leftTrigger().onFalse(intakeSubsystem.stopIntake())
+        //driverController.leftTrigger().onTrue(intakeSubsystem.runIntakeCommand())
+        //driverController.leftTrigger().onFalse(intakeSubsystem.stopIntake())
 
         /*
         RT (Shoot):
@@ -105,8 +107,8 @@ class RobotContainer {
             2) Run intake in reverse to feed it into shooter
             This assumes the arm is already up. If it's down, the note will be shot back onto the ground.
          */
+        //driverController.rightTrigger().onTrue(Autos.testShooterCommand(shooterSubsystem))
         driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
-
         /*
         LB: Arm up
          */

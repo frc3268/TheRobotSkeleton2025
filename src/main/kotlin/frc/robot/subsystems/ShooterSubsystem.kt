@@ -7,20 +7,20 @@ class ShooterSubsystem: SubsystemBase() {
     val leftFlywheelMotor = CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless)
     val rightFlywheelMotor = CANSparkMax(12, CANSparkLowLevel.MotorType.kBrushless)
 
-    fun shootAtSpeedCommand(speed: Double): Command = runOnce {
+    fun runAtSpeedCommand(speed: Double): Command = runOnce {
         leftFlywheelMotor.set(speed)
         rightFlywheelMotor.set(speed)
     }
 
-    fun shootCommand(): Command =
-        runOnce { shootAtSpeedCommand(-1.0) }
+    fun speakerCommand(): Command =
+        runAtSpeedCommand(-1.0)
 
     fun ampCommand(): Command =
         // used to be within another function which ran another function; they were combined and this instance had to be changed
-        shootAtSpeedCommand(-0.5)
+        runAtSpeedCommand(-0.5)
 
     fun takeInCommand(): Command =
-        run { shootAtSpeedCommand(0.7) }
+        run { runAtSpeedCommand(0.7) }
             // TODO Adjust timeout
             .withTimeout(1.5)
             .andThen(stopCommand())

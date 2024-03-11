@@ -169,13 +169,22 @@ class Autos private constructor() {
 
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
-                shooter.shootCommand(),
+                shooter.speakerCommand(),
                 WaitCommand(1.0),
                 intake.takeOutCommand(),
                 WaitCommand(1.2),
                 shooter.stopCommand(),
                 intake.stopIntake()
             )
+
+        //Needed function to test controls that didn't involve intake
+        fun testShooterCommand(shooter: ShooterSubsystem):Command =
+            SequentialCommandGroup(
+                shooter.speakerCommand(),
+                WaitCommand(1.0),
+                shooter.stopCommand()
+            )
+
 
         fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
@@ -233,5 +242,6 @@ class Autos private constructor() {
                 shooter.stopCommand(),
                 intake.stopAllCommand()
             )
+
     }
 }
