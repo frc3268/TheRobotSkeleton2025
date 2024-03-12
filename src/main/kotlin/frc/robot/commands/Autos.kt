@@ -55,15 +55,15 @@ class Autos private constructor() {
                 locationVar = 1
             }
             // location maps to one of three points on the subwoofer
-            // 1 -> closer to the the source
+            // 1 -> closer to the source
             // 2 -> in the middle
             // 3 -> furthest from the source
             when (location) {
                 1 -> return WaitCommand(1.0) // add a goto statement after the retrun
                 2 -> return goto(
-                        drive,
-                        Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
-                        Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
+                    drive,
+                    Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
+                    Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
                 )
                 3 -> return WaitCommand(1.0)// add a goto statement after the retrun
             }
@@ -72,6 +72,7 @@ class Autos private constructor() {
 
             return WaitCommand(1.0)
         }
+
         fun goToAmpCommand(drive: SwerveDriveBase): Command =
                 goto(
                         drive,
@@ -126,6 +127,7 @@ class Autos private constructor() {
                         intake.stopIntake(),
                         intake.armUpCommand(),
                 )
+
 
         fun intakeNoteCommand(intake: IntakeSubsystem): Command =
                 SequentialCommandGroup(
@@ -194,16 +196,13 @@ class Autos private constructor() {
                         goto(drive, Pose2d(8.8007, 0.752856, 0.0.rotation2dFromDeg()), Pose2d(7.7847, 0.752856, 0.0.rotation2dFromDeg())),
                         intakeAndUpCommand(intake),
                         goToSpeakerCommand(drive, 1),
-                        shootSpeakerCommand(intake, shooter)
-
-                )
+                        shootSpeakerCommand(intake, shooter))
 
         fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
                 SequentialCommandGroup(
                         shooter.stopCommand(),
                         intake.stopAllCommand()
                 )
-
     }
 }
 
