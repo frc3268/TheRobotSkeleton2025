@@ -104,7 +104,7 @@ class RobotContainer {
             2) Run intake in reverse to feed it into shooter
             This assumes the arm is already up. If it's down, the note will be shot back onto the ground.
          */
-        driverController.rightTrigger().onTrue(shooterSubsystem.shootCommand())
+        driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
 
         /*
         LB: Arm up

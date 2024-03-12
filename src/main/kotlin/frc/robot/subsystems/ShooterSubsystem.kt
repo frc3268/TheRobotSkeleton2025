@@ -13,7 +13,7 @@ class ShooterSubsystem: SubsystemBase() {
     }
 
     fun shootCommand(): Command =
-        runOnce { shootAtSpeedCommand(-1.0) }
+        shootAtSpeedCommand(-1.0)
 
     fun ampCommand(): Command =
         // used to be within another function which ran another function; they were combined and this instance had to be changed
