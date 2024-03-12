@@ -19,13 +19,9 @@ object FieldPositions {
     }
 
     fun closest(startingPose: Pose2d, locations: List<FieldLocation>): FieldLocation {
-        val red = locations.minByOrNull{ startingPose.translation.getDistance(it.red.translation)}
-        val blue = locations.minByOrNull{ startingPose.translation.getDistance(it.blue.translation)}
-        if (red == null || blue == null){
-            //go nowhere
-            return FieldLocation(startingPose, startingPose)
-        }
-            return FieldLocation(red, blue)
+        val red = locations.minByOrNull{ startingPose.translation.getDistance(it.red.translation)}!!
+        val blue = locations.minByOrNull{ startingPose.translation.getDistance(it.blue.translation)}!!
+        return FieldLocation(red.red, blue.blue)
 
     }
 
