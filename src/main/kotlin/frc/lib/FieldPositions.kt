@@ -11,12 +11,16 @@ object FieldPositions {
         Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg()))
     val speakerRight = FieldLocation(Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
         Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg()))
-    fun speakerCloser(startingPose: Pose2d): FieldLocation {
+    fun speakerCloser(startingPose: Pose2d): FieldLocation  =
         //red
-        val distanceToCenterRed = startingPose.translation.getDistance(speakerCenter.red.translation)
-        val distancetoLeftRed = startingPose.translation.getDistance(speakerLeft.red.translation)
-        val distancetoRightRed = startingPose.translation.getDistance(speakerRight.red.translation)
-    }
+       closest(
+           startingPose,
+           listOf(
+               speakerRight,
+               speakerCenter,
+               speakerLeft
+           )
+       )
 
     fun closest(startingPose: Pose2d, locations: List<FieldLocation>): FieldLocation {
         val red = locations.minByOrNull{ startingPose.translation.getDistance(it.red.translation)}!!
