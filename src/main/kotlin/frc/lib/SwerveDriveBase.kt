@@ -1,4 +1,4 @@
-package frc.lib.basics
+package frc.lib
 
 import com.kauailabs.navx.frc.AHRS
 import edu.wpi.first.math.VecBuilder
@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.*
-import frc.lib.constants.SwerveDriveConstants
-import frc.lib.utils.*
 import org.photonvision.EstimatedRobotPose
 import java.util.*
 import kotlin.math.*

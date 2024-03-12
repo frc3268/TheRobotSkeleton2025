@@ -2,8 +2,8 @@ package frc.robot.commands
 
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.math.MathUtil
-import frc.lib.basics.SwerveDriveBase
-import frc.lib.constants.SwerveDriveConstants
+import frc.lib.SwerveDriveBase
+import frc.lib.SwerveDriveConstants
 import java.util.function.*
 
 import frc.robot.Constants

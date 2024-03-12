@@ -1,4 +1,4 @@
-package frc.lib.utils
+package frc.lib
 
 import edu.wpi.first.apriltag.AprilTagFields
 import edu.wpi.first.math.*

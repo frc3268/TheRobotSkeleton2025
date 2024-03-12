@@ -1,0 +1,7 @@
+[
+  "shootSpeaker",
+  ["gotoClosestRing","intakeDown"],
+  "intakeUp",
+  ["gotoClosestSpeaker"],
+  "shootSpeaker"
+]

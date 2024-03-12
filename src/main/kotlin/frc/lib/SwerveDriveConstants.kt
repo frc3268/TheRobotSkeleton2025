@@ -5,7 +5,7 @@ make sure to edit these constants based on your own needs! Info on this may appe
 but as of now [[https://github.com/Team364/BaseFalconSwerve]] is a great resource
 for most constants used in this library.
  */
-package frc.lib.constants
+package frc.lib
 
 import com.revrobotics.CANSparkBase
 import edu.wpi.first.math.controller.PIDController
@@ -13,7 +13,7 @@ import edu.wpi.first.math.geometry.*
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.DriverStation
-import frc.lib.constants.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_METERS
+import frc.lib.SwerveDriveConstants.DrivetrainConsts.WHEEL_DIAMETER_METERS
 
 object SwerveDriveConstants {
     data class ModuleConstants(

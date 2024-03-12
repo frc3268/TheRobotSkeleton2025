@@ -1,8 +1,7 @@
-package frc.lib.utils
+package frc.lib
 
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.wpilibj2.command.*
-import frc.lib.basics.SwerveDriveBase
 
 class TrajectoryOrchestrator {
     // TODO take in a trajectory and display it on the tab

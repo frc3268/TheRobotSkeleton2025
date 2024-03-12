@@ -1,4 +1,4 @@
-package frc.lib.basics
+package frc.lib
 
 import com.revrobotics.*
 import edu.wpi.first.math.controller.PIDController
@@ -7,8 +7,6 @@ import edu.wpi.first.math.kinematics.*
 import edu.wpi.first.networktables.GenericEntry
 import edu.wpi.first.wpilibj.AnalogEncoder
 import edu.wpi.first.wpilibj.shuffleboard.*
-import frc.lib.constants.SwerveDriveConstants
-import frc.lib.utils.rotation2dFromDeg
 import kotlin.math.*
 
 /*

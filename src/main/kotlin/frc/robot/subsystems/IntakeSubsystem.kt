@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.*
-import frc.lib.utils.rotation2dFromDeg
+import frc.lib.rotation2dFromDeg
 
 class IntakeSubsystem: SubsystemBase() {
     val intakeMotor = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
