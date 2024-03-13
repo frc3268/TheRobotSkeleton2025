@@ -59,13 +59,21 @@ class Autos private constructor() {
             // 2 -> in the middle
             // 3 -> furthest from the source
             when (location) {
-                1 -> return WaitCommand(1.0) // add a goto statement after the retrun
+                1 -> return goto(
+                        drive,
+                        Pose2d(16.0824625,4.96116891,-60.0.rotation2dFromDeg()),
+                        Pose2d(0.958787,4.96116891,60.0.rotation2dFromDeg())
+                ) // add a goto statement after the retrun
                 2 -> return goto(
                     drive,
                     Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
                     Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
                 )
-                3 -> return WaitCommand(1.0)// add a goto statement after the retrun
+                3 -> return goto(
+                        drive,
+                        Pose2d(16.0824625,6.54503,60.0.rotation2dFromDeg()),
+                        Pose2d(0.958787,6.54503,-60.0.rotation2dFromDeg())
+                )// add a goto statement after the retrun
             }
 
 
