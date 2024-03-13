@@ -207,6 +207,42 @@ class Autos private constructor() {
                         goToSpeakerCommand(drive, 1),
                         shootSpeakerCommand(intake, shooter))
 
+        // the Ideal is we test this first
+        // the rings param asks for an array of bools based on which rings you are picking up
+        // the array [True, False, True] will pick up ring A then C and not B
+        fun collectStartingRingsAndShoot(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, location: Int, rings:Array<Boolean>): Command {
+            val sequence:SequentialCommandGroup = SequentialCommandGroup()
+            sequence.addCommands(goToSpeakerCommand(drive, location))
+            sequence.addCommands(shootSpeakerCommand(intake, shooter))
+            // the ring right along the middle
+            if (rings[0]) {
+                sequence.addCommands(goto(drive, Pose2d(14.127, 4.105656, 180.0.rotation2dFromDeg()), Pose2d(2.413, 4.105656, 0.0.rotation2dFromDeg())))
+                sequence.addCommands(intakeAndUpCommand(intake))
+                sequence.addCommands(goToSpeakerCommand(drive, location))
+                sequence.addCommands(shootSpeakerCommand(intake, shooter))
+            }
+            // ring above the first ring
+            if (rings[1]) {
+                sequence.addCommands(goto(drive, Pose2d(14.127, 5.553456, 180.0.rotation2dFromDeg()), Pose2d(2.413, 5.553456, 0.0.rotation2dFromDeg())))
+                sequence.addCommands(intakeAndUpCommand(intake))
+                sequence.addCommands(goToSpeakerCommand(drive, location))
+                sequence.addCommands(shootSpeakerCommand(intake, shooter))
+            }
+            // ring above the second ring
+            if (rings[2]) {
+                // I kept the equations here in case we need to adjust for whatever reason the 0.1778 is half the width of the ring in meters, I haven't adjusted for how far away from the ring we have to be
+                // Red Equation : Center of Ring + half the ring's size + a foot (for intake) Blue Equation : Center of Ring + half the ring's size + a foot (intake)
+                sequence.addCommands(goto(drive, Pose2d(13.6444 + 0.1778 + 0.3048, 7.001256, 180.0.rotation2dFromDeg()), Pose2d(2.8956 - 0.1778 - 0.3048, 7.001256, 0.0.rotation2dFromDeg())))
+                sequence.addCommands(intakeAndUpCommand(intake))
+                sequence.addCommands(goToSpeakerCommand(drive, location))
+                sequence.addCommands(shootSpeakerCommand(intake, shooter))
+            }
+            // will go to the bottom ring if Red and the top ring if Blue
+            sequence.addCommands(goto(drive, Pose2d(8.2927  + 0.1778 + 0.3048, 0.752856, 180.0.rotation2dFromDeg()), Pose2d(8.2927  - 0.1778 - 0.3048, 7.457144, 0.0.rotation2dFromDeg())))
+            return sequence
+        }
+
+
         fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
             SequentialCommandGroup(
                 shooter.stopCommand(),

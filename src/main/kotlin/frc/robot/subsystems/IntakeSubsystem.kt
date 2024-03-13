@@ -6,11 +6,11 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.*
-import frc.lib.utils.rotation2dFromDeg
+import frc.lib.utils.*
 
 class IntakeSubsystem: SubsystemBase() {
-    val intakeMotor = CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless)
-    val armMotor = CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless)
+    val intakeMotor = Motor(10)
+    val armMotor = Motor(9)
     val armEncoder: RelativeEncoder = armMotor.encoder
     val intakeEncoder: RelativeEncoder = intakeMotor.encoder
     val armPIDController = PIDController(1.0/50,0.0,0.0)
