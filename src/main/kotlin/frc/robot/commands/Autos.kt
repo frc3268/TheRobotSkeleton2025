@@ -88,6 +88,7 @@ class Autos private constructor() {
                         Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
                 )
 
+        // documentation: what is closerToBaseLine?
         fun goToSourceCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean): Command =
                 goto(
                         drive,
