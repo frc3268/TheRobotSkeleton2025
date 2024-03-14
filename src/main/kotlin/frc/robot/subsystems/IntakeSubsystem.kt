@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj2.command.*
 import frc.lib.utils.*
 
 class IntakeSubsystem: SubsystemBase() {
-    val intakeMotor = Motor(10)
-    val armMotor = Motor(9)
+    val intakeMotor = Motor(9)
+    val armMotor = Motor(10)
     val armEncoder: RelativeEncoder = armMotor.encoder
     val intakeEncoder: RelativeEncoder = intakeMotor.encoder
-    val armPIDController = PIDController(1.0/50,0.0,0.0)
+    val armPIDController = PIDController(0.2/170,0.0,0.0)
 
-    val shuffleboardTab = Shuffleboard.getTab("General")
+    val shuffleboardTab = Shuffleboard.getTab("intake")
     val intakeArmPositionEntry = shuffleboardTab.add("Intake arm encoder position", 0.0).entry
     val intakeVelocityEntry = shuffleboardTab.add("Intake encoder velocity", 0.0).entry
 
@@ -30,20 +30,43 @@ class IntakeSubsystem: SubsystemBase() {
         //based momento...
 
         const val UP_ANGLE = 0.05
-        const val DOWN_ANGLE = 270.0
+        const val DOWN_ANGLE = 170.0
     }
 
     init {
-        shuffleboardTab.add("Arm down - TESTING", runOnce{armMotor.set(-0.3)})
-        shuffleboardTab.add("Arm up - TESTING", runOnce{armMotor.set(0.3)})
+        shuffleboardTab.add("Arm down - TESTING", runOnce{armMotor.set(0.1)})
+        shuffleboardTab.add("Arm up - TESTING", runOnce{armMotor.set(-0.1)})
         shuffleboardTab.add("Intake in - TESTING", runIntakeAtSpeed(INTAKE_SPEED))
         shuffleboardTab.add("Intake out - TESTING", runIntakeAtSpeed(OUTTAKE_SPEED))
+        shuffleboardTab.add("Intake sequence - TESTING", intakeAndStopCommand())
+
+        shuffleboardTab.add("Arm down - sequence", armDownCommand())
+        shuffleboardTab.add("Arm up - sequence", armUpCommand())
+
         shuffleboardTab.add("STOP - TESTING", stopAllCommand())
-        armEncoder.positionConversionFactor = 1.0
+        armEncoder.positionConversionFactor =  360 / 75.0
+        intakeEncoder.velocityConversionFactor = 1.0 /1600.0
     }
 
     fun stopIntake(): Command =
         runOnce { intakeMotor.stopMotor() }
+
+    /*
+    intakeAndStopCommand: Command
+    runs the intake motor at the speed necessary to intake a game piece
+    waits until a game piece enters the intake
+    waits until the game piece has been compressed to a sufficient level
+    stops the intake motor
+
+    this is done by checking the velocity of the intake motor, given that the motor will run slower when the motion of the wheels is inhibited by game pieces
+     */
+    fun intakeAndStopCommand(): Command =
+            run{intakeMotor.set(INTAKE_SPEED)}.withTimeout(1.0).andThen(
+                    run{}.until{intakeEncoder.velocity < 1.0}.andThen(
+                        run{}.until{intakeEncoder.velocity > 1.0}.andThen(run{}.withTimeout(0.2)).andThen(stopIntake())
+                    )
+            )
+
 
     fun stopArm(): Command =
         runOnce { armMotor.stopMotor() }
@@ -72,12 +95,6 @@ class IntakeSubsystem: SubsystemBase() {
         run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, DOWN_ANGLE+5.0)) }
             .until { getArmPosition().degrees > DOWN_ANGLE }
             .andThen(stopArm())
-
-    fun toggleArmCommand(): Command =
-        if (getArmPosition().degrees > 100.0)
-            armUpCommand()
-        else
-            armDownCommand()
 
     /**
      * Sets the arm to the amp shoot or source intake angle, which are the same.
@@ -139,11 +156,10 @@ class IntakeSubsystem: SubsystemBase() {
     override fun periodic() {
 
         // Stop arm guard in case it screws itself over
-        /*
-        if (getArmPosition().degrees >= 290.0) stopArm().schedule()
-        else if (getArmPosition().degrees <= -10.0)
-            stopArm().schedule()
-         */
+
+        if (getArmPosition().degrees >= 180.0) stopArm().schedule()
+        else if (getArmPosition().degrees <= -10.0) stopArm().schedule()
+
 
         intakeArmPositionEntry.setDouble(armEncoder.position)
         intakeVelocityEntry.setDouble(intakeEncoder.velocity)

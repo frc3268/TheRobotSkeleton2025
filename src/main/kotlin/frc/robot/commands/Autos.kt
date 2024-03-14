@@ -123,8 +123,7 @@ class Autos private constructor() {
         fun intakeAndUpCommand(intake: IntakeSubsystem): Command =
                 SequentialCommandGroup(
                         intake.armDownCommand(),
-                        intake.takeInCommand(),
-                        intake.stopIntake(),
+                        intake.intakeAndStopCommand(),
                         intake.armUpCommand(),
                 )
 
