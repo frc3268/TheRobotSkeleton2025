@@ -50,7 +50,6 @@ class Autos private constructor() {
                         Pose2d(1.0, 0.0, 0.0.rotation2dFromDeg()),
                 )
 
-//todo! this needs to be finished
         fun goToSpeakerCommand(drive: SwerveDriveBase, location:Int?): Command {
             var locationVar = location
             if (locationVar == null || locationVar > 3 || locationVar < 1) {
@@ -65,7 +64,7 @@ class Autos private constructor() {
                         drive,
                         Pose2d(16.0824625,4.96116891,-60.0.rotation2dFromDeg()),
                         Pose2d(0.958787,4.96116891,60.0.rotation2dFromDeg())
-                ) // add a goto statement after the retrun
+                )
                 2 -> return goto(
                     drive,
                     Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
@@ -75,7 +74,7 @@ class Autos private constructor() {
                         drive,
                         Pose2d(16.0824625,6.54503,60.0.rotation2dFromDeg()),
                         Pose2d(0.958787,6.54503,-60.0.rotation2dFromDeg())
-                )// add a goto statement after the retrun
+                )
             }
 
 

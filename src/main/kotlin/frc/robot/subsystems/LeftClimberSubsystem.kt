@@ -18,7 +18,7 @@ class LeftClimberSubsystem: SubsystemBase(){
         // TODO test if this is needed
         //rightEncoder.inverted = true
         
-        encoder.positionConversionFactor = 1.0/530
+        encoder.positionConversionFactor = 1.0
         encoder.position = 0.0
     }
 
@@ -50,7 +50,7 @@ class LeftClimberSubsystem: SubsystemBase(){
         runOnce { motor.set(0.0) }
 
     override fun periodic() {
-        //System.out.println("Left climber: " + encoder.position)
+        System.out.println("Left climber: " + encoder.position)
         if(encoder.position !in -0.1..1.1){
             stop().schedule()
         }
