@@ -137,7 +137,6 @@ class Autos private constructor() {
                         intake.armUpCommand(),
                 )
 
-
         fun intakeNoteCommand(intake: IntakeSubsystem): Command =
                 SequentialCommandGroup(
                         intake.takeInCommand(),
@@ -180,7 +179,6 @@ class Autos private constructor() {
                 shooter.stopCommand()
             )
 
-
         fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
                 SequentialCommandGroup(
                         shooter.ampCommand(),
@@ -221,10 +219,10 @@ class Autos private constructor() {
         // from those entries, you can get the boolean array mentioned in the next line
         // the array [True, False, True] will pick up ring A then C and not B
         fun collectStartingRingsAndShoot(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, location: Int, rings:Array<GenericEntry>): Command {
-            val sequence:SequentialCommandGroup = SequentialCommandGroup()
+            val sequence: SequentialCommandGroup = SequentialCommandGroup()
             sequence.addCommands(goToSpeakerCommand(drive, location))
             sequence.addCommands(shootSpeakerCommand(intake, shooter))
-            return runOnce ({
+            return runOnce({
                 // the ring right along the middle
                 if (rings[0].getBoolean(false)) {
                     sequence.addCommands(goto(drive, Pose2d(14.127, 4.105656, 180.0.rotation2dFromDeg()), Pose2d(2.413, 4.105656, 0.0.rotation2dFromDeg())))
@@ -251,7 +249,7 @@ class Autos private constructor() {
             }, drive, intake, shooter).andThen(
                 sequence,
                 // will go to the bottom ring if Red and the top ring if Blue
-                goto(drive, Pose2d(8.2927  + 0.1778 + 0.3048, 0.752856, 180.0.rotation2dFromDeg()), Pose2d(8.2927  - 0.1778 - 0.3048, 7.457144, 0.0.rotation2dFromDeg()))
+                goto(drive, Pose2d(8.2927 + 0.1778 + 0.3048, 0.752856, 180.0.rotation2dFromDeg()), Pose2d(8.2927 - 0.1778 - 0.3048, 7.457144, 0.0.rotation2dFromDeg()))
             )
         }
         
