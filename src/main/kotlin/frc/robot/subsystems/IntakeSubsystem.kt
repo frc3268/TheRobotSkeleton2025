@@ -23,7 +23,7 @@ class IntakeSubsystem: SubsystemBase() {
     val limitSwitch = DigitalInput(0)
 
     companion object {
-        const val INTAKE_SPEED = 0.3
+        const val INTAKE_SPEED = 0.30
         const val OUTTAKE_ADJUST_SPEED = -0.3
         const val OUTTAKE_SPEED = -0.9
         const val SHOOT_AMP_SPEED = -1.0
@@ -63,7 +63,7 @@ class IntakeSubsystem: SubsystemBase() {
     fun intakeAndStopCommand(): Command =
             run{intakeMotor.set(INTAKE_SPEED)}.withTimeout(1.0).andThen(
                     run{}.until{intakeEncoder.velocity < 1.0}.andThen(
-                        run{}.until{intakeEncoder.velocity > 1.0}.andThen(run{}.withTimeout(0.2)).andThen(stopIntake())
+                       run{}.withTimeout(0.8).andThen(stopIntake())
                     )
             )
 
@@ -137,7 +137,6 @@ class IntakeSubsystem: SubsystemBase() {
 
     fun takeOutCommand(): Command =
         SequentialCommandGroup(
-            armUpCommand(),
             runIntakeAtSpeed(OUTTAKE_SPEED)
         )
 

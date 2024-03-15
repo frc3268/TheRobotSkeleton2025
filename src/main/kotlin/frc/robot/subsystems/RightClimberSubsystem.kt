@@ -7,6 +7,7 @@ import frc.lib.utils.*
 class RightClimberSubsystem: SubsystemBase(){
     val motor = Motor(15)
     val encoder: RelativeEncoder = motor.encoder
+    val limitSwitch = motor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen)
 
     /* CONSTANTS */
     private val metersPerRotation: Double = 0.0
@@ -24,7 +25,7 @@ class RightClimberSubsystem: SubsystemBase(){
 
     fun down(): Command =
         run { motor.set(-0.5) }
-            .until { encoder.position < 0.1 }
+            .until { encoder.position < 0.1  || limitSwitch.isPressed}
             .andThen(runOnce { motor.stopMotor() })
 
     fun up(): Command =
@@ -45,9 +46,11 @@ class RightClimberSubsystem: SubsystemBase(){
         runOnce { motor.set(0.0) }
 
     override fun periodic() {
-        //System.out.println("Right climber: " + encoder.position)
+        System.out.println("Right climber: " + encoder.position)
+        System.out.println("Right limit switch: " +limitSwitch.isPressed)
 
-        if(encoder.position !in -0.1..1.1){
+
+        if(limitSwitch.isPressed){
             stop().schedule()
         }
     }
