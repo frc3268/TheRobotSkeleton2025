@@ -13,7 +13,7 @@ class IntakeSubsystem: SubsystemBase() {
     val armMotor = Motor(10)
     val armEncoder: RelativeEncoder = armMotor.encoder
     val intakeEncoder: RelativeEncoder = intakeMotor.encoder
-    val armPIDController = PIDController(0.2/170,0.0,0.0)
+    val armPIDController = PIDController(0.5/170,0.0,0.0)
 
     val shuffleboardTab = Shuffleboard.getTab("intake")
     val intakeArmPositionEntry = shuffleboardTab.add("Intake arm encoder position", 0.0).entry
@@ -29,7 +29,7 @@ class IntakeSubsystem: SubsystemBase() {
         const val SHOOT_AMP_SPEED = -1.0
         //based momento...
 
-        const val UP_ANGLE = 0.05
+        const val UP_ANGLE = 5.0
         const val DOWN_ANGLE = 170.0
     }
 
@@ -137,6 +137,7 @@ class IntakeSubsystem: SubsystemBase() {
 
     fun takeOutCommand(): Command =
         SequentialCommandGroup(
+                armUpCommand(),
             runIntakeAtSpeed(OUTTAKE_SPEED)
         )
 
