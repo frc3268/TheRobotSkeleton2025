@@ -1,14 +1,22 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
-import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.WaitCommand
+import edu.wpi.first.wpilibj2.command.*
+import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import frc.lib.FieldLocation
+import frc.lib.FieldPositions
 import frc.lib.SwerveDriveBase
+import frc.lib.rotation2dFromDeg
 import frc.robot.commands.*
 import frc.robot.subsystems.*
+import java.util.function.Supplier
+import kotlin.math.atan
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,6 +46,126 @@ class RobotContainer {
         { true }
     )
 
+    fun goto(goal: FieldLocation): Command {
+        val color = DriverStation.getAlliance()
+        val to =
+            if (color.isPresent && color.get() == DriverStation.Alliance.Red)
+                goal.red
+            else
+                goal.blue
+        return SequentialCommandGroup(
+            driveSubsystem.moveToPoseCommand(to),
+            InstantCommand({ driveSubsystem.stop() })
+        )
+    }
+
+    fun goToSpeakerCloser(): Command {
+        var startingPose = Pose2d()
+        return runOnce({
+            startingPose = driveSubsystem.getPose()
+        }, driveSubsystem).andThen(
+        //red
+        goto(
+            FieldPositions.closest(
+                startingPose,
+                listOf(
+                    FieldPositions.speakerRight,
+                    FieldPositions.speakerCenter,
+                    FieldPositions.speakerLeft
+                )
+            )
+        )
+        )
+    }
+
+
+    val intakeAndUpCommand: Command =
+        SequentialCommandGroup(
+            intakeSubsystem.armDownCommand(),
+            intakeSubsystem.takeInCommand(),
+            intakeSubsystem.stopIntake(),
+            intakeSubsystem.armUpCommand(),
+        )
+
+    val intakeNoteCommand: Command =
+        SequentialCommandGroup(
+            intakeSubsystem.takeInCommand(),
+            intakeSubsystem.stopIntake()
+        )
+
+    val climberUp: ParallelCommandGroup =
+        ParallelCommandGroup(
+            leftClimberSubsystem.up(),
+            rightClimberSubsystem.up()
+        )
+
+    val climberDown: ParallelCommandGroup =
+        ParallelCommandGroup(
+            leftClimberSubsystem.down(),
+            rightClimberSubsystem.down()
+        )
+
+    val climberStop: ParallelCommandGroup =
+        ParallelCommandGroup(
+            leftClimberSubsystem.stop(),
+            rightClimberSubsystem.stop()
+        )
+
+    val shootSpeakerCommand: Command =
+        SequentialCommandGroup(
+            shooterSubsystem.shootCommand(),
+            WaitCommand(1.0),
+            intakeSubsystem.takeOutCommand(),
+            WaitCommand(1.2),
+            shooterSubsystem.stopCommand(),
+            intakeSubsystem.stopIntake()
+        )
+
+    val shootAmpCommand: Command =
+        SequentialCommandGroup(
+            shooterSubsystem.ampCommand(),
+            intakeSubsystem.takeOutCommand(),
+            shooterSubsystem.stopCommand()
+        )
+
+    val sourceIntakeCommand: Command =
+        SequentialCommandGroup(
+            intakeSubsystem.armUpCommand(),
+            shooterSubsystem.takeInCommand(),
+            intakeSubsystem.runIntakeCommand(),
+            WaitCommand(0.5),
+            intakeSubsystem.stopIntake()
+        )
+
+    val emergencyStopCommand: Command =
+        SequentialCommandGroup(
+            shooterSubsystem.stopCommand(),
+            intakeSubsystem.stopAllCommand()
+        )
+
+    val autos = mapOf(
+        "gotoSpeaker" to goToSpeakerCloser(),
+        "gotoSpeakerCenter" to goto(FieldPositions.speakerCenter),
+        "gotoSpeakerRight" to goto(FieldPositions.speakerRight),
+        "gotoSpeakerLeft" to goto(FieldPositions.speakerLeft),
+        "gotoAmp" to goto(FieldPositions.amp),
+        "goToSourceCloserToBaseline" to goto(FieldPositions.sourceBaseline),
+        "goToSourceFurtherFromBaseline" to goto(FieldPositions.sourceNotBaseline),
+        "goToRing" to WaitCommand(1.0),
+        //todo: other rings
+        "shootSpeaker" to shootSpeakerCommand,
+        "shootAmp" to shootAmpCommand,
+        "intakeAndUp" to intakeAndUpCommand,
+        "climbersUp" to climberUp,
+        "climbersDown" to climberDown
+    )
+
+    fun loadSequence(filepath:String) : SequentialCommandGroup{
+        return SequentialCommandGroup()
+    }
+
+
+
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
         driveSubsystem.defaultCommand = teleopCommand
@@ -48,20 +176,6 @@ class RobotContainer {
             .withPosition(0, 0)
             .withSize(2, 1)
 
-        autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
-        autochooser.addOption("Do nothing", WaitCommand(1.0))
-        autochooser.addOption("Shoot to speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
-        autochooser.addOption("Shoot to speaker + taxi", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem).andThen(Autos.taxiAuto(driveSubsystem)))
-        autochooser.addOption("Shoot, Intake, Shoot", Autos.driveUpShootSpeakerAndReturnToRingsCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
-
-        GeneralTab.add("shoot speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("Ground intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("Source Intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
-
-        GeneralTab.add("CLIMBERS down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("CLIMBERS up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("CLIMBERS stop", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-
         // Troubleshooting tab holds manual controls for the climber and a reset for the arm encoder
         TroubleshootingTab.add("CLIMBER L down", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
         TroubleshootingTab.add("CLIMBER L up", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
@@ -71,7 +185,7 @@ class RobotContainer {
 
         TroubleshootingTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
 
-        TroubleshootingTab.add("CLIMBERS reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBERS reset",climberStop).withWidget(BuiltInWidgets.kCommand)
         TroubleshootingTab.add("CLIMBERS stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
 
 
@@ -120,7 +234,7 @@ class RobotContainer {
         Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
         (The intention is to be able to prevent damage if the encoder is faulty and damaging any moving parts.)
          */
-        driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem))
+        driverController.y().onTrue(emergencyStopCommand)
 
         /*
         A runs outake
@@ -136,12 +250,12 @@ class RobotContainer {
         stop intake
         stop shooter
          */
-        driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
+        driverController.x().onTrue(sourceIntakeCommand)
 
        /*
        B does arm down, intake note, arm up
         */
-        driverController.b().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
+        driverController.b().onTrue(intakeAndUpCommand)
 
         /*
         POV up and down bring arm up and down
