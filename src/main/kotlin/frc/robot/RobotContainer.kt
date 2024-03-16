@@ -115,8 +115,11 @@ class RobotContainer {
 
         /*
         LT (Intake):
-            runs intake
-            (not arm!)
+            runs intake and up sequence
+            1. arm goes down
+            2. intake turns on until
+            3. a piece has been detected in the intake, then
+            4. intake stops and arm goes up
          */
         driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
 
@@ -129,7 +132,7 @@ class RobotContainer {
         //driverController.rightTrigger().onTrue(Autos.testShooterCommand(shooterSubsystem))
         driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
         /*
-        LB: Arm up
+        LB: Arm down
          */
         driverController.leftBumper().onTrue(intakeSubsystem.armDownCommand())
 
