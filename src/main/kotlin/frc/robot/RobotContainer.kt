@@ -2,17 +2,18 @@ package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.*
 import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.lib.FieldLocation
-import frc.lib.FieldPositions
-import frc.lib.SwerveDriveBase
-import frc.lib.rotation2dFromDeg
+import frc.lib.*
 import frc.robot.commands.*
 import frc.robot.subsystems.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import java.io.File
 import java.util.function.Supplier
 import kotlin.math.atan
 import kotlin.math.cos
@@ -160,12 +161,6 @@ class RobotContainer {
         "climbersDown" to climberDown
     )
 
-    fun loadSequence(filepath:String) : SequentialCommandGroup{
-        return SequentialCommandGroup()
-    }
-
-
-
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
         driveSubsystem.defaultCommand = teleopCommand
@@ -187,6 +182,18 @@ class RobotContainer {
 
         TroubleshootingTab.add("CLIMBERS reset",climberStop).withWidget(BuiltInWidgets.kCommand)
         TroubleshootingTab.add("CLIMBERS stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
+
+        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
+            autochooser.addOption(file.name,Json.decodeFromStream<AutoSequence>(
+               file.inputStream()
+            ).toCommandGroup(autos))
+        }
+
+        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/buttons").listFiles()?.filter { it.isFile }!!){
+            GeneralTab.add(file.name,Json.decodeFromStream<AutoSequence>(
+                file.inputStream()
+            ).toCommandGroup(autos)).withWidget(BuiltInWidgets.kCommand)
+        }
 
 
         // Configure the trigger bindings
