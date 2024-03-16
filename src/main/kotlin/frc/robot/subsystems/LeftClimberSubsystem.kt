@@ -9,12 +9,6 @@ class LeftClimberSubsystem: SubsystemBase(){
     val encoder: RelativeEncoder = motor.encoder
     val limitSwitch = motor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen)
 
-
-    /* CONSTANTS */
-    private val metersPerRotation: Double = 0.0
-    private val minPositionMeters: Double = 0.0
-    private val maxPositionMeters: Double = 0.34
-    
     init {
         motor.inverted = true
         // TODO test if this is needed

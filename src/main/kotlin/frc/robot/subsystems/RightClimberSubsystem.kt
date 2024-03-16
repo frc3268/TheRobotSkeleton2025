@@ -4,15 +4,11 @@ import com.revrobotics.*
 import edu.wpi.first.wpilibj2.command.*
 import frc.lib.utils.*
 
-class RightClimberSubsystem: SubsystemBase(){
+class RightClimberSubsystem(): SubsystemBase(){
     val motor = Motor(15)
     val encoder: RelativeEncoder = motor.encoder
     val limitSwitch = motor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen)
 
-    /* CONSTANTS */
-    private val metersPerRotation: Double = 0.0
-    private val minPositionMeters: Double = 0.0
-    private val maxPositionMeters: Double = 0.34
 
     init {
         motor.inverted = true
@@ -54,7 +50,7 @@ class RightClimberSubsystem: SubsystemBase(){
         System.out.println("Right limit switch: " +limitSwitch.isPressed)
 
 
-        if(limitSwitch.isPressed){
+        if(encoder.position !in -0.1..1.1){
             stop().schedule()
         }
     }
