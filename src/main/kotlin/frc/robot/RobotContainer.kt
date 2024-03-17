@@ -164,9 +164,10 @@ class RobotContainer {
         driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
 
        /*
-       B does arm down, intake note, arm up
+       B runs intake
         */
-        driverController.b().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
+        driverController.a().onTrue(intakeSubsystem.runIntakeCommand())
+        driverController.a().onFalse(intakeSubsystem.stopIntake())
 
         /*
         POV up and down bring arm up and down
