@@ -1,37 +1,45 @@
 package frc.lib.utils
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout
-import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Transform3d
+import edu.wpi.first.apriltag.AprilTagFields
+import edu.wpi.first.math.*
+import edu.wpi.first.math.geometry.*
+import edu.wpi.first.math.numbers.*
+import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.DriverStation
-import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj2.command.SubsystemBase
-import org.photonvision.EstimatedRobotPose
-import org.photonvision.PhotonCamera
-import org.photonvision.PhotonPoseEstimator
-import org.photonvision.targeting.PhotonPipelineResult
-import org.photonvision.targeting.PhotonTrackedTarget
+import org.photonvision.*
+import org.photonvision.targeting.*
 import java.io.IOException
+import java.util.*
 
 class Camera(name:String, path:String): SubsystemBase(){
-    val limelight:PhotonCamera = PhotonCamera(name)
-    var frame: PhotonPipelineResult = PhotonPipelineResult()
+    val limelight = PhotonCamera(name)
+    var frame = PhotonPipelineResult()
     var poseEstimator: PhotonPoseEstimator? = null
 
     init {
         try {
             poseEstimator =
                 PhotonPoseEstimator(
-                    AprilTagFieldLayout(
-                        Filesystem.getDeployDirectory().toString() +
-                        path
-                    ),
+                    AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(),
                     PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                     limelight,
-                    Transform3d()
+                    Transform3d(
+                            Translation3d(
+                                    Units.inchesToMeters(0.0),
+                                    Units.inchesToMeters(12.0),
+                                            Units.inchesToMeters(15.0),
+                            ),
+                            Rotation3d(
+                                    0.0,
+                                    45.0,
+                                    0.0
+
+                            )
+                    )
                 )
         } catch (e: IOException) {
-            DriverStation.reportError("AprilTag: Failed to Load", e.getStackTrace())
+            DriverStation.reportError("AprilTag: Failed to Load", e.stackTrace)
         // !add some way to lock down apriltage features after this
         }
     }
@@ -41,46 +49,49 @@ class Camera(name:String, path:String): SubsystemBase(){
     }
 
     //call periodically
-    fun captureFrame() : PhotonPipelineResult{
-        frame = limelight.latestResult
-        return frame
-    }
-
-    fun getArpilTagTargetByID(id: Int):PhotonTrackedTarget? {
-        limelight.pipelineIndex = 1
-        if(!frame.hasTargets()){
-            return null
-        }
-        for (target:PhotonTrackedTarget in frame.getTargets()){
-            if(target.fiducialId == id){
-                return target
-            }
-        }
-        return null
-    }
+    fun captureFrame() : PhotonPipelineResult =
+        limelight.latestResult
 
     fun getAprilTagTarget():PhotonTrackedTarget? {
         limelight.pipelineIndex = 1
-        if(!frame.hasTargets()){
-            return null
-        }
-        return frame.bestTarget
+        return if(frame.hasTargets()) frame.bestTarget else null
     }
 
     fun getReflectiveTapeTarget():PhotonTrackedTarget?{
         limelight.pipelineIndex = 0
-        if(!frame.hasTargets()){
-            return null
+        return if(frame.hasTargets()) frame.bestTarget else null
+    }
+
+    fun getEstimatedPose(): Optional<EstimatedRobotPose>? =
+        poseEstimator?.update()
+
+    //stolen from  photonvision(blatantly)
+    fun getEstimationStdDevs(estimatedPose: Pose2d): Matrix<N3, N1> {
+        //todo: expiriment with vecbuilder values(somehow)
+        var estStdDevs =  VecBuilder.fill(.7,.7,.9999999)
+        val targets = captureFrame().getTargets()
+        var numTags = 0
+        var avgDist = 0.0
+        
+        for (tgt in targets) {
+            val tagPose = poseEstimator?.fieldTags?.getTagPose(tgt.fiducialId) ?: continue
+            if (tagPose.isEmpty) continue
+            numTags++
+            avgDist +=
+                tagPose.get().toPose2d().translation.getDistance(estimatedPose.translation)
         }
-        return frame.bestTarget
+        if (numTags == 0) return estStdDevs
+        avgDist /= numTags
+        // Decrease std devs if multiple targets are visible
+        if (numTags > 1) estStdDevs = VecBuilder.fill(0.5, 0.5, 1.0)
+        // Increase std devs based on (average) distance
+        if (numTags == 1 && avgDist > 4)
+            estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)
+        else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30))
+
+        return estStdDevs
     }
 
-
-    fun getEstimatedPose(prevPose: Pose2d): EstimatedRobotPose? {
-        poseEstimator ?: return null
-        poseEstimator?.setReferencePose(prevPose)
-        return poseEstimator?.update()?.orElse(null)
-    }
 
     fun resetPose(pose: Pose2d) {
         poseEstimator ?: return
