@@ -253,10 +253,13 @@ class Autos private constructor() {
             )
         }
         
-        fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
-            SequentialCommandGroup(
+        fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem, leftClimberSubsystem: LeftClimberSubsystem, rightClimberSubsystem: RightClimberSubsystem): Command =
+            ParallelCommandGroup(
                 shooter.stopCommand(),
-                intake.stopAllCommand()
+                intake.stopAllCommand(),
+                leftClimberSubsystem.stop(),
+                rightClimberSubsystem.stop()
+
             )
     }
 }

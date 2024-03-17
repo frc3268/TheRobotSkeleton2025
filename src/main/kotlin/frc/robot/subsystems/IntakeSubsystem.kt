@@ -147,6 +147,8 @@ class IntakeSubsystem: SubsystemBase() {
     fun runOnceOuttake(): Command =
         runIntakeAtSpeed(OUTTAKE_ADJUST_SPEED)
 
+    fun runOnceOUttakeFullSpeed(): Command = runIntakeAtSpeed(OUTTAKE_SPEED)
+
     fun zeroArmEncoderCommand(): Command =
         runOnce { armEncoder.position = 0.0 }
 

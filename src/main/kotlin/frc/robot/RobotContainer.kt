@@ -137,7 +137,7 @@ class RobotContainer {
         RT (Shoot Toggle):
             1) Rev up shooter
          */
-        driverController.rightTrigger().onTrue(intakeSubsystem.takeOutCommand())
+        driverController.rightTrigger().onTrue(intakeSubsystem.runOnceOUttakeFullSpeed())
         driverController.rightTrigger().onFalse(intakeSubsystem.stopIntake())
 
         /*
@@ -154,7 +154,7 @@ class RobotContainer {
         Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
         (The intention is to be able to prevent damage if the encoder is faulty and damaging any moving parts.)
          */
-        driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem))
+        driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem, leftClimberSubsystem, rightClimberSubsystem))
 
         /*
         A runs outake
