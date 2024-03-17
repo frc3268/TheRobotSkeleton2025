@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.Commands
+import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
@@ -123,23 +125,30 @@ class RobotContainer {
          */
         driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
 
-        /*
-        RT (Shoot):
-            1) Rev up shooter
-            2) Run intake in reverse to feed it into shooter
-            This assumes the arm is already up. If it's down, the note will be shot back onto the ground.
-         */
-        //driverController.rightTrigger().onTrue(Autos.testShooterCommand(shooterSubsystem))
-        driverController.rightTrigger().onTrue(Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
-        /*
-        LB: Arm down
-         */
-        driverController.leftBumper().onTrue(intakeSubsystem.armDownCommand())
 
         /*
-        RB: Arm Up
+                LB(Go to speaker):
+                1) go to the speaker center subwoofer location
+                (reasoning: driver is able to focus on other things while robot goes to speaker autonomously and drifting is not an issue)
+                 */
+        driverController.leftBumper().onTrue(Autos.goToSpeakerCommand(driveSubsystem, 2))
+
+        /*
+        RT (Shoot Toggle):
+            1) Rev up shooter
          */
-        driverController.rightBumper().onTrue(intakeSubsystem.armUpCommand())
+        driverController.rightTrigger().onTrue(intakeSubsystem.takeOutCommand())
+        driverController.rightTrigger().onFalse(intakeSubsystem.stopIntake())
+
+        /*
+        RB (Outake):
+            1) arm up
+            2) run outtake
+         */
+        driverController.rightBumper().toggleOnTrue(Commands.startEnd({shooterSubsystem.leftFlywheelMotor.set(-1.0)
+            shooterSubsystem.rightFlywheelMotor.set(-1.0)}, {shooterSubsystem.leftFlywheelMotor.stopMotor()
+            shooterSubsystem.rightFlywheelMotor.stopMotor()}, shooterSubsystem))
+
 
         /*
         Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
@@ -172,8 +181,8 @@ class RobotContainer {
         /*
         POV up and down bring arm up and down
          */
-        //driverController.povUp().onTrue(intakeSubsystem.armUpCommand())
-        //driverController.povDown().onTrue(intakeSubsystem.armDownCommand())
+        driverController.povUp().onTrue(intakeSubsystem.armUpCommand())
+        driverController.povDown().onTrue(intakeSubsystem.armDownCommand())
     }
 
     /**
