@@ -1,12 +1,18 @@
 package frc.robot
 
+import edu.wpi.first.cscore.CvSink
+import edu.wpi.first.cscore.CvSource
+import edu.wpi.first.cscore.MjpegServer
+import edu.wpi.first.cscore.UsbCamera
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.util.PixelFormat
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import frc.lib.constants.SwerveDriveConstants
+import org.opencv.core.Mat
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,6 +24,17 @@ class Robot: TimedRobot() {
     private var autonomousCommand: Command? = null
     private var robotContainer: RobotContainer? = null
 
+    private val matrix:Mat = Mat()
+    private val hierarchy:Mat = Mat()
+
+    // Creates UsbCamera and MjpegServer [1] and connects them
+    val usbCamera = UsbCamera("USB Camera 0", 0);
+    val mjpegServer1  = MjpegServer("serve_USB Camera 0", 1181);
+
+// Creates the CvSink and connects it to the UsbCamera
+    val cvSink = CvSink("opencv_USB Camera 0");
+
+
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
@@ -26,6 +43,9 @@ class Robot: TimedRobot() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = RobotContainer()
+
+        mjpegServer1.source = usbCamera
+        cvSink.source = usbCamera
     }
 
     /**
@@ -42,6 +62,7 @@ class Robot: TimedRobot() {
         // and running subsystem periodic() methods.  This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run()
+        robotContainer!!.driveSubsystem.getPoseOfNote(cvSink, matrix, hierarchy)
     }
 
     /** This function is called once each time the robot enters Disabled mode.  */

@@ -1,6 +1,8 @@
 package frc.lib.basics
 
 import com.kauailabs.navx.frc.AHRS
+import edu.wpi.first.cscore.CvSink
+import edu.wpi.first.math.Matrix
 import edu.wpi.first.math.VecBuilder
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.*
@@ -13,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.*
 import frc.lib.constants.SwerveDriveConstants
 import frc.lib.utils.*
+import org.opencv.core.*
+import org.opencv.imgproc.Imgproc
 import org.photonvision.EstimatedRobotPose
 import java.util.*
 import kotlin.math.*
@@ -180,6 +184,34 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         visionEst?.ifPresent { est ->
             zeroPoseToFieldPosition(est.estimatedPose.toPose2d())
         }
+    }
+
+    fun getPoseOfNote(cvSink: CvSink, matrix: Mat, hierarchy: Mat) : Pose2d{
+        if(cvSink.grabFrame(matrix).toInt() == 0){
+            //if there's an error, the robot won't move
+            return getPose()
+        }
+        //35 100 100
+        //5 80 80
+        Imgproc.cvtColor(matrix, matrix, Imgproc.COLOR_RGB2HSV)
+        Core.inRange(matrix, Scalar(5.0, 80.0, 0.0), Scalar(35.0, 100.0, 100.0), matrix)
+        var contours:List<MatOfPoint> = listOf()
+        //there may be an issue with this?
+        Imgproc.findContours(matrix, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
+        for(contour: MatOfPoint in contours){
+            val moments = Imgproc.moments(contour)
+            if(moments._m00.toInt() != 0){
+                val cx = (moments._m10/moments._m00).toInt()
+                val cy = (moments._m01/moments._m00).toInt()
+                val area = moments._m00
+
+                println("cx, cy:$cx,$cy")
+                println("area: $area")
+            }
+
+        }
+
+        return getPose()
     }
 
 }
