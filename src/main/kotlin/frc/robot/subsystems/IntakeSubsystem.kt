@@ -13,7 +13,7 @@ class IntakeSubsystem: SubsystemBase() {
     val armMotor = Motor(10)
     val armEncoder: RelativeEncoder = armMotor.encoder
     val intakeEncoder: RelativeEncoder = intakeMotor.encoder
-    val armPIDController = PIDController(0.75/170,0.0,0.2)
+    val armPIDController = PIDController(0.4/170,0.0,0.2)
 
     val shuffleboardTab = Shuffleboard.getTab("intake")
     val intakeArmPositionEntry = shuffleboardTab.add("Intake arm encoder position", 0.0).entry
@@ -44,7 +44,7 @@ class IntakeSubsystem: SubsystemBase() {
         shuffleboardTab.add("Arm up - sequence", armUpCommand())
 
         shuffleboardTab.add("STOP - TESTING", stopAllCommand())
-        armEncoder.positionConversionFactor =  360 / 75.0
+        armEncoder.positionConversionFactor =  360 / 112.5
         intakeEncoder.velocityConversionFactor = 1.0 / 1600
     }
 
