@@ -194,7 +194,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //35 100 100
         //5 80 80
         Imgproc.cvtColor(matrix, matrix, Imgproc.COLOR_RGB2HSV)
-        Core.inRange(matrix, Scalar(5.0, 80.0, 0.0), Scalar(35.0, 100.0, 100.0), matrix)
+        Core.inRange(matrix, Scalar(5.0, 80.0, 80.0), Scalar(35.0, 100.0, 100.0), matrix)
         var contours:List<MatOfPoint> = listOf()
         //there may be an issue with this?
         Imgproc.findContours(matrix, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
