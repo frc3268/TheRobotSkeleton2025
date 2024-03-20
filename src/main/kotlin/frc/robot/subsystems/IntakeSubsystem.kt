@@ -13,24 +13,25 @@ class IntakeSubsystem: SubsystemBase() {
     val armMotor = Motor(10)
     val armEncoder: RelativeEncoder = armMotor.encoder
     val intakeEncoder: RelativeEncoder = intakeMotor.encoder
-    val armPIDController = PIDController(0.4/170,0.0,0.2)
+    val armPIDController = PIDController(0.7/170,0.0,0.0)
 
     val shuffleboardTab = Shuffleboard.getTab("intake")
     val intakeArmPositionEntry = shuffleboardTab.add("Intake arm encoder position", 0.0).entry
     val intakeVelocityEntry = shuffleboardTab.add("Intake encoder velocity", 0.0).entry
+    val intakepositionEntry = shuffleboardTab.add("Intake encoder positon", 0.0).entry
 
     // TODO replace with actual channel
     val limitSwitch = DigitalInput(0)
 
     companion object {
-        const val INTAKE_SPEED = 0.30
+        const val INTAKE_SPEED = 0.35
         const val OUTTAKE_ADJUST_SPEED = -0.3
         const val OUTTAKE_SPEED = -0.9
         const val SHOOT_AMP_SPEED = -1.0
         //based momento...
 
         const val UP_ANGLE = 5.0
-        const val DOWN_ANGLE = 190.0
+        const val DOWN_ANGLE = 170.0
     }
 
     init {
@@ -44,8 +45,10 @@ class IntakeSubsystem: SubsystemBase() {
         shuffleboardTab.add("Arm up - sequence", armUpCommand())
 
         shuffleboardTab.add("STOP - TESTING", stopAllCommand())
+        armMotor.inverted = true
         armEncoder.positionConversionFactor =  360 / 112.5
         intakeEncoder.velocityConversionFactor = 1.0 / 1600
+        intakeEncoder.positionConversionFactor = 1.0/12.0
     }
 
     fun stopIntake(): Command =
@@ -63,7 +66,7 @@ class IntakeSubsystem: SubsystemBase() {
     fun intakeAndStopCommand(): Command =
             run{intakeMotor.setVoltage(INTAKE_SPEED * 12.0)}.withTimeout(1.0).andThen(
                     run{}.until{intakeEncoder.velocity < 1.0}.andThen(runOnce{intakeEncoder.setPosition(0.0)}.andThen(
-                       run{}.until{intakeEncoder.position > 50}.andThen(stopIntake()))
+                       run{}.until{intakeEncoder.position > 1.2}.andThen(stopIntake()))
                     )
             )
 
@@ -147,7 +150,7 @@ class IntakeSubsystem: SubsystemBase() {
     fun runOnceOuttake(): Command =
         runIntakeAtSpeed(OUTTAKE_ADJUST_SPEED)
 
-    fun runOnceOUttakeFullSpeed(): Command = runIntakeAtSpeed(OUTTAKE_SPEED)
+    fun runOnceOUttakeFullSpeed(): Command = runIntakeAtSpeed(-1.0)
 
     fun zeroArmEncoderCommand(): Command =
         runOnce { armEncoder.position = 0.0 }
@@ -159,12 +162,13 @@ class IntakeSubsystem: SubsystemBase() {
 
         // Stop arm guard in case it screws itself over
 
-        if (getArmPosition().degrees >= 215.0) stopArm().schedule()
-        else if (getArmPosition().degrees <= -10.0) stopArm().schedule()
+        if (getArmPosition().degrees >= 190.0) stopArm().schedule()
+        else if (getArmPosition().degrees <= -5.0) stopArm().schedule()
 
 
         intakeArmPositionEntry.setDouble(armEncoder.position)
         intakeVelocityEntry.setDouble(intakeEncoder.velocity)
+        intakepositionEntry.setDouble(intakeEncoder.position)
     }
 
     override fun simulationPeriodic() {
