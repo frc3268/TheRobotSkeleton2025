@@ -74,8 +74,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         seesAprilTag.setBoolean(camera.captureFrame().hasTargets())
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
-
-           poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, camera.getEstimationStdDevs(est.estimatedPose.toPose2d()))
+           poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds)
+            //, camera.getEstimationStdDevs(est.estimatedPose.toPose2d())
         }
         //update module tabs on shuffleboard
         for (mod in modules){

@@ -157,9 +157,9 @@ class RobotContainer {
         driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem, leftClimberSubsystem, rightClimberSubsystem))
 
         /*
-        A runs outake
+        A runs intake when held
          */
-        driverController.a().onTrue(intakeSubsystem.runOnceOuttake())
+        driverController.a().onTrue(intakeSubsystem.runIntakeCommand())
         driverController.a().onFalse(intakeSubsystem.stopIntake())
 
         /*
@@ -173,10 +173,10 @@ class RobotContainer {
         driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
 
        /*
-       B runs intake
+       B runs outtake when held
         */
-        driverController.a().onTrue(intakeSubsystem.runIntakeCommand())
-        driverController.a().onFalse(intakeSubsystem.stopIntake())
+        driverController.b().onTrue(intakeSubsystem.runOnceOuttake())
+        driverController.b().onFalse(intakeSubsystem.stopIntake())
 
         /*
         POV up and down bring arm up and down
