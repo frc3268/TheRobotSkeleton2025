@@ -1,6 +1,5 @@
 package frc.robot.subsystems
 
-import com.revrobotics.*
 import edu.wpi.first.wpilibj2.command.*
 import frc.lib.utils.*
 
@@ -20,16 +19,9 @@ class ShooterSubsystem: SubsystemBase() {
             rightFlywheelMotor.set(speed)
         }
 
-    fun speakerCommand(): Command =
-        runAtSpeedCommand(SPEAKER_SPEED)
-
-    fun ampCommand(): Command =
-        // used to be within another function which ran another function; they were combined and this instance had to be changed
-        runAtSpeedCommand(AMP_SPEED)
-
     fun takeInCommand(): Command =
         run { runAtSpeedCommand(INTAKE_SPEED) }
-            // TODO Adjust timeout
+            // TODO Adjust shooter timeout
             .withTimeout(1.5)
             .andThen(stopCommand())
 
