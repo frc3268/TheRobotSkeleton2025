@@ -31,24 +31,8 @@ class Robot: TimedRobot() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = RobotContainer()
-        visionThread = Thread{
+        CameraServer.startAutomaticCapture();
 
-            // Creates UsbCamera and MjpegServer [1] and connects them
-            val usbCamera =  CameraServer.startAutomaticCapture(5);
-
-            val cvSink:CvSink = CameraServer.getVideo()
-
-            CameraServer.putVideo("serve_USB Camera 0", 640, 480);
-
-            val matrix = Mat()
-            val hierarchy = Mat()
-
-            while (!Thread.interrupted()) {
-                robotContainer?.driveSubsystem?.getPoseOfNote(cvSink, matrix, hierarchy)
-
-                }
-
-        }
     }
 
     /**

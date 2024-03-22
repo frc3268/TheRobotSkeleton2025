@@ -150,19 +150,9 @@ class RobotContainer {
         /*
         RB - REV UP SHOOTER (TOGGLE)
          */
-        driverController.rightBumper().toggleOnTrue(
-            Commands.startEnd(
-                {
-                    shooterSubsystem.leftFlywheelMotor.set(-1.0)
-                    shooterSubsystem.rightFlywheelMotor.set(-1.0)
-                },
-                {
-                    shooterSubsystem.leftFlywheelMotor.stopMotor()
-                    shooterSubsystem.rightFlywheelMotor.stopMotor()
-                },
-                shooterSubsystem
-            )
-        )
+        //driverController.rightBumper().toggleOnTrue(Commands.startEnd({shooterSubsystem.leftFlywheelMotor.set(-1.0)
+          //  shooterSubsystem.rightFlywheelMotor.set(-1.0)}, {shooterSubsystem.leftFlywheelMotor.stopMotor()
+            //shooterSubsystem.rightFlywheelMotor.stopMotor()}, shooterSubsystem))
 
         /*
         Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
