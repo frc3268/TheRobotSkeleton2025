@@ -156,9 +156,9 @@ class RobotContainer {
         RB (Outake):
             2) run outtake
          */
-        driverController.rightBumper().toggleOnTrue(Commands.startEnd({shooterSubsystem.leftFlywheelMotor.set(-1.0)
-            shooterSubsystem.rightFlywheelMotor.set(-1.0)}, {shooterSubsystem.leftFlywheelMotor.stopMotor()
-            shooterSubsystem.rightFlywheelMotor.stopMotor()}, shooterSubsystem))
+        //driverController.rightBumper().toggleOnTrue(Commands.startEnd({shooterSubsystem.leftFlywheelMotor.set(-1.0)
+          //  shooterSubsystem.rightFlywheelMotor.set(-1.0)}, {shooterSubsystem.leftFlywheelMotor.stopMotor()
+            //shooterSubsystem.rightFlywheelMotor.stopMotor()}, shooterSubsystem))
 
 
         /*
