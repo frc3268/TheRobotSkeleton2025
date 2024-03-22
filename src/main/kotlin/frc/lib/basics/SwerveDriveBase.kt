@@ -43,6 +43,10 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     private val camera:Camera
 
+    private var setPointPoseX = shuffleboardTab.add("SetPoint Pose X", 0.0).entry
+    private var setPointPoseY = shuffleboardTab.add("SetPoint Pose Y", 0.0).entry
+
+
 
     init {
         SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
@@ -131,7 +135,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     //move robot to pose given in endpose argument
     fun moveToPoseCommand(endPose: Pose2d): Command{
-        return run {
+
+        return runOnce{
+            setPointPoseX.setDouble(endPose.x)
+            setPointPoseY.setDouble(endPose.y)
+        }.andThen(run {
             setModuleStates(
                 constructModuleStatesFromChassisSpeeds(
                 -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
@@ -139,7 +147,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
                 -SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getYaw().degrees,  endPose.rotation.degrees),
                 true
             ))
-        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.02 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
+        }).until { abs(getPose().translation.getDistance(endPose.translation)) < 0.02 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
     }
 
     //getters
