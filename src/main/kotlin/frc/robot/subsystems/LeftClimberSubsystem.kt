@@ -1,13 +1,20 @@
 package frc.robot.subsystems
 
 import com.revrobotics.*
+import edu.wpi.first.networktables.GenericEntry
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
 import edu.wpi.first.wpilibj2.command.*
 import frc.lib.utils.*
 
 class LeftClimberSubsystem: SubsystemBase(){
     val motor = Motor(14)
     val encoder: RelativeEncoder = motor.encoder
-    val limitSwitch = motor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen)
+    val troubleShootingTab: ShuffleboardTab = Shuffleboard.getTab("Troubleshooting")
+    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("Right Climber DANGER MODE", false).withWidget(
+        BuiltInWidgets.kBooleanBox).entry
+
 
     init {
         motor.inverted = true
@@ -25,7 +32,7 @@ class LeftClimberSubsystem: SubsystemBase(){
 
     fun down(): Command =
         run { motor.set(-0.3) }
-            .until { encoder.position < 0.1 || limitSwitch.isPressed}
+            .until { encoder.position < 0.1 }
             .andThen(runOnce { motor.stopMotor() })
 
     fun up(): Command =
@@ -47,8 +54,7 @@ class LeftClimberSubsystem: SubsystemBase(){
 
     override fun periodic() {
         System.out.println("Left climber: " + encoder.position)
-        System.out.println("Left limit switch: " + limitSwitch.isPressed)
-        if(encoder.position !in -0.1..1.1){
+        if(encoder.position !in -0.1..1.1 && !booleanBoxDangerMode.getBoolean(false)){
             stop().schedule()
         }
     }

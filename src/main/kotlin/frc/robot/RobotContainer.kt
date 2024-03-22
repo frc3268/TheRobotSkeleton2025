@@ -31,6 +31,7 @@ class RobotContainer {
     private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
     val autochooser = SendableChooser<Command>()
+    val lbChooser = SendableChooser<Command>()
 
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
@@ -51,6 +52,11 @@ class RobotContainer {
             .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
+            .withSize(2, 1)
+        GeneralTab
+            .add("LB Command", lbChooser)
+            .withWidget(BuiltInWidgets.kComboBoxChooser)
+            .withPosition(3, 0)
             .withSize(2, 1)
 
 
@@ -78,6 +84,12 @@ class RobotContainer {
         autochooser.addOption("test Shooter only", Autos.testShooterCommand(shooterSubsystem))
         autochooser.addOption("test shoot amp", Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
         autochooser.addOption("test source intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
+
+        //lb chooser
+        lbChooser.setDefaultOption("Do nothing", WaitCommand(0.0))
+        lbChooser.addOption(" go to speaker (bottom)", Autos.goToSpeakerCommand(driveSubsystem, 1))
+        lbChooser.addOption(" go to speaker (middle)", Autos.goToSpeakerCommand(driveSubsystem, 2))
+        lbChooser.addOption(" go to speaker (top)", Autos.goToSpeakerCommand(driveSubsystem, 3))
 
         GeneralTab.add("shoot speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
         GeneralTab.add("Ground intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
@@ -120,14 +132,17 @@ class RobotContainer {
             4. intake stops and arm goes up
          */
         driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
+        
+        /*
+        LB (Go to speaker): run a given go to command
+        you can pick a place to go to in the lbchooser
+        (reasoning: driver is able to focus on other things while robot goes to speaker autonomously and drifting is not an issue)
+         */
+        driverController.leftBumper().onTrue(lbChooser.selected)
 
         /*
-        LB does nothing for now
-        */
-        //driverController.leftBumper().onTrue(Autos.goToSpeakerCommand(driveSubsystem, 2))
-
-        /*
-        RT RUN OUTTAKE
+        RT (Shoot Toggle):
+            1) Rev up shooter
          */
         driverController.rightTrigger().onTrue(intakeSubsystem.runIntakeAtSpeed(IntakeSubsystem.OUTTAKE_SPEED))
         driverController.rightTrigger().onFalse(intakeSubsystem.stopIntake())
