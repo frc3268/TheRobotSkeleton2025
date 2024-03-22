@@ -159,7 +159,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     //sets poseEstimator's recorded position to a pose2d given in startingpose argument
     fun zeroPoseToFieldPosition(startingPose: Pose2d){
-        gyro.resetDisplacement()
         yawOffset = startingPose.rotation.degrees
         resetModulesToAbsolute()
         poseEstimator.resetPosition(getYaw(), getModulePositions(), startingPose)
