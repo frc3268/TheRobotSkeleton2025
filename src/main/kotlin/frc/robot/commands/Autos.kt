@@ -122,17 +122,17 @@ class Autos private constructor() {
         }
 
         fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
-                SequentialCommandGroup(
-                        goToSpeakerCommand(drive, 1),
-                        shootSpeakerCommand(intake, shooter)
-                )
+            SequentialCommandGroup(
+                goToSpeakerCommand(drive, 1),
+                shootSpeakerCommand(intake, shooter)
+            )
 
         fun intakeAndUpCommand(intake: IntakeSubsystem): Command =
-                SequentialCommandGroup(
-                        intake.armDownCommand(),
-                        intake.intakeAndStopCommand(),
-                        intake.armUpCommand(),
-                )
+            SequentialCommandGroup(
+                intake.armDownCommand(),
+                intake.intakeAndStopCommand(),
+                intake.armUpCommand(),
+            )
 
         fun intakeNoteCommand(intake: IntakeSubsystem): Command =
                 SequentialCommandGroup(
@@ -160,7 +160,7 @@ class Autos private constructor() {
 
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
-                shooter.speakerCommand(),
+                shooter.runAtSpeedCommand(ShooterSubsystem.SPEAKER_SPEED),
                 WaitCommand(1.0),
                 intake.takeOutCommand(),
                 WaitCommand(1.2),
@@ -171,14 +171,14 @@ class Autos private constructor() {
         //Needed function to test controls that didn't involve intake
         fun testShooterCommand(shooter: ShooterSubsystem):Command =
             SequentialCommandGroup(
-                shooter.speakerCommand(),
+                shooter.runAtSpeedCommand(ShooterSubsystem.SPEAKER_SPEED),
                 WaitCommand(1.0),
                 shooter.stopCommand()
             )
 
         fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
                 SequentialCommandGroup(
-                        shooter.ampCommand(),
+                        shooter.runAtSpeedCommand(ShooterSubsystem.AMP_SPEED),
                         intake.takeOutCommand(),
                         shooter.stopCommand()
                 )
@@ -187,7 +187,7 @@ class Autos private constructor() {
                 SequentialCommandGroup(
                         intake.armUpCommand(),
                         shooter.takeInCommand(),
-                        intake.runIntakeCommand(),
+                        intake.runIntakeAtSpeed(IntakeSubsystem.INTAKE_SPEED),
                         WaitCommand(0.5),
                         intake.stopIntake()
                 )

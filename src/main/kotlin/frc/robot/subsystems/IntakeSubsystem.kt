@@ -9,16 +9,16 @@ import edu.wpi.first.wpilibj2.command.*
 import frc.lib.utils.*
 
 class IntakeSubsystem: SubsystemBase() {
-    val intakeMotor = Motor(9)
-    val armMotor = Motor(10)
+    private val intakeMotor = Motor(9)
+    private val armMotor = Motor(10)
     val armEncoder: RelativeEncoder = armMotor.encoder
     val intakeEncoder: RelativeEncoder = intakeMotor.encoder
     val armPIDController = PIDController(0.7/170,0.0,0.0)
 
-    val shuffleboardTab = Shuffleboard.getTab("intake")
-    val intakeArmPositionEntry = shuffleboardTab.add("Intake arm encoder position", 0.0).entry
-    val intakeVelocityEntry = shuffleboardTab.add("Intake encoder velocity", 0.0).entry
-    val intakepositionEntry = shuffleboardTab.add("Intake encoder positon", 0.0).entry
+    val shuffleboardTab = Shuffleboard.getTab("Intake")
+    val intakeArmPositionEntry = shuffleboardTab.add("Arm pos", 0.0).entry
+    val intakeVelocityEntry = shuffleboardTab.add("Intake velocity", 0.0).entry
+    val intakepositionEntry = shuffleboardTab.add("Intake pos", 0.0).entry
 
     // TODO replace with actual channel
     val limitSwitch = DigitalInput(0)
@@ -35,18 +35,15 @@ class IntakeSubsystem: SubsystemBase() {
     }
 
     init {
-        shuffleboardTab.add("Arm down - TESTING", runOnce{armMotor.set(0.1)})
-        shuffleboardTab.add("Arm up - TESTING", runOnce{armMotor.set(-0.1)})
-        shuffleboardTab.add("Intake in - TESTING", runIntakeAtSpeed(INTAKE_SPEED))
-        shuffleboardTab.add("Intake out - TESTING", runIntakeAtSpeed(OUTTAKE_SPEED))
-        shuffleboardTab.add("Intake sequence - TESTING", intakeAndStopCommand())
+        mapOf(
+            "Intake seq" to intakeAndStopCommand(),
+            "Arm down seq" to armDownCommand(),
+            "Arm up seq" to armUpCommand(),
+            "Stop all" to stopAllCommand()
+        ).forEach { (key, value) -> shuffleboardTab.add(key, value) }
 
-        shuffleboardTab.add("Arm down - sequence", armDownCommand())
-        shuffleboardTab.add("Arm up - sequence", armUpCommand())
-
-        shuffleboardTab.add("STOP - TESTING", stopAllCommand())
         armMotor.inverted = true
-        armEncoder.positionConversionFactor =  360 / 112.5
+        armEncoder.positionConversionFactor = 360 / 112.5
         intakeEncoder.velocityConversionFactor = 1.0 / 1600
         intakeEncoder.positionConversionFactor = 1.0/12.0
     }
@@ -64,12 +61,11 @@ class IntakeSubsystem: SubsystemBase() {
     this is done by checking the velocity of the intake motor, given that the motor will run slower when the motion of the wheels is inhibited by game pieces
      */
     fun intakeAndStopCommand(): Command =
-            run{intakeMotor.setVoltage(INTAKE_SPEED * 12.0)}.withTimeout(1.0).andThen(
-                    run{}.until{intakeEncoder.velocity < 1.0}.andThen(runOnce{intakeEncoder.setPosition(0.0)}.andThen(
-                       run{}.until{intakeEncoder.position > 1.1}.andThen(stopIntake()))
-                    )
+        run{intakeMotor.setVoltage(INTAKE_SPEED * 12.0)}.withTimeout(1.0).andThen(
+            run{}.until{intakeEncoder.velocity < 1.0}.andThen(runOnce{intakeEncoder.setPosition(0.0)}.andThen(
+               run{}.until{intakeEncoder.position > 1.1}.andThen(stopIntake()))
             )
-
+        )
 
     fun stopArm(): Command =
         runOnce { armMotor.stopMotor() }
@@ -140,17 +136,9 @@ class IntakeSubsystem: SubsystemBase() {
 
     fun takeOutCommand(): Command =
         SequentialCommandGroup(
-                armUpCommand(),
+            armUpCommand(),
             runIntakeAtSpeed(OUTTAKE_SPEED)
         )
-
-    fun runIntakeCommand():Command =
-        runIntakeAtSpeed(INTAKE_SPEED)
-
-    fun runOnceOuttake(): Command =
-        runIntakeAtSpeed(OUTTAKE_ADJUST_SPEED)
-
-    fun runOnceOUttakeFullSpeed(): Command = runIntakeAtSpeed(-1.0)
 
     fun zeroArmEncoderCommand(): Command =
         runOnce { armEncoder.position = 0.0 }
@@ -162,9 +150,8 @@ class IntakeSubsystem: SubsystemBase() {
 
         // Stop arm guard in case it screws itself over
 
-        if (getArmPosition().degrees >= 190.0) stopArm().schedule()
-        else if (getArmPosition().degrees <= -5.0) stopArm().schedule()
-
+        if (getArmPosition().degrees >= 190.0 || getArmPosition().degrees <= -5.0)
+            stopArm().schedule()
 
         intakeArmPositionEntry.setDouble(armEncoder.position)
         intakeVelocityEntry.setDouble(intakeEncoder.velocity)

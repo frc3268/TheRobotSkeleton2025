@@ -95,22 +95,18 @@ class RobotContainer {
         GeneralTab.add("Ground intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
         GeneralTab.add("Source Intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
 
-        GeneralTab.add("CLIMBERS down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("CLIMBERS up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("CLIMBERS stop", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("LR down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("LR up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        GeneralTab.add("LR stop", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
 
         // Troubleshooting tab holds manual controls for the climber and a reset for the arm encoder
-        TroubleshootingTab.add("CLIMBER L down", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
-        TroubleshootingTab.add("CLIMBER L up", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("L down test", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("L up test", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
 
-        TroubleshootingTab.add("CLIMBER R down", rightClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
-        TroubleshootingTab.add("CLIMBER R up", rightClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("R down test", rightClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("R up test", rightClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
 
-        TroubleshootingTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
-
-        TroubleshootingTab.add("CLIMBERS reset", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        TroubleshootingTab.add("CLIMBERS stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
-
+        TroubleshootingTab.add("arm enc zero", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
 
         // Configure the trigger bindings
         configureBindings()
@@ -136,30 +132,27 @@ class RobotContainer {
             4. intake stops and arm goes up
          */
         driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
-
-
+        
         /*
-                LB(Go to speaker): run a given go to command
-                you can pick a place to go to in the lbchooser
-                (reasoning: driver is able to focus on other things while robot goes to speaker autonomously and drifting is not an issue)
-                 */
+        LB (Go to speaker): run a given go to command
+        you can pick a place to go to in the lbchooser
+        (reasoning: driver is able to focus on other things while robot goes to speaker autonomously and drifting is not an issue)
+         */
         driverController.leftBumper().onTrue(lbChooser.selected)
 
         /*
         RT (Shoot Toggle):
             1) Rev up shooter
          */
-        driverController.rightTrigger().onTrue(intakeSubsystem.runOnceOUttakeFullSpeed())
+        driverController.rightTrigger().onTrue(intakeSubsystem.runIntakeAtSpeed(IntakeSubsystem.OUTTAKE_SPEED))
         driverController.rightTrigger().onFalse(intakeSubsystem.stopIntake())
 
         /*
-        RB (Outake):
-            2) run outtake
+        RB - REV UP SHOOTER (TOGGLE)
          */
         driverController.rightBumper().toggleOnTrue(Commands.startEnd({shooterSubsystem.leftFlywheelMotor.set(-1.0)
             shooterSubsystem.rightFlywheelMotor.set(-1.0)}, {shooterSubsystem.leftFlywheelMotor.stopMotor()
             shooterSubsystem.rightFlywheelMotor.stopMotor()}, shooterSubsystem))
-
 
         /*
         Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
@@ -170,24 +163,8 @@ class RobotContainer {
         /*
         A runs intake when held
          */
-        driverController.a().onTrue(intakeSubsystem.runIntakeCommand())
+        driverController.a().onTrue(intakeSubsystem.runIntakeAtSpeed(IntakeSubsystem.INTAKE_SPEED))
         driverController.a().onFalse(intakeSubsystem.stopIntake())
-
-        /*
-        X does source intake
-        arm up
-        run shooter in reverse
-        intake
-        stop intake
-        stop shooter
-         */
-        driverController.x().onTrue(Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
-
-       /*
-       B runs outtake when held
-        */
-        driverController.b().onTrue(intakeSubsystem.runOnceOuttake())
-        driverController.b().onFalse(intakeSubsystem.stopIntake())
 
         /*
         POV up and down bring arm up and down
