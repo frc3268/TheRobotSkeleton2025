@@ -32,7 +32,7 @@ class Camera(name:String, path:String): SubsystemBase(){
                             ),
                             Rotation3d(
                                 0.0,
-                                45.0,
+                                -45.0,
                                 0.0
 
                             )
@@ -68,7 +68,7 @@ class Camera(name:String, path:String): SubsystemBase(){
     //stolen from  photonvision(blatantly)
     fun getEstimationStdDevs(estimatedPose: Pose2d): Matrix<N3, N1> {
         //todo: expiriment with vecbuilder values(somehow)
-        var estStdDevs =  VecBuilder.fill(.7,.7,.9999999)
+        var estStdDevs =  VecBuilder.fill(.7,.7,1.5)
         val targets = captureFrame().getTargets()
         var numTags = 0
         var avgDist = 0.0
@@ -83,7 +83,7 @@ class Camera(name:String, path:String): SubsystemBase(){
         if (numTags == 0) return estStdDevs
         avgDist /= numTags
         // Decrease std devs if multiple targets are visible
-        if (numTags > 1) estStdDevs = VecBuilder.fill(0.5, 0.5, 1.0)
+        if (numTags > 1) estStdDevs = VecBuilder.fill(0.5, 0.5, 2.0)
         // Increase std devs based on (average) distance
         if (numTags == 1 && avgDist > 4)
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)

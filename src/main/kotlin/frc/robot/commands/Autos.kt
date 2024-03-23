@@ -31,24 +31,24 @@ class Autos private constructor() {
         fun goto(drive: SwerveDriveBase, goalIfRed: Pose2d, goalOtherwise: Pose2d): Command {
             val color = DriverStation.getAlliance()
             val to =
-                    if (color.isPresent && color.get() == DriverStation.Alliance.Red)
-                        goalIfRed
-                    else
-                        goalOtherwise
+                if (color.isPresent && color.get() == DriverStation.Alliance.Red)
+                    goalIfRed
+                else
+                    goalOtherwise
             println(to.x)
             return SequentialCommandGroup(
-                    drive.moveToPoseCommand(to),
-                    InstantCommand({ drive.stopAll() })
+                drive.moveToPoseCommand(to),
+                InstantCommand({ drive.stopAll() })
             )
         }
 
         fun taxiAuto(drive: SwerveDriveBase): Command =
-                goto(
-                        drive,
-                        // should make the robot move around 2 meters as the starting zone is ~193 cm or 1.93m
-                        Pose2d(drive.getPose().x - 2.0, drive.getPose().y, 0.0.rotation2dFromDeg()),
-                        Pose2d(drive.getPose().x + 2.0, drive.getPose().y, 180.0.rotation2dFromDeg()),
-                )
+            goto(
+                drive,
+                // should make the robot move around 2 meters as the starting zone is ~193 cm or 1.93m
+                Pose2d(drive.getPose().x - 2.0, drive.getPose().y, 0.0.rotation2dFromDeg()),
+                Pose2d(drive.getPose().x + 2.0, drive.getPose().y, 180.0.rotation2dFromDeg()),
+            )
 
         fun goToSpeakerCommand(drive: SwerveDriveBase, location:Int?): Command {
             // location maps to one of three points on the subwoofer
@@ -57,9 +57,9 @@ class Autos private constructor() {
             // 3 -> furthest from the source
             when (location) {
                 1 -> return goto(
-                        drive,
-                        Pose2d(16.0824625,4.96116891,-60.0.rotation2dFromDeg()),
-                        Pose2d(0.958787,4.96116891,60.0.rotation2dFromDeg())
+                    drive,
+                    Pose2d(16.0824625,4.96116891,-60.0.rotation2dFromDeg()),
+                    Pose2d(0.958787,4.96116891,60.0.rotation2dFromDeg())
                 )
                 2 -> return goto(
                     drive,
@@ -67,35 +67,33 @@ class Autos private constructor() {
                     Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
                 )
                 3 -> return goto(
-                        drive,
-                        Pose2d(16.0824625,6.54503,60.0.rotation2dFromDeg()),
-                        Pose2d(0.958787,6.54503,-60.0.rotation2dFromDeg())
+                    drive,
+                    Pose2d(16.0824625,6.54503,60.0.rotation2dFromDeg()),
+                    Pose2d(0.958787,6.54503,-60.0.rotation2dFromDeg())
                 )
             }
-
-
 
             return WaitCommand(1.0)
         }
 
         fun goToAmpCommand(drive: SwerveDriveBase): Command =
-                goto(
-                        drive,
-                        Pose2d(14.929358, 8.2042, 270.0.rotation2dFromDeg()),
-                        Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
-                )
+            goto(
+                drive,
+                Pose2d(14.929358, 8.2042, 270.0.rotation2dFromDeg()),
+                Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
+            )
 
         // documentation: what is closerToBaseLine?
         fun goToSourceCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean): Command =
-                goto(
-                        drive,
+            goto(
+                drive,
 
-                        if (closerToBaseLine) Pose2d(0.356108, 0.883666, 60.0.rotation2dFromDeg())
-                        else Pose2d(1.461516, 0.245872, 60.0.rotation2dFromDeg()),
+                if (closerToBaseLine) Pose2d(0.356108, 0.883666, 60.0.rotation2dFromDeg())
+                else Pose2d(1.461516, 0.245872, 60.0.rotation2dFromDeg()),
 
-                        if (closerToBaseLine) Pose2d(15.079472, 0.245872, 120.0.rotation2dFromDeg())
-                        else Pose2d(16.185134, 0.883666, 120.0.rotation2dFromDeg())
-                )
+                if (closerToBaseLine) Pose2d(15.079472, 0.245872, 120.0.rotation2dFromDeg())
+                else Pose2d(16.185134, 0.883666, 120.0.rotation2dFromDeg())
+            )
 
         fun goToSourceAndIntakeCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
                 SequentialCommandGroup(

@@ -8,15 +8,15 @@ class ShooterSubsystem: SubsystemBase() {
     val rightFlywheelMotor = Motor(12)
 
     companion object {
-        const val SPEAKER_SPEED = -1.0
+        const val SPEAKER_SPEED = -0.8
         const val AMP_SPEED = -0.5
         const val INTAKE_SPEED = 0.7
     }
 
     fun runAtSpeedCommand(speed: Double): Command =
         runOnce {
-            leftFlywheelMotor.set(speed)
-            rightFlywheelMotor.set(speed)
+            leftFlywheelMotor.setVoltage(speed * 12.0)
+            rightFlywheelMotor.setVoltage(speed * 12.0)
         }
 
     fun takeInCommand(): Command =

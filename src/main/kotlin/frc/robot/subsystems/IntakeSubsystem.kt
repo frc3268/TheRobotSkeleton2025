@@ -16,15 +16,15 @@ class IntakeSubsystem: SubsystemBase() {
     val intakeEncoder: RelativeEncoder = intakeMotor.encoder
     val armPIDController = PIDController(0.7/170,0.0,0.0)
 
-    val shuffleboardTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
-    val intakeArmPositionEntry = shuffleboardTab.add("Arm pos", 0.0)
-            .withPosition(3, 0)
+    val troubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
+    val intakeArmPositionEntry = troubleshootingTab.add("Arm pos", 0.0)
+            .withPosition(2, 0)
             .entry
-    val intakePositionEntry = shuffleboardTab.add("Intake pos", 0.0)
-            .withPosition(3, 1)
+    val intakePositionEntry = troubleshootingTab.add("Intake pos", 0.0)
+            .withPosition(2, 1)
             .entry
-    val intakeVelocityEntry = shuffleboardTab.add("Intake velocity", 0.0)
-            .withPosition(3, 2)
+    val intakeVelocityEntry = troubleshootingTab.add("Intake velocity", 0.0)
+            .withPosition(2, 2)
             .entry
 
     // TODO replace with actual channel
@@ -63,7 +63,7 @@ class IntakeSubsystem: SubsystemBase() {
     fun intakeAndStopCommand(): Command =
         run{intakeMotor.setVoltage(INTAKE_SPEED * 12.0)}.withTimeout(1.0).andThen(
             run{}.until{intakeEncoder.velocity < 1.0}.andThen(runOnce{intakeEncoder.setPosition(0.0)}.andThen(
-               run{}.until{intakeEncoder.position > 1.1}.andThen(stopIntake()))
+               run{}.until{intakeEncoder.position > 1.25}.andThen(stopIntake()))
             )
         )
 

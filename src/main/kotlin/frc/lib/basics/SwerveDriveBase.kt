@@ -81,8 +81,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //estimate robot pose based on what the camera sees
         seesAprilTag.setBoolean(camera.captureFrame().hasTargets())
         camera.getEstimatedPose()?.ifPresent { est ->
-            poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds)
-            //, camera.getEstimationStdDevs(est.estimatedPose.toPose2d())
+            poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds
+            , camera.getEstimationStdDevs(est.estimatedPose.toPose2d()))
         }
         //update module tabs on shuffleboard
         for (mod in modules){

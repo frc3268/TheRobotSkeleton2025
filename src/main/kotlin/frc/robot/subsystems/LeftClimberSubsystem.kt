@@ -12,7 +12,7 @@ class LeftClimberSubsystem: SubsystemBase(){
     val motor = Motor(14)
     val encoder: RelativeEncoder = motor.encoder
     val troubleShootingTab: ShuffleboardTab = Shuffleboard.getTab("Troubleshooting")
-    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("L DANGER", false)
+    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("L DG", false)
             .withWidget(BuiltInWidgets.kBooleanBox)
             .entry
 
@@ -31,12 +31,12 @@ class LeftClimberSubsystem: SubsystemBase(){
      */
 
     fun down(): Command =
-        run { motor.set(-0.3) }
+        run { motor.set(-0.5) }
             .until { encoder.position < 0.1 }
             .andThen(runOnce { motor.stopMotor() })
 
     fun up(): Command =
-        run { motor.set(0.3) }
+        run { motor.set(0.5) }
             .until { encoder.position > 0.9 }
             .andThen(runOnce { motor.stopMotor() })
 
