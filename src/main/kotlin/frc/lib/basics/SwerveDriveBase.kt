@@ -59,7 +59,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         resetModulesToAbsolute()
         shuffleboardTab.add("Stop", stopCommand()).withWidget(BuiltInWidgets.kCommand)
         shuffleboardTab.add("Zero heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
-        shuffleboardTab.add("Heading", gyro).withWidget(BuiltInWidgets.kGyro)
+        shuffleboardTab.add("Heading Angle", gyro).withWidget(BuiltInWidgets.kGyro)
 
         shuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
 
@@ -73,6 +73,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         seesAprilTag.setBoolean(camera.captureFrame().hasTargets())
         val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
         visionEst?.ifPresent { est ->
+
            poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds)
             //, camera.getEstimationStdDevs(est.estimatedPose.toPose2d())
         }
@@ -114,7 +115,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     fun constructModuleStatesFromChassisSpeeds(xSpeedMetersPerSecond:Double, ySpeedMetersPerSecond:Double, turningSpeedDegreesPerSecond:Double, fieldOriented:Boolean) : Array<SwerveModuleState> =
         SwerveDriveConstants.DrivetrainConsts.kinematics.toSwerveModuleStates (
             if (fieldOriented)
-                ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians,getYaw())
+                ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians,getPose().rotation)
             else
                 ChassisSpeeds(xSpeedMetersPerSecond,ySpeedMetersPerSecond,turningSpeedDegreesPerSecond.rotation2dFromDeg().radians)
         )
@@ -142,9 +143,9 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }.andThen(run {
             setModuleStates(
                 constructModuleStatesFromChassisSpeeds(
-                -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
-                -SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.y),
-                -SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getYaw().degrees,  endPose.rotation.degrees),
+                SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
+                SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.y),
+                SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getPose().rotation.degrees,  endPose.rotation.degrees),
                 true
             ))
         }).until { abs(getPose().translation.getDistance(endPose.translation)) < 0.02 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
@@ -159,9 +160,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     //sets poseEstimator's recorded position to a pose2d given in startingpose argument
     fun zeroPoseToFieldPosition(startingPose: Pose2d){
-        yawOffset = startingPose.rotation.degrees
-        resetModulesToAbsolute()
         poseEstimator.resetPosition(getYaw(), getModulePositions(), startingPose)
+        yawOffset = startingPose.rotation.degrees
     }
 
     //does the same thing as previous but with the camera finding the starting pose

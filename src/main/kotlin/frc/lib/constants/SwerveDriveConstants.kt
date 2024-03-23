@@ -56,9 +56,9 @@ object SwerveDriveConstants {
         const val MAX_SPEED_METERS_PER_SECOND = 5.0
         const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 300.0
 
-        val xPIDController = PIDController(1.5,1.0,0.8)
-        val yPIDController = PIDController(1.5,1.0,0.8)
-        val thetaPIDController = PIDController(2.0,0.3,0.0)
+        val xPIDController = PIDController(0.7,0.0,0.0)
+        val yPIDController = PIDController(0.7,0.0,0.0)
+        val thetaPIDController = PIDController(0.5,0.0,0.0)
 
         //in the order they appear in modules list
         //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)

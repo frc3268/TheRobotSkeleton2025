@@ -41,9 +41,12 @@ class RobotContainer {
         { true }
     )
 
-    val ring1BooleanBox = GeneralTab.add("Collect ring 1?", false).withWidget(BuiltInWidgets.kBooleanBox)
-    val ring2BooleanBox = GeneralTab.add("Collect ring 2?", false).withWidget(BuiltInWidgets.kBooleanBox)
-    val ring3BooleanBox = GeneralTab.add("Collect ring 3?", false).withWidget(BuiltInWidgets.kBooleanBox)
+    val ring1BooleanBox = GeneralTab.add("Collect ring 1?", false).withWidget(BuiltInWidgets.kToggleSwitch)
+            .withPosition(1, 1)
+    val ring2BooleanBox = GeneralTab.add("Collect ring 2?", false).withWidget(BuiltInWidgets.kToggleSwitch)
+            .withPosition(2, 1)
+    val ring3BooleanBox = GeneralTab.add("Collect ring 3?", false).withWidget(BuiltInWidgets.kToggleSwitch)
+            .withPosition(3, 1)
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
         driveSubsystem.defaultCommand = teleopCommand
@@ -56,7 +59,7 @@ class RobotContainer {
         GeneralTab
             .add("LB Command", lbChooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withPosition(3, 0)
+            .withPosition(2, 0)
             .withSize(2, 1)
 
 
@@ -85,20 +88,26 @@ class RobotContainer {
         autochooser.addOption("test shoot amp", Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
         autochooser.addOption("test source intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
 
+        GeneralTab
+        .addCamera("Driver Camera", "USB Camera 0")
+        .withPosition(4, 0)
+                .withSize(3, 3);
+
         //lb chooser
         lbChooser.setDefaultOption("Do nothing", WaitCommand(0.0))
         lbChooser.addOption(" go to speaker (bottom)", Autos.goToSpeakerCommand(driveSubsystem, 1))
         lbChooser.addOption(" go to speaker (middle)", Autos.goToSpeakerCommand(driveSubsystem, 2))
         lbChooser.addOption(" go to speaker (top)", Autos.goToSpeakerCommand(driveSubsystem, 3))
 
-        GeneralTab.add("shoot speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem)).withWidget(BuiltInWidgets.kCommand)
-        GeneralTab.add("Ground intake", Autos.intakeAndUpCommand(intakeSubsystem)).withWidget(BuiltInWidgets.kCommand)
         GeneralTab.add("Source Intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
+                .withPosition(3, 2)
 
         GeneralTab.add("LR down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+                .withPosition(2, 2)
         GeneralTab.add("LR up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+                .withPosition(1, 2)
         GeneralTab.add("LR stop", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-
+                .withPosition(0, 2)
         // Troubleshooting tab holds manual controls for the climber and a reset for the arm encoder
         TroubleshootingTab.add("L down test", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
         TroubleshootingTab.add("L up test", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
