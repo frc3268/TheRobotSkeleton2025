@@ -46,8 +46,8 @@ class Autos private constructor() {
                 goto(
                         drive,
                         // should make the robot move around 2 meters as the starting zone is ~193 cm or 1.93m
-                        Pose2d(1.0, 1.0, 0.0.rotation2dFromDeg()),
-                        Pose2d(1.0, 1.0, 0.0.rotation2dFromDeg()),
+                        Pose2d(drive.getPose().x - 2.0, drive.getPose().y, 0.0.rotation2dFromDeg()),
+                        Pose2d(drive.getPose().x + 2.0, drive.getPose().y, 180.0.rotation2dFromDeg()),
                 )
 
         fun goToSpeakerCommand(drive: SwerveDriveBase, location:Int?): Command {
@@ -162,7 +162,7 @@ class Autos private constructor() {
                 shooter.runAtSpeedCommand(ShooterSubsystem.SPEAKER_SPEED),
                 WaitCommand(1.0),
                 intake.takeOutCommand(),
-                WaitCommand(1.2),
+                WaitCommand(1.5),
                 shooter.stopCommand(),
                 intake.stopIntake()
             )

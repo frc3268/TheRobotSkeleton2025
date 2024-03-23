@@ -38,7 +38,7 @@ class IntakeSubsystem: SubsystemBase() {
         //based momento...
 
         const val UP_ANGLE = 5.0
-        const val DOWN_ANGLE = 169.0
+        const val DOWN_ANGLE = 180.0
     }
 
     init {

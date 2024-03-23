@@ -26,14 +26,14 @@ class Camera(name:String, path:String): SubsystemBase(){
                     limelight,
                     Transform3d(
                             Translation3d(
-                                    Units.inchesToMeters(0.0),
-                                    Units.inchesToMeters(12.0),
-                                            Units.inchesToMeters(15.0),
+                                Units.inchesToMeters(0.0),
+                                Units.inchesToMeters(12.0),
+                                Units.inchesToMeters(15.0),
                             ),
                             Rotation3d(
-                                    0.0,
-                                    45.0,
-                                    0.0
+                                0.0,
+                                45.0,
+                                0.0
 
                             )
                     )

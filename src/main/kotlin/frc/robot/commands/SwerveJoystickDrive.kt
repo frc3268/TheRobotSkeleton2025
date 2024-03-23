@@ -26,22 +26,17 @@ class SwerveJoystickDrive(
 
     // Called when the command is initially scheduled.
     override fun initialize() {
-        val color = DriverStation.getAlliance()
-        if (color.isPresent && color.get() == DriverStation.Alliance.Red){
-            sideMultiplier = -1
-        }
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     override fun execute() { 
         /* Get Values, Deadband, Convert to speeds */
-        val xSpeed: Double = sideMultiplier * MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND)* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
-        val ySpeed: Double = sideMultiplier * MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
+        val xSpeed: Double = MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND)* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
+        val ySpeed: Double = MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
         val turnSpeed: Double = MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
 
         /* Drive */
         drive.setModuleStates(drive.constructModuleStatesFromChassisSpeeds(xSpeed,ySpeed,turnSpeed,fieldOriented.asBoolean))
-
     }
 
     // Called once the command ends or is interrupted.
