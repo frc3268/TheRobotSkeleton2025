@@ -22,7 +22,7 @@ class TrajectoryOrchestrator {
                 drive.moveToPoseCommand(startPose),
                 *points.map { drive.moveToPoseCommand(Pose2d(it, drive.getYaw())) }.toTypedArray(),
                 drive.moveToPoseCommand(endPose),
-                InstantCommand({ drive.stop() })
+                InstantCommand({ drive.stopAll() })
             )
             scg.addRequirements(drive)
             return scg

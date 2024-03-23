@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.*
 import frc.robot.subsystems.*
-import java.util.function.BooleanSupplier
 import kotlin.math.*
 
 class Autos private constructor() {
@@ -39,7 +38,7 @@ class Autos private constructor() {
             println(to.x)
             return SequentialCommandGroup(
                     drive.moveToPoseCommand(to),
-                    InstantCommand({ drive.stop() })
+                    InstantCommand({ drive.stopAll() })
             )
         }
 
@@ -117,7 +116,7 @@ class Autos private constructor() {
             val c = 1.0
             val theta = atan((pose.y - to.y) / (pose.x - to.x)).rotation2dFromDeg()
             return SequentialCommandGroup(drive.moveToPoseCommand(Pose2d(to.x + cos(theta.radians) * c, to.y + sin(theta.radians) * c, theta + pose.rotation)),
-                    InstantCommand({ drive.stop() }))
+                    InstantCommand({ drive.stopAll() }))
 
         }
 

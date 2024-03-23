@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.*
 import frc.lib.utils.*
+import frc.robot.Constants
 
 class IntakeSubsystem: SubsystemBase() {
     private val intakeMotor = Motor(9)
@@ -15,10 +16,16 @@ class IntakeSubsystem: SubsystemBase() {
     val intakeEncoder: RelativeEncoder = intakeMotor.encoder
     val armPIDController = PIDController(0.7/170,0.0,0.0)
 
-    val shuffleboardTab = Shuffleboard.getTab("Intake")
-    val intakeArmPositionEntry = shuffleboardTab.add("Arm pos", 0.0).entry
-    val intakeVelocityEntry = shuffleboardTab.add("Intake velocity", 0.0).entry
-    val intakepositionEntry = shuffleboardTab.add("Intake pos", 0.0).entry
+    val shuffleboardTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
+    val intakeArmPositionEntry = shuffleboardTab.add("Arm pos", 0.0)
+            .withPosition(3, 0)
+            .entry
+    val intakePositionEntry = shuffleboardTab.add("Intake pos", 0.0)
+            .withPosition(3, 1)
+            .entry
+    val intakeVelocityEntry = shuffleboardTab.add("Intake velocity", 0.0)
+            .withPosition(3, 2)
+            .entry
 
     // TODO replace with actual channel
     val limitSwitch = DigitalInput(0)
@@ -35,13 +42,6 @@ class IntakeSubsystem: SubsystemBase() {
     }
 
     init {
-        mapOf(
-            "Intake seq" to intakeAndStopCommand(),
-            "Arm down seq" to armDownCommand(),
-            "Arm up seq" to armUpCommand(),
-            "Stop all" to stopAllCommand()
-        ).forEach { (key, value) -> shuffleboardTab.add(key, value) }
-
         armMotor.inverted = true
         armEncoder.positionConversionFactor = 360 / 112.5
         intakeEncoder.velocityConversionFactor = 1.0 / 1600
@@ -155,7 +155,7 @@ class IntakeSubsystem: SubsystemBase() {
 
         intakeArmPositionEntry.setDouble(armEncoder.position)
         intakeVelocityEntry.setDouble(intakeEncoder.velocity)
-        intakepositionEntry.setDouble(intakeEncoder.position)
+        intakePositionEntry.setDouble(intakeEncoder.position)
     }
 
     override fun simulationPeriodic() {

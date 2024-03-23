@@ -14,4 +14,6 @@ object Constants {
         const val kDriverControllerPort = 0
         const val STICK_DEADBAND = 0.1
     }
+
+    const val TROUBLESHOOTING_TAB = "Troubleshooting"
 }

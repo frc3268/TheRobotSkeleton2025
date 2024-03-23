@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
-import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
@@ -19,19 +18,19 @@ import frc.robot.subsystems.*
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
-    private val GeneralTab = Shuffleboard.getTab("General")
-    private val TroubleshootingTab = Shuffleboard.getTab("Troubleshooting")
+    private val generalTab = Shuffleboard.getTab("General")
+    private val troubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
 
-    val driveSubsystem = SwerveDriveBase(Pose2d())
     val intakeSubsystem = IntakeSubsystem()
     val shooterSubsystem = ShooterSubsystem()
     val leftClimberSubsystem = LeftClimberSubsystem()
     val rightClimberSubsystem = RightClimberSubsystem()
+    val driveSubsystem = SwerveDriveBase(Pose2d())
 
     private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
     val autochooser = SendableChooser<Command>()
-    val lbChooser = SendableChooser<Command>()
+    val leftBumperChooser = SendableChooser<Command>()
 
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
@@ -41,27 +40,15 @@ class RobotContainer {
         { true }
     )
 
-    val ring1BooleanBox = GeneralTab.add("Collect ring 1?", false).withWidget(BuiltInWidgets.kToggleSwitch)
+    val ring1BooleanBox = generalTab.add("Collect ring 1?", false).withWidget(BuiltInWidgets.kToggleSwitch)
             .withPosition(1, 1)
-    val ring2BooleanBox = GeneralTab.add("Collect ring 2?", false).withWidget(BuiltInWidgets.kToggleSwitch)
+    val ring2BooleanBox = generalTab.add("Collect ring 2?", false).withWidget(BuiltInWidgets.kToggleSwitch)
             .withPosition(2, 1)
-    val ring3BooleanBox = GeneralTab.add("Collect ring 3?", false).withWidget(BuiltInWidgets.kToggleSwitch)
+    val ring3BooleanBox = generalTab.add("Collect ring 3?", false).withWidget(BuiltInWidgets.kToggleSwitch)
             .withPosition(3, 1)
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
         driveSubsystem.defaultCommand = teleopCommand
-
-        GeneralTab
-            .add("Autonomous Mode", autochooser)
-            .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withPosition(0, 0)
-            .withSize(2, 1)
-        GeneralTab
-            .add("LB Command", lbChooser)
-            .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withPosition(2, 0)
-            .withSize(2, 1)
-
 
         autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
         autochooser.addOption("Do nothing", WaitCommand(1.0))
@@ -88,34 +75,48 @@ class RobotContainer {
         autochooser.addOption("test shoot amp", Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
         autochooser.addOption("test source intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
 
-        GeneralTab
-        .addCamera("Driver Camera", "USB Camera 0")
-        .withPosition(4, 0)
-                .withSize(3, 3);
+        //GeneralTab
+        //.addCamera("Driver Camera", "USB Camera 0")
+        //.withPosition(4, 0)
+         //       .withSize(3, 3);
 
         //lb chooser
-        lbChooser.setDefaultOption("Do nothing", WaitCommand(0.0))
-        lbChooser.addOption(" go to speaker (bottom)", Autos.goToSpeakerCommand(driveSubsystem, 1))
-        lbChooser.addOption(" go to speaker (middle)", Autos.goToSpeakerCommand(driveSubsystem, 2))
-        lbChooser.addOption(" go to speaker (top)", Autos.goToSpeakerCommand(driveSubsystem, 3))
+        leftBumperChooser.setDefaultOption("Do nothing", WaitCommand(0.0))
+        leftBumperChooser.addOption(" go to speaker (bottom)", Autos.goToSpeakerCommand(driveSubsystem, 1))
+        leftBumperChooser.addOption(" go to speaker (middle)", Autos.goToSpeakerCommand(driveSubsystem, 2))
+        leftBumperChooser.addOption(" go to speaker (top)", Autos.goToSpeakerCommand(driveSubsystem, 3))
 
-        GeneralTab.add("Source Intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
+        generalTab
+                .add("Autonomous Mode", autochooser)
+                .withWidget(BuiltInWidgets.kComboBoxChooser)
+                .withPosition(0, 0)
+                .withSize(2, 1)
+        generalTab
+                .add("LB Command", leftBumperChooser)
+                .withWidget(BuiltInWidgets.kComboBoxChooser)
+                .withPosition(2, 0)
+                .withSize(2, 1)
+
+        generalTab.add("LR stop", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+                .withPosition(0, 2)
+        generalTab.add("LR down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+                .withPosition(1, 2)
+        generalTab.add("LR up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
+                .withPosition(2, 2)
+        generalTab.add("Source Intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
                 .withPosition(3, 2)
 
-        GeneralTab.add("LR down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-                .withPosition(2, 2)
-        GeneralTab.add("LR up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-                .withPosition(1, 2)
-        GeneralTab.add("LR stop", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-                .withPosition(0, 2)
         // Troubleshooting tab holds manual controls for the climber and a reset for the arm encoder
-        TroubleshootingTab.add("L down test", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
-        TroubleshootingTab.add("L up test", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
-
-        TroubleshootingTab.add("R down test", rightClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
-        TroubleshootingTab.add("R up test", rightClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
-
-        TroubleshootingTab.add("arm enc zero", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
+        troubleshootingTab.add("L down test", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+                .withPosition(0, 2)
+        troubleshootingTab.add("L up test", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
+                .withPosition(0, 1)
+        troubleshootingTab.add("R down test", rightClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+                .withPosition(1, 2)
+        troubleshootingTab.add("R up test", rightClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
+                .withPosition(1, 1)
+        troubleshootingTab.add("arm enc zero", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
+                .withPosition(1, 0)
 
         // Configure the trigger bindings
         configureBindings()
@@ -147,7 +148,7 @@ class RobotContainer {
         you can pick a place to go to in the lbchooser
         (reasoning: driver is able to focus on other things while robot goes to speaker autonomously and drifting is not an issue)
          */
-        driverController.leftBumper().onTrue(lbChooser.selected)
+        driverController.leftBumper().onTrue(leftBumperChooser.selected)
 
         /*
         RT (Shoot Toggle):

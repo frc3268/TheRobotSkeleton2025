@@ -46,7 +46,7 @@ class SwerveJoystickDrive(
 
     // Called once the command ends or is interrupted.
     override fun end(interrupted: Boolean) {
-        drive.stop()
+        drive.stopAll()
     }
 
     // Returns true when the command should end.

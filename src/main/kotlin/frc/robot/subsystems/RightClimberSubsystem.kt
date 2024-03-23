@@ -12,8 +12,9 @@ class RightClimberSubsystem(): SubsystemBase(){
     val motor = Motor(15)
     val encoder: RelativeEncoder = motor.encoder
     val troubleShootingTab: ShuffleboardTab = Shuffleboard.getTab("Troubleshooting")
-    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("Right Climber DANGER MODE", false).withWidget(BuiltInWidgets.kBooleanBox).entry
-
+    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("R DANGER", false)
+            .withWidget(BuiltInWidgets.kBooleanBox)
+            .entry
 
     init {
         motor.inverted = true
