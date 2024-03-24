@@ -118,10 +118,11 @@ class Autos private constructor() {
 
         }
 
-        fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
+        fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, leftClimberSubsystem: LeftClimberSubsystem, rightClimberSubsystem: RightClimberSubsystem): Command =
             SequentialCommandGroup(
-                goToSpeakerCommand(drive, 1),
-                shootSpeakerCommand(intake, shooter)
+            ParallelCommandGroup(drive.moveToPoseCommand(Pose2d(0.0,0.0,0.0.rotation2dFromDeg())), WaitCommand(1.5).andThen(shooter.runAtSpeedCommand(-0.8))),
+            intake.takeOutCommand().withTimeout(1.0),
+            emergencyStopCommand(shooter,intake, leftClimberSubsystem, rightClimberSubsystem)
             )
 
         fun intakeAndUpCommand(intake: IntakeSubsystem): Command =
@@ -195,6 +196,17 @@ class Autos private constructor() {
                         sourceIntakeCommand(shooter, intake)
                 )
 
+        fun oneRingAuto(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, rightClimberSubsystem: RightClimberSubsystem, leftClimberSubsystem: LeftClimberSubsystem): Command{
+            return SequentialCommandGroup(
+                shootSpeakerCommand(intake, shooter),
+                ParallelCommandGroup (drive.moveToPoseCommand(Pose2d(2.8956, 0.0, 0.0.rotation2dFromDeg())), intake.armDownCommand()),
+                intakeAndUpCommand(intake),
+                ParallelCommandGroup(drive.moveToPoseCommand(Pose2d(0.0,0.0,0.0.rotation2dFromDeg())), WaitCommand(1.5).andThen(shooter.runAtSpeedCommand(-0.8))),
+                intake.takeOutCommand().withTimeout(1.0),
+                emergencyStopCommand(shooter,intake, leftClimberSubsystem, rightClimberSubsystem)
+            )
+        }
+
         fun driveUpShootSpeakerAndReturnToRingsCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
                 SequentialCommandGroup(
                         goToSpeakerCommand(drive, 1),
@@ -214,7 +226,6 @@ class Autos private constructor() {
         // the array [True, False, True] will pick up ring A then C and not B
         fun collectStartingRingsAndShoot(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, location: Int, rings:Array<GenericEntry>): Command {
             val sequence: SequentialCommandGroup = SequentialCommandGroup()
-            sequence.addCommands(goToSpeakerCommand(drive, location))
             sequence.addCommands(shootSpeakerCommand(intake, shooter))
             return runOnce({
                 // the ring right along the middle

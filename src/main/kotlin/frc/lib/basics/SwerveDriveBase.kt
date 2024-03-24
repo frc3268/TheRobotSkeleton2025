@@ -154,7 +154,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
                 true
             ))
         }.until {
-            abs(getPose().translation.getDistance(endPose.translation)) < 0.25
+            abs(getPose().translation.getDistance(endPose.translation)) < 0.1
                 && abs(getYaw().degrees - endPose.rotation.degrees) < 15
         }
 

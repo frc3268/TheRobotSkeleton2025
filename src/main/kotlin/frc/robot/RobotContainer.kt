@@ -5,9 +5,11 @@ import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
+import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.basics.SwerveDriveBase
+import frc.lib.utils.rotation2dFromDeg
 import frc.robot.commands.*
 import frc.robot.subsystems.*
 
@@ -82,9 +84,10 @@ class RobotContainer {
 
         //lb chooser
         leftBumperChooser.setDefaultOption("Do nothing", WaitCommand(0.0))
-        leftBumperChooser.addOption(" go to speaker (bottom)", Autos.goToSpeakerCommand(driveSubsystem, 1))
-        leftBumperChooser.addOption(" go to speaker (middle)", Autos.goToSpeakerCommand(driveSubsystem, 2))
-        leftBumperChooser.addOption(" go to speaker (top)", Autos.goToSpeakerCommand(driveSubsystem, 3))
+        leftBumperChooser.addOption("reset robot pose", InstantCommand({driveSubsystem.zeroPoseToFieldPosition(Pose2d())}))
+        leftBumperChooser.addOption("Go to Speaker", Autos.goto(driveSubsystem, Pose2d(), Pose2d()))
+        leftBumperChooser.addOption("Go to Speaker + shoot", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem, leftClimberSubsystem, rightClimberSubsystem))
+
 
         generalTab
             .add("Autonomous Mode", autochooser)
