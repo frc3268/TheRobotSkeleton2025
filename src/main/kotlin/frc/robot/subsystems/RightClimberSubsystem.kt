@@ -12,8 +12,8 @@ class RightClimberSubsystem(): SubsystemBase(){
     val motor = Motor(15)
     val encoder: RelativeEncoder = motor.encoder
     val troubleShootingTab: ShuffleboardTab = Shuffleboard.getTab("Troubleshooting")
-    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("R DANGER", false)
-            .withWidget(BuiltInWidgets.kBooleanBox)
+    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("R do", false)
+            .withWidget(BuiltInWidgets.kToggleSwitch)
             .entry
 
     init {
@@ -30,7 +30,7 @@ class RightClimberSubsystem(): SubsystemBase(){
      */
 
     fun down(): Command =
-        run { motor.set(-0.7) }
+        run { motor.set(-1.0) }
             .until { encoder.position < 0.1 }
             .andThen(runOnce { motor.stopMotor() })
 

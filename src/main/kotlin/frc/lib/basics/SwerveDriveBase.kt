@@ -23,6 +23,7 @@ import kotlin.math.*
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     val field = Field2d()
     private val shuffleboardTab = Shuffleboard.getTab("Drivetrain")
+    private val generalTab = Shuffleboard.getTab("General")
 
     var poseEstimator: SwerveDrivePoseEstimator
     private val modules: List<SwerveModule> =
@@ -47,7 +48,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             .withPosition(2, 1)
             .entry
 
-    private var yawOffset:Double = 0.0
+    private var yawOffset:Double = 180.0
     private val camera:Camera
 
     init {
@@ -62,8 +63,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         shuffleboardTab.add("Stop all", stopCommand())
                 .withPosition(3, 0)
                 .withWidget(BuiltInWidgets.kCommand)
-        shuffleboardTab.add("Zero heading", zeroHeadingCommand())
-                .withPosition(3, 1)
+        generalTab.add("Zero heading", zeroHeadingCommand())
+                .withPosition(4, 0)
                 .withWidget(BuiltInWidgets.kCommand)
         shuffleboardTab.add("Heading Angle", gyro)
                 .withPosition(0, 1)
@@ -80,10 +81,12 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         poseEstimator.update(getYaw(), getModulePositions())
         //estimate robot pose based on what the camera sees
         seesAprilTag.setBoolean(camera.captureFrame().hasTargets())
+        /*
         camera.getEstimatedPose()?.ifPresent { est ->
             poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds
             , camera.getEstimationStdDevs(est.estimatedPose.toPose2d()))
         }
+         */
         //update module tabs on shuffleboard
         for (mod in modules){
             mod.updateShuffleboard()

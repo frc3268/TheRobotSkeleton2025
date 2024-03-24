@@ -53,7 +53,7 @@ object SwerveDriveConstants {
         const val OPEN_LOOP_RAMP_RATE_SECONDS: Double = 0.25
 
         /* Swerve Profiling Values */
-        const val MAX_SPEED_METERS_PER_SECOND = 5.0
+        const val MAX_SPEED_METERS_PER_SECOND = 6.0
         const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 300.0
 
         val xPIDController = PIDController(0.7,0.0,0.0)

@@ -12,8 +12,8 @@ class LeftClimberSubsystem: SubsystemBase(){
     val motor = Motor(14)
     val encoder: RelativeEncoder = motor.encoder
     val troubleShootingTab: ShuffleboardTab = Shuffleboard.getTab("Troubleshooting")
-    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("L DG", false)
-            .withWidget(BuiltInWidgets.kBooleanBox)
+    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("L DGo", false)
+            .withWidget(BuiltInWidgets.kToggleSwitch)
             .entry
 
     init {
@@ -31,12 +31,12 @@ class LeftClimberSubsystem: SubsystemBase(){
      */
 
     fun down(): Command =
-        run { motor.set(-0.5) }
+        run { motor.set(-1.0) }
             .until { encoder.position < 0.1 }
             .andThen(runOnce { motor.stopMotor() })
 
     fun up(): Command =
-        run { motor.set(0.5) }
+        run { motor.set(1.0) }
             .until { encoder.position > 0.9 }
             .andThen(runOnce { motor.stopMotor() })
 
@@ -54,7 +54,7 @@ class LeftClimberSubsystem: SubsystemBase(){
 
     override fun periodic() {
         System.out.println("Left climber: " + encoder.position)
-        if(encoder.position !in -0.1..1.1 && !booleanBoxDangerMode.getBoolean(false)){
+        if(encoder.position !in -0.1..2.0 && !booleanBoxDangerMode.getBoolean(false)){
             stop().schedule()
         }
     }

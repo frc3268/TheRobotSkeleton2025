@@ -63,7 +63,7 @@ class IntakeSubsystem: SubsystemBase() {
     fun intakeAndStopCommand(): Command =
         run{intakeMotor.setVoltage(INTAKE_SPEED * 12.0)}.withTimeout(1.0).andThen(
             run{}.until{intakeEncoder.velocity < 1.0}.andThen(runOnce{intakeEncoder.setPosition(0.0)}.andThen(
-               run{}.until{intakeEncoder.position > 1.25}.andThen(stopIntake()))
+               run{}.until{intakeEncoder.position > 1.15}.andThen(stopIntake()))
             )
         )
 
