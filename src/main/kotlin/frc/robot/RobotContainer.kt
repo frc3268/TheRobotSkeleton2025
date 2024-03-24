@@ -1,6 +1,7 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.units.Units
 import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
@@ -33,6 +34,8 @@ class RobotContainer {
 
     val autochooser = SendableChooser<Command>()
     val leftBumperChooser = SendableChooser<Command>()
+    val xButtonChooser = SendableChooser<Command>()
+
 
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
@@ -71,6 +74,13 @@ class RobotContainer {
         leftBumperChooser.addOption("reset robot pose", InstantCommand({driveSubsystem.zeroPoseToFieldPosition(Pose2d())}))
         leftBumperChooser.addOption("Go to Speaker", Autos.goto(driveSubsystem, Pose2d(), Pose2d()))
         leftBumperChooser.addOption("Go to Speaker + shoot", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem, leftClimberSubsystem, rightClimberSubsystem))
+
+
+        //x button chooser
+        xButtonChooser.setDefaultOption("Do nothing", WaitCommand(0.0))
+        xButtonChooser.addOption("go to source", Autos.goto(driveSubsystem,
+            Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(550.0), edu.wpi.first.math.util.Units.inchesToMeters(-200.0), 0.0.rotation2dFromDeg()),Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(550.0), edu.wpi.first.math.util.Units.inchesToMeters(200.0), 0.0.rotation2dFromDeg())
+        ))
 
 
         generalTab
@@ -169,6 +179,11 @@ class RobotContainer {
         (The intention is to be able to prevent damage if the encoder is faulty and damaging any moving parts.)
          */
         driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem, leftClimberSubsystem, rightClimberSubsystem))
+
+        /*
+        x - see button chooser
+         */
+        driverController.x().onTrue(xButtonChooser.selected)
 
         /*
         A runs intake when held
