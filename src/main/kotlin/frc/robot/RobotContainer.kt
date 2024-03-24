@@ -54,28 +54,12 @@ class RobotContainer {
 
         autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
         autochooser.addOption("Do nothing", WaitCommand(1.0))
+        autochooser.addOption("One ring auto", Autos.oneRingAuto(driveSubsystem, intakeSubsystem, shooterSubsystem, rightClimberSubsystem, leftClimberSubsystem))
         autochooser.addOption("Shoot to speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
         autochooser.addOption("Shoot to speaker + taxi", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem).andThen(Autos.taxiAuto(driveSubsystem)))
         autochooser.addOption("Shoot, Intake, Shoot", Autos.driveUpShootSpeakerAndReturnToRingsCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
         autochooser.addOption("Shoot, Take rings and Shoot", Autos.collectStartingRingsAndShoot(driveSubsystem, intakeSubsystem, shooterSubsystem, 2, arrayOf(ring1BooleanBox.entry, ring2BooleanBox.entry, ring3BooleanBox.entry)))
 
-        //test individual commands
-        autochooser.addOption("test go to speaker (bottom)", Autos.goToSpeakerCommand(driveSubsystem, 1))
-        autochooser.addOption("test go to speaker (middle)", Autos.goToSpeakerCommand(driveSubsystem, 2))
-        autochooser.addOption("test go to speaker (top)", Autos.goToSpeakerCommand(driveSubsystem, 3))
-        autochooser.addOption("test go to amp", Autos.goToAmpCommand(driveSubsystem))
-        autochooser.addOption("test go to source closerToBaseLine=false", Autos.goToSourceCommand(driveSubsystem, false))
-        autochooser.addOption("test go to source closerToBaseLine=false", Autos.goToSourceCommand(driveSubsystem, true))
-        autochooser.addOption("test go within speaker (obsolete?)", Autos.goWithinSpeakerCommand(driveSubsystem))
-        autochooser.addOption("test intake and up", Autos.intakeAndUpCommand(intakeSubsystem))
-        autochooser.addOption("test intake from ground", Autos.intakeNoteCommand(intakeSubsystem))
-        autochooser.addOption("climber up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem))
-        autochooser.addOption("climber down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem))
-        autochooser.addOption("climber stop", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem))
-        autochooser.addOption("test shootSpeakerCommand", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
-        autochooser.addOption("test Shooter only", Autos.testShooterCommand(shooterSubsystem))
-        autochooser.addOption("test shoot amp", Autos.shootAmpCommand(intakeSubsystem, shooterSubsystem))
-        autochooser.addOption("test source intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
 
         //GeneralTab
         //.addCamera("Driver Camera", "USB Camera 0")
