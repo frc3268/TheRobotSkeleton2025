@@ -12,8 +12,9 @@ class RightClimberSubsystem(): SubsystemBase(){
     val motor = Motor(15)
     val encoder: RelativeEncoder = motor.encoder
     val troubleShootingTab: ShuffleboardTab = Shuffleboard.getTab("Troubleshooting")
-    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("R do", false)
+    val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("R d", false)
             .withWidget(BuiltInWidgets.kToggleSwitch)
+        .withPosition(6, 0)
             .entry
 
     init {

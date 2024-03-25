@@ -122,7 +122,7 @@ class Autos private constructor() {
             SequentialCommandGroup(
             ParallelCommandGroup(drive.moveToPoseCommand(Pose2d(0.0,0.0,0.0.rotation2dFromDeg())), WaitCommand(1.5).andThen(shooter.runAtSpeedCommand(-0.8))),
             intake.takeOutCommand().withTimeout(1.0),
-            emergencyStopCommand(shooter,intake, leftClimberSubsystem, rightClimberSubsystem)
+            emergencyStopCommand(shooter,drive, intake, leftClimberSubsystem, rightClimberSubsystem)
             )
 
         fun intakeAndUpCommand(intake: IntakeSubsystem): Command =
@@ -199,11 +199,11 @@ class Autos private constructor() {
         fun oneRingAuto(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, rightClimberSubsystem: RightClimberSubsystem, leftClimberSubsystem: LeftClimberSubsystem): Command{
             return SequentialCommandGroup(
                 shootSpeakerCommand(intake, shooter),
-                ParallelCommandGroup (drive.moveToPoseCommand(Pose2d(2.8956, 0.0, 0.0.rotation2dFromDeg())), intake.armDownCommand()),
+                ParallelCommandGroup (drive.moveToPoseCommand(Pose2d(1.5, 0.0, 0.0.rotation2dFromDeg())), intake.armDownCommand()),
                 intakeAndUpCommand(intake),
                 ParallelCommandGroup(drive.moveToPoseCommand(Pose2d(0.0,0.0,0.0.rotation2dFromDeg())), WaitCommand(1.5).andThen(shooter.runAtSpeedCommand(-0.8))),
                 intake.takeOutCommand().withTimeout(1.0),
-                emergencyStopCommand(shooter,intake, leftClimberSubsystem, rightClimberSubsystem)
+                emergencyStopCommand(shooter,drive, intake, leftClimberSubsystem, rightClimberSubsystem)
             )
         }
 
@@ -258,12 +258,13 @@ class Autos private constructor() {
             )
         }
         
-        fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem, leftClimberSubsystem: LeftClimberSubsystem, rightClimberSubsystem: RightClimberSubsystem): Command =
+        fun emergencyStopCommand(shooter:ShooterSubsystem,drive: SwerveDriveBase, intake: IntakeSubsystem, leftClimberSubsystem: LeftClimberSubsystem, rightClimberSubsystem: RightClimberSubsystem): Command =
             ParallelCommandGroup(
                 shooter.stopCommand(),
                 intake.stopAllCommand(),
                 leftClimberSubsystem.stop(),
-                rightClimberSubsystem.stop()
+                rightClimberSubsystem.stop(),
+                drive.stopCommand()
 
             )
     }

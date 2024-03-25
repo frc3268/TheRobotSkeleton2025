@@ -158,7 +158,7 @@ class RobotContainer {
         you can pick a place to go to in the lbchooser
         (reasoning: driver is able to focus on other things while robot goes to speaker autonomously and drifting is not an issue)
          */
-        driverController.leftBumper().onTrue(leftBumperChooser.selected)
+        driverController.leftBumper().onTrue(Autos.goto(driveSubsystem, Pose2d(0.0,0.0,0.0.rotation2dFromDeg()), Pose2d(0.0,0.0,0.0.rotation2dFromDeg())))
 
         /*
         RT (Shoot Toggle):
@@ -178,12 +178,14 @@ class RobotContainer {
         Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
         (The intention is to be able to prevent damage if the encoder is faulty and damaging any moving parts.)
          */
-        driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem, intakeSubsystem, leftClimberSubsystem, rightClimberSubsystem))
+        driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem ,driveSubsystem, intakeSubsystem, leftClimberSubsystem, rightClimberSubsystem))
 
         /*
         x - see button chooser
          */
-        driverController.x().onTrue(xButtonChooser.selected)
+        driverController.x().onTrue( Autos.goto(driveSubsystem,
+            Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(550.0), edu.wpi.first.math.util.Units.inchesToMeters(-200.0), 0.0.rotation2dFromDeg()),Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(550.0), edu.wpi.first.math.util.Units.inchesToMeters(200.0), 0.0.rotation2dFromDeg())
+        ))
 
         /*
         A runs intake when held

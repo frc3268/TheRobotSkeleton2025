@@ -14,7 +14,7 @@ class IntakeSubsystem: SubsystemBase() {
     private val armMotor = Motor(10)
     val armEncoder: RelativeEncoder = armMotor.encoder
     val intakeEncoder: RelativeEncoder = intakeMotor.encoder
-    val armPIDController = PIDController(0.7/170,0.0,0.0)
+    val armPIDController = PIDController(0.8/170,0.0,0.0)
 
     val troubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
     val intakeArmPositionEntry = troubleshootingTab.add("Arm pos", 0.0)
@@ -93,7 +93,6 @@ class IntakeSubsystem: SubsystemBase() {
     fun armDownCommand(): Command =
         run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, DOWN_ANGLE+5.0)) }
             .until { getArmPosition().degrees > DOWN_ANGLE }
-            .andThen(runOnce{armMotor.set(-0.01)})
 
     /**
      * Sets the arm to the amp shoot or source intake angle, which are the same.

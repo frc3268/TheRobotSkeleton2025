@@ -48,7 +48,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             .withPosition(2, 1)
             .entry
 
-    private var yawOffset:Double = 180.0
     private val camera:Camera
 
     init {
@@ -148,18 +147,19 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         run {
             setModuleStates(
                 constructModuleStatesFromChassisSpeeds(
-                SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
-                SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.y),
+                -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x,  endPose.x),
+                -SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y,  endPose.y),
                 SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getPose().rotation.degrees,  endPose.rotation.degrees),
                 true
             ))
+            println(getPose().translation.getDistance(endPose.translation))
         }.until {
-            abs(getPose().translation.getDistance(endPose.translation)) < 0.1
-                && abs(getYaw().degrees - endPose.rotation.degrees) < 15
-        }
+            (abs(getPose().translation.getDistance(endPose.translation)) < 0.25
+                && abs(getPose().rotation.degrees - endPose.rotation.degrees) < 15) || joystickControlledEntry.getBoolean(true)
+        }.andThen(stopCommand()) .beforeStarting (runOnce { joystickControlledEntry.setBoolean(false) } )
 
     //getters
-    fun getYaw(): Rotation2d = -(gyro.rotation2d.degrees + yawOffset).IEEErem(360.0).rotation2dFromDeg()
+    fun getYaw(): Rotation2d = -(gyro.rotation2d.degrees).IEEErem(360.0).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose():Pose2d = Pose2d(poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
@@ -168,7 +168,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     //sets poseEstimator's recorded position to a pose2d given in startingpose argument
     fun zeroPoseToFieldPosition(startingPose: Pose2d){
         poseEstimator.resetPosition(getYaw(), getModulePositions(), startingPose)
-        yawOffset = startingPose.rotation.degrees
     }
 
     //does the same thing as previous but with the camera finding the starting pose

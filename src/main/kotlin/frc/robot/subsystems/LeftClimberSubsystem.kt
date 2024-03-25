@@ -14,6 +14,7 @@ class LeftClimberSubsystem: SubsystemBase(){
     val troubleShootingTab: ShuffleboardTab = Shuffleboard.getTab("Troubleshooting")
     val booleanBoxDangerMode: GenericEntry = troubleShootingTab.add("L DGo", false)
             .withWidget(BuiltInWidgets.kToggleSwitch)
+        .withPosition(5, 0)
             .entry
 
     init {
