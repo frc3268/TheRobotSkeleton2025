@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import frc.lib.basics.SwerveDriveBase
 import frc.lib.utils.*
 import frc.robot.subsystems.*
-import java.util.function.BooleanSupplier
 import kotlin.math.*
 
 class Autos private constructor() {
@@ -32,38 +31,35 @@ class Autos private constructor() {
         fun goto(drive: SwerveDriveBase, goalIfRed: Pose2d, goalOtherwise: Pose2d): Command {
             val color = DriverStation.getAlliance()
             val to =
-                    if (color.isPresent && color.get() == DriverStation.Alliance.Red)
-                        goalIfRed
-                    else
-                        goalOtherwise
+                if (color.isPresent && color.get() == DriverStation.Alliance.Red)
+                    goalIfRed
+                else
+                    goalOtherwise
+            println(to.x)
             return SequentialCommandGroup(
-                    drive.moveToPoseCommand(to),
-                    InstantCommand({ drive.stop() })
+                drive.moveToPoseCommand(to),
+                InstantCommand({ drive.stopAll() })
             )
         }
 
         fun taxiAuto(drive: SwerveDriveBase): Command =
-                goto(
-                        drive,
-                        // should make the robot move around 2 meters as the starting zone is ~193 cm or 1.93m
-                        Pose2d(1.0, 0.0, 0.0.rotation2dFromDeg()),
-                        Pose2d(1.0, 0.0, 0.0.rotation2dFromDeg()),
-                )
+            goto(
+                drive,
+                // should make the robot move around 2 meters as the starting zone is ~193 cm or 1.93m
+                Pose2d(drive.getPose().x - 2.0, drive.getPose().y, 0.0.rotation2dFromDeg()),
+                Pose2d(drive.getPose().x + 2.0, drive.getPose().y, 180.0.rotation2dFromDeg()),
+            )
 
         fun goToSpeakerCommand(drive: SwerveDriveBase, location:Int?): Command {
-            var locationVar = location
-            if (locationVar == null || locationVar > 3 || locationVar < 1) {
-                locationVar = 1
-            }
             // location maps to one of three points on the subwoofer
             // 1 -> closer to the source
             // 2 -> in the middle
             // 3 -> furthest from the source
             when (location) {
                 1 -> return goto(
-                        drive,
-                        Pose2d(16.0824625,4.96116891,-60.0.rotation2dFromDeg()),
-                        Pose2d(0.958787,4.96116891,60.0.rotation2dFromDeg())
+                    drive,
+                    Pose2d(16.0824625,4.96116891,-60.0.rotation2dFromDeg()),
+                    Pose2d(0.958787,4.96116891,60.0.rotation2dFromDeg())
                 )
                 2 -> return goto(
                     drive,
@@ -71,35 +67,33 @@ class Autos private constructor() {
                     Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg())
                 )
                 3 -> return goto(
-                        drive,
-                        Pose2d(16.0824625,6.54503,60.0.rotation2dFromDeg()),
-                        Pose2d(0.958787,6.54503,-60.0.rotation2dFromDeg())
+                    drive,
+                    Pose2d(16.0824625,6.54503,60.0.rotation2dFromDeg()),
+                    Pose2d(0.958787,6.54503,-60.0.rotation2dFromDeg())
                 )
             }
-
-
 
             return WaitCommand(1.0)
         }
 
         fun goToAmpCommand(drive: SwerveDriveBase): Command =
-                goto(
-                        drive,
-                        Pose2d(14.929358, 8.2042, 270.0.rotation2dFromDeg()),
-                        Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
-                )
+            goto(
+                drive,
+                Pose2d(14.929358, 8.2042, 270.0.rotation2dFromDeg()),
+                Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg())
+            )
 
         // documentation: what is closerToBaseLine?
         fun goToSourceCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean): Command =
-                goto(
-                        drive,
+            goto(
+                drive,
 
-                        if (closerToBaseLine) Pose2d(0.356108, 0.883666, 60.0.rotation2dFromDeg())
-                        else Pose2d(1.461516, 0.245872, 60.0.rotation2dFromDeg()),
+                if (closerToBaseLine) Pose2d(0.356108, 0.883666, 60.0.rotation2dFromDeg())
+                else Pose2d(1.461516, 0.245872, 60.0.rotation2dFromDeg()),
 
-                        if (closerToBaseLine) Pose2d(15.079472, 0.245872, 120.0.rotation2dFromDeg())
-                        else Pose2d(16.185134, 0.883666, 120.0.rotation2dFromDeg())
-                )
+                if (closerToBaseLine) Pose2d(15.079472, 0.245872, 120.0.rotation2dFromDeg())
+                else Pose2d(16.185134, 0.883666, 120.0.rotation2dFromDeg())
+            )
 
         fun goToSourceAndIntakeCommand(drive: SwerveDriveBase, closerToBaseLine: Boolean, shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
                 SequentialCommandGroup(
@@ -120,22 +114,23 @@ class Autos private constructor() {
             val c = 1.0
             val theta = atan((pose.y - to.y) / (pose.x - to.x)).rotation2dFromDeg()
             return SequentialCommandGroup(drive.moveToPoseCommand(Pose2d(to.x + cos(theta.radians) * c, to.y + sin(theta.radians) * c, theta + pose.rotation)),
-                    InstantCommand({ drive.stop() }))
+                    InstantCommand({ drive.stopAll() }))
 
         }
 
-        fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
-                SequentialCommandGroup(
-                        goToSpeakerCommand(drive, 1),
-                        shootSpeakerCommand(intake, shooter)
-                )
+        fun driveUpAndShootSpeakerCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, leftClimberSubsystem: LeftClimberSubsystem, rightClimberSubsystem: RightClimberSubsystem): Command =
+            SequentialCommandGroup(
+            ParallelCommandGroup(drive.moveToPoseCommand(Pose2d(0.0,0.0,0.0.rotation2dFromDeg())), WaitCommand(1.5).andThen(shooter.runAtSpeedCommand(-0.8))),
+            intake.takeOutCommand().withTimeout(1.0),
+            emergencyStopCommand(shooter,drive, intake, leftClimberSubsystem, rightClimberSubsystem)
+            )
 
         fun intakeAndUpCommand(intake: IntakeSubsystem): Command =
-                SequentialCommandGroup(
-                        intake.armDownCommand(),
-                        intake.intakeAndStopCommand(),
-                        intake.armUpCommand(),
-                )
+            SequentialCommandGroup(
+                intake.armDownCommand(),
+                intake.intakeAndStopCommand(),
+                intake.armUpCommand(),
+            )
 
         fun intakeNoteCommand(intake: IntakeSubsystem): Command =
                 SequentialCommandGroup(
@@ -163,10 +158,10 @@ class Autos private constructor() {
 
         fun shootSpeakerCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
             SequentialCommandGroup(
-                shooter.speakerCommand(),
+                shooter.runAtSpeedCommand(ShooterSubsystem.SPEAKER_SPEED),
                 WaitCommand(1.0),
                 intake.takeOutCommand(),
-                WaitCommand(1.2),
+                WaitCommand(1.5),
                 shooter.stopCommand(),
                 intake.stopIntake()
             )
@@ -174,14 +169,14 @@ class Autos private constructor() {
         //Needed function to test controls that didn't involve intake
         fun testShooterCommand(shooter: ShooterSubsystem):Command =
             SequentialCommandGroup(
-                shooter.speakerCommand(),
+                shooter.runAtSpeedCommand(ShooterSubsystem.SPEAKER_SPEED),
                 WaitCommand(1.0),
                 shooter.stopCommand()
             )
 
         fun shootAmpCommand(intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
                 SequentialCommandGroup(
-                        shooter.ampCommand(),
+                        shooter.runAtSpeedCommand(ShooterSubsystem.AMP_SPEED),
                         intake.takeOutCommand(),
                         shooter.stopCommand()
                 )
@@ -190,7 +185,7 @@ class Autos private constructor() {
                 SequentialCommandGroup(
                         intake.armUpCommand(),
                         shooter.takeInCommand(),
-                        intake.runIntakeCommand(),
+                        intake.runIntakeAtSpeed(IntakeSubsystem.INTAKE_SPEED),
                         WaitCommand(0.5),
                         intake.stopIntake()
                 )
@@ -200,6 +195,17 @@ class Autos private constructor() {
                         goToSourceCommand(drive, closerToBaseLine),//fix closer to baseline
                         sourceIntakeCommand(shooter, intake)
                 )
+
+        fun oneRingAuto(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, rightClimberSubsystem: RightClimberSubsystem, leftClimberSubsystem: LeftClimberSubsystem): Command{
+            return SequentialCommandGroup(
+                shootSpeakerCommand(intake, shooter),
+                ParallelCommandGroup (drive.moveToPoseCommand(Pose2d(1.5, 0.0, 0.0.rotation2dFromDeg())), intake.armDownCommand()),
+                intakeAndUpCommand(intake),
+                ParallelCommandGroup(drive.moveToPoseCommand(Pose2d(0.0,0.0,0.0.rotation2dFromDeg())), WaitCommand(1.5).andThen(shooter.runAtSpeedCommand(-0.8))),
+                intake.takeOutCommand().withTimeout(1.0),
+                emergencyStopCommand(shooter,drive, intake, leftClimberSubsystem, rightClimberSubsystem)
+            )
+        }
 
         fun driveUpShootSpeakerAndReturnToRingsCommand(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem): Command =
                 SequentialCommandGroup(
@@ -220,7 +226,6 @@ class Autos private constructor() {
         // the array [True, False, True] will pick up ring A then C and not B
         fun collectStartingRingsAndShoot(drive: SwerveDriveBase, intake: IntakeSubsystem, shooter: ShooterSubsystem, location: Int, rings:Array<GenericEntry>): Command {
             val sequence: SequentialCommandGroup = SequentialCommandGroup()
-            sequence.addCommands(goToSpeakerCommand(drive, location))
             sequence.addCommands(shootSpeakerCommand(intake, shooter))
             return runOnce({
                 // the ring right along the middle
@@ -253,10 +258,14 @@ class Autos private constructor() {
             )
         }
         
-        fun emergencyStopCommand(shooter: ShooterSubsystem, intake: IntakeSubsystem): Command =
-            SequentialCommandGroup(
+        fun emergencyStopCommand(shooter:ShooterSubsystem,drive: SwerveDriveBase, intake: IntakeSubsystem, leftClimberSubsystem: LeftClimberSubsystem, rightClimberSubsystem: RightClimberSubsystem): Command =
+            ParallelCommandGroup(
                 shooter.stopCommand(),
-                intake.stopAllCommand()
+                intake.stopAllCommand(),
+                leftClimberSubsystem.stop(),
+                rightClimberSubsystem.stop(),
+                drive.stopCommand()
+
             )
     }
 }

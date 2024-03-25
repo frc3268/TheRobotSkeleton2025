@@ -19,11 +19,11 @@ Set: Module state
 class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
     //shuffleboard
-    private val ShuffleboardTab = Shuffleboard.getTab("Swerve Module " + moduleConstants.MODULE_NUMBER)
-    val setPointEntry:GenericEntry = ShuffleboardTab.add("Setpoint", 0.0).withWidget(BuiltInWidgets.kGyro).entry
+    private val shuffleboardTab = Shuffleboard.getTab("Swerve Module " + moduleConstants.MODULE_NUMBER)
+    val setPointEntry:GenericEntry = shuffleboardTab.add("Setpoint", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
-    val angleEncoderEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder (Relative)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
-    val absoluteEncoderEntry:GenericEntry = ShuffleboardTab.add("Angle Encoder (Absolute)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
+    val angleEncoderEntry:GenericEntry = shuffleboardTab.add("Angle Encoder (Relative)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
+    val absoluteEncoderEntry:GenericEntry = shuffleboardTab.add("Angle Encoder (Absolute)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
     private val driveMotor = CANSparkMax(moduleConstants.DRIVE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
     private val angleMotor = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
@@ -31,7 +31,7 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
     private val driveEncoder: RelativeEncoder = driveMotor.encoder
     private val angleEncoder: RelativeEncoder = angleMotor.encoder
 
-    private val absoluteEncoder: AnalogEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
+    private val absoluteEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
 
     private var turnController: PIDController = moduleConstants.PID_CONTROLLER
 

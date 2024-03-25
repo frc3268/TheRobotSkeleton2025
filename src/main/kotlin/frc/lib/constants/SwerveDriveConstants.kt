@@ -53,12 +53,12 @@ object SwerveDriveConstants {
         const val OPEN_LOOP_RAMP_RATE_SECONDS: Double = 0.25
 
         /* Swerve Profiling Values */
-        const val MAX_SPEED_METERS_PER_SECOND = 5.0
+        const val MAX_SPEED_METERS_PER_SECOND = 6.0
         const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 300.0
 
-        val xPIDController = PIDController(1.5,1.0,0.8)
-        val yPIDController = PIDController(1.5,1.0,0.8)
-        val thetaPIDController = PIDController(2.0,0.3,0.0)
+        val xPIDController = PIDController(1/2.0,0.7,0.3)
+        val yPIDController = PIDController(1/2.0,0.7,0.3)
+        val thetaPIDController = PIDController(0.5,0.0,0.0)
 
         //in the order they appear in modules list
         //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
@@ -73,10 +73,10 @@ object SwerveDriveConstants {
         )
     }
     val modules = listOf(
-        ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0, false, false, PIDController(0.012, 0.003, 0.0003)),
-        ModuleConstants(2, Rotation2d.fromDegrees(-7.66), 3, 4, 1, false, false, PIDController(0.0012, 0.003, 0.0003)),
-        ModuleConstants(3, Rotation2d.fromDegrees(-182.53), 5, 6, 2, false, false, PIDController(0.012, 0.003, 0.0003)),
-        ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, false, PIDController(0.012, 0.003, 0.0003))
+        ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0, false, false, PIDController(0.0135, 0.002, 0.0003)),
+        ModuleConstants(2, Rotation2d.fromDegrees(-7.66), 3, 4, 1, false, false, PIDController(0.0135, 0.002, 0.0003)),
+        ModuleConstants(3, Rotation2d.fromDegrees(-182.53), 5, 6, 2, false, false, PIDController(0.0135, 0.002, 0.0003)),
+        ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, false, PIDController(0.0135, 0.002, 0.0003))
     )
     val startCoordinates = mapOf(
         // Starting x values
