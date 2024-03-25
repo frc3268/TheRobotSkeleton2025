@@ -27,13 +27,6 @@ object SwerveDriveConstants {
             val PID_CONTROLLER: PIDController
     )
 
-    object ModuleGains {
-        /* Drive Motor Characterization Values */
-        const val DRIVE_KS: Double = 0.0
-        const val DRIVE_KV: Double = 0.0
-        const val DRIVE_KA: Double = 0.0
-    }
-
     object DriveMotor {
         const val GEAR_RATIO: Double = 8.14 / 1.0
         const val CONTINUOUS_CURRENT_LIMIT: Int = 80
@@ -103,14 +96,4 @@ object SwerveDriveConstants {
             ModuleConstants(3, Rotation2d.fromDegrees(-182.53), 5, 6, 2, false, false, PIDController(0.009, 0.003, 0.0003)),
             ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, false, PIDController(0.009, 0.003, 0.0003))
     )
-    val startCoordinates = mapOf(
-            // Starting x values
-            DriverStation.Alliance.Blue to -0.5,
-            DriverStation.Alliance.Red to -13.2254
-    )
-            .mapValues { colorEntry ->
-                // Starting y values
-                listOf(2.57305, 4.6305, 7.181312)
-                        .map { Pose2d(colorEntry.value, it, Rotation2d.fromDegrees(0.0)) }
-            }
 }
