@@ -47,6 +47,18 @@ class RobotContainer {
         { true }
     )
 
+    val autos: MutableMap<String, Command> = mutableMapOf(
+        "gotoSpeaker" to goToSpeakerCloser(),
+        "gotoSpeakerCenter" to goto(FieldPositions.speakerCenter),
+        "gotoSpeakerRight" to goto(FieldPositions.speakerRight),
+        "gotoSpeakerLeft" to goto(FieldPositions.speakerLeft),
+        "gotoAmp" to goto(FieldPositions.amp),
+        "goToSourceCloserToBaseline" to goto(FieldPositions.sourceBaseline),
+        "goToSourceFurtherFromBaseline" to goto(FieldPositions.sourceNotBaseline),
+        "goToRing" to WaitCommand(1.0),
+        //todo: other rings
+    )
+
     fun goto(goal: FieldLocation): Command {
         val color = DriverStation.getAlliance()
         val to =
@@ -78,91 +90,57 @@ class RobotContainer {
         )
         )
     }
-
-
-    val intakeAndUpCommand: Command =
-        SequentialCommandGroup(
-            intakeSubsystem.armDownCommand(),
-            intakeSubsystem.takeInCommand(),
-            intakeSubsystem.stopIntake(),
-            intakeSubsystem.armUpCommand(),
-        )
-
-    val intakeNoteCommand: Command =
-        SequentialCommandGroup(
-            intakeSubsystem.takeInCommand(),
-            intakeSubsystem.stopIntake()
-        )
-
-    val climberUp: ParallelCommandGroup =
-        ParallelCommandGroup(
-            leftClimberSubsystem.up(),
-            rightClimberSubsystem.up()
-        )
-
-    val climberDown: ParallelCommandGroup =
-        ParallelCommandGroup(
-            leftClimberSubsystem.down(),
-            rightClimberSubsystem.down()
-        )
-
-    val climberStop: ParallelCommandGroup =
-        ParallelCommandGroup(
-            leftClimberSubsystem.stop(),
-            rightClimberSubsystem.stop()
-        )
-
-    val shootSpeakerCommand: Command =
-        SequentialCommandGroup(
-            shooterSubsystem.shootCommand(),
-            WaitCommand(1.0),
-            intakeSubsystem.takeOutCommand(),
-            WaitCommand(1.2),
-            shooterSubsystem.stopCommand(),
-            intakeSubsystem.stopIntake()
-        )
-
-    val shootAmpCommand: Command =
-        SequentialCommandGroup(
-            shooterSubsystem.ampCommand(),
-            intakeSubsystem.takeOutCommand(),
-            shooterSubsystem.stopCommand()
-        )
-
-    val sourceIntakeCommand: Command =
-        SequentialCommandGroup(
-            intakeSubsystem.armUpCommand(),
-            shooterSubsystem.takeInCommand(),
-            intakeSubsystem.runIntakeCommand(),
-            WaitCommand(0.5),
-            intakeSubsystem.stopIntake()
-        )
-
-    val emergencyStopCommand: Command =
-        SequentialCommandGroup(
-            shooterSubsystem.stopCommand(),
-            intakeSubsystem.stopAllCommand()
-        )
-
-    val autos = mapOf(
-        "gotoSpeaker" to goToSpeakerCloser(),
-        "gotoSpeakerCenter" to goto(FieldPositions.speakerCenter),
-        "gotoSpeakerRight" to goto(FieldPositions.speakerRight),
-        "gotoSpeakerLeft" to goto(FieldPositions.speakerLeft),
-        "gotoAmp" to goto(FieldPositions.amp),
-        "goToSourceCloserToBaseline" to goto(FieldPositions.sourceBaseline),
-        "goToSourceFurtherFromBaseline" to goto(FieldPositions.sourceNotBaseline),
-        "goToRing" to WaitCommand(1.0),
-        //todo: other rings
-        "shootSpeaker" to shootSpeakerCommand,
-        "shootAmp" to shootAmpCommand,
-        "intakeAndUp" to intakeAndUpCommand,
-        "climbersUp" to climberUp,
-        "climbersDown" to climberDown
-    )
-
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
+        AutoCommand(
+            SequentialCommandGroup(
+                intakeSubsystem.armDownCommand(),
+                intakeSubsystem.takeInCommand(),
+                intakeSubsystem.stopIntake(),
+                intakeSubsystem.armUpCommand(),
+            ),
+            autos,
+            name = "intakeAndUp",
+            binding = driverController.leftTrigger()
+        )
+
+        AutoCommand(
+            ParallelCommandGroup(
+                leftClimberSubsystem.up(),
+                rightClimberSubsystem.up()
+            ),
+            name = "Climbers Up",
+            shuffleboardTab = GeneralTab
+        )
+
+        AutoCommand(
+            ParallelCommandGroup(
+                leftClimberSubsystem.down(),
+                rightClimberSubsystem.down()
+            ),
+            name = "Climbers Down",
+            shuffleboardTab = GeneralTab
+        )
+
+        AutoCommand(
+            ParallelCommandGroup(
+                leftClimberSubsystem.stop(),
+                rightClimberSubsystem.stop()
+            ),
+            name = "Climbers Stop",
+            shuffleboardTab = TroubleshootingTab
+        )
+
+        AutoCommand(
+            SequentialCommandGroup(
+                shooterSubsystem.stopCommand(),
+                intakeSubsystem.stopAllCommand()
+            ),
+            name = "Emergency STOP",
+            shuffleboardTab = GeneralTab,
+            binding = driverController.y()
+        )
+
         driveSubsystem.defaultCommand = teleopCommand
 
         GeneralTab
@@ -180,8 +158,6 @@ class RobotContainer {
 
         TroubleshootingTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
 
-        TroubleshootingTab.add("CLIMBERS reset",climberStop).withWidget(BuiltInWidgets.kCommand)
-        TroubleshootingTab.add("CLIMBERS stop", leftClimberSubsystem.stop().alongWith(rightClimberSubsystem.stop())).withWidget(BuiltInWidgets.kCommand)
 
         for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
             autochooser.addOption(file.name,Json.decodeFromStream<AutoSequence>(
@@ -195,80 +171,6 @@ class RobotContainer {
             ).toCommandGroup(autos)).withWidget(BuiltInWidgets.kCommand)
         }
 
-
-        // Configure the trigger bindings
-        configureBindings()
-    }
-
-    /**
-     * Use this method to define your trigger->command mappings. Triggers can be created via the
-     * [Trigger#Trigger(java.util.function.BooleanSupplier)] constructor with an arbitrary
-     * predicate, or via the named factories in [edu.wpi.first.wpilibj2.command.button.CommandGenericHID]'s subclasses for
-     * [CommandXboxController]/[edu.wpi.first.wpilibj2.command.button.CommandPS4Controller] controllers
-     * or [edu.wpi.first.wpilibj2.command.button.CommandJoystick].
-     */
-    private fun configureBindings() {
-        // Schedule ExampleCommand when exampleCondition changes to true
-        //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
-
-        /*
-        LT (Intake):
-            runs intake
-            (not arm!)
-         */
-        driverController.leftTrigger().onTrue(intakeSubsystem.runIntakeCommand())
-        driverController.leftTrigger().onFalse(intakeSubsystem.stopIntake())
-
-        /*
-        RT (Shoot):
-            1) Rev up shooter
-            2) Run intake in reverse to feed it into shooter
-            This assumes the arm is already up. If it's down, the note will be shot back onto the ground.
-         */
-        driverController.rightTrigger().onTrue(shooterSubsystem.shootCommand())
-
-        /*
-        LB: Arm up
-         */
-        driverController.leftBumper().onTrue(intakeSubsystem.armDownCommand())
-
-        /*
-        RB: Arm Up
-         */
-        driverController.rightBumper().onTrue(intakeSubsystem.armUpCommand())
-
-        /*
-        Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
-        (The intention is to be able to prevent damage if the encoder is faulty and damaging any moving parts.)
-         */
-        driverController.y().onTrue(emergencyStopCommand)
-
-        /*
-        A runs outake
-         */
-        driverController.a().onTrue(intakeSubsystem.runOnceOuttake())
-        driverController.a().onFalse(intakeSubsystem.stopIntake())
-
-        /*
-        X does source intake
-        arm up
-        run shooter in reverse
-        intake
-        stop intake
-        stop shooter
-         */
-        driverController.x().onTrue(sourceIntakeCommand)
-
-       /*
-       B does arm down, intake note, arm up
-        */
-        driverController.b().onTrue(intakeAndUpCommand)
-
-        /*
-        POV up and down bring arm up and down
-         */
-        //driverController.povUp().onTrue(intakeSubsystem.armUpCommand())
-        //driverController.povDown().onTrue(intakeSubsystem.armDownCommand())
     }
 
     /**
@@ -278,7 +180,6 @@ class RobotContainer {
      */
     val autonomousCommand: Command
         get() {
-            // wait 3 seconds...
             return autochooser.selected
         }
 }
