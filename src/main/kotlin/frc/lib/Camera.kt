@@ -6,16 +6,15 @@ import edu.wpi.first.math.geometry.*
 import edu.wpi.first.math.numbers.*
 import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.DriverStation
-import edu.wpi.first.wpilibj2.command.SubsystemBase
 import org.photonvision.*
 import org.photonvision.targeting.*
 import java.io.IOException
 import java.util.*
 
-class Camera(name: String) : SubsystemBase() {
-    val limelight = PhotonCamera(name)
-    var frame = PhotonPipelineResult()
-    var poseEstimator: PhotonPoseEstimator? = null
+class Camera(name: String) {
+    private val limelight = PhotonCamera(name)
+    private var frame = PhotonPipelineResult()
+    private var poseEstimator: PhotonPoseEstimator? = null
 
     init {
         try {
@@ -43,22 +42,19 @@ class Camera(name: String) : SubsystemBase() {
             // !add some way to lock down apriltage features after this
         }
     }
-
-    override fun periodic() {
-        captureFrame()
-    }
-
     //call periodically
     fun captureFrame(): PhotonPipelineResult =
             limelight.latestResult
 
     fun getAprilTagTarget(): PhotonTrackedTarget? {
         limelight.pipelineIndex = 1
+        frame = captureFrame()
         return if (frame.hasTargets()) frame.bestTarget else null
     }
 
     fun getReflectiveTapeTarget(): PhotonTrackedTarget? {
         limelight.pipelineIndex = 0
+        frame = captureFrame()
         return if (frame.hasTargets()) frame.bestTarget else null
     }
 
