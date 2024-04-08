@@ -66,9 +66,13 @@ class RobotContainer {
                 goal.red
             else
                 goal.blue
-        return SequentialCommandGroup(
-            driveSubsystem.moveToPoseCommand(to),
-            InstantCommand({ driveSubsystem.stop() })
+        return SwerveAutoDrive(
+            to,
+            Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg()),
+            driveSubsystem,
+            { driverController.getRawAxis(1) },
+            { -driverController.getRawAxis(0) },
+            { -driverController.getRawAxis(4) },
         )
     }
 
@@ -91,6 +95,9 @@ class RobotContainer {
         )
     }
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
+    //on true
+    //while true
+    //toggle
     init {
         AutoCommand(
             SequentialCommandGroup(
@@ -100,8 +107,24 @@ class RobotContainer {
                 intakeSubsystem.armUpCommand(),
             ),
             autos,
-            name = "intakeAndUp",
-            binding = driverController.leftTrigger()
+            name = "Intake and up",
+            binding = driverController.leftTrigger(),
+        )
+
+        AutoCommand(
+            shooterSubsystem.shootCommand().andThen(shooterSubsystem.stopCommand()),
+            autos,
+            name = "Rev Shooters",
+            binding = driverController.rightBumper(),
+            triggerType = TriggerType.TOGGLE
+        )
+
+        AutoCommand(
+            intakeSubsystem.takeOutCommand(),
+            autos,
+            name = "Outtake Note",
+            binding = driverController.rightTrigger(),
+            triggerType = TriggerType.WHILE_TRUE
         )
 
         AutoCommand(

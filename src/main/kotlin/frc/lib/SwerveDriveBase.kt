@@ -34,11 +34,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private var poseYEntry = shuffleboardTab.add("Pose Y", 0.0).entry
     private var seesAprilTag = shuffleboardTab.add("Sees April Tag?", false).withWidget(BuiltInWidgets.kBooleanBox).entry
 
-    private var yawOffset: Double = 0.0
-
     private val camera: Camera
-
-
     init {
         SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
                 360.0, 0.0
@@ -51,9 +47,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         shuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
         shuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
 
-
-
-
         shuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
 
         poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1), VecBuilder.fill(0.5, 0.5, 0.5))
@@ -63,11 +56,16 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //estimate robot pose based on what the encoders say
         poseEstimator.update(getYaw(), getModulePositions())
         //estimate robot pose based on what the camera sees
-        seesAprilTag.setBoolean(camera.captureFrame().hasTargets())
-        val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
-        visionEst?.ifPresent { est ->
-
-            poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, camera.getEstimationStdDevs(est.estimatedPose.toPose2d()))
+        if(gyro.rate < 180.0) {
+            seesAprilTag.setBoolean(camera.captureFrame().hasTargets())
+            val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
+            visionEst?.ifPresent { est ->
+                poseEstimator.addVisionMeasurement(
+                    est.estimatedPose.toPose2d(),
+                    est.timestampSeconds,
+                    camera.getEstimationStdDevs(est.estimatedPose.toPose2d())
+                )
+            }
         }
         //update module tabs on shuffleboard
         for (mod in modules) {
@@ -123,23 +121,9 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     fun zeroHeadingCommand(): Command {
         return runOnce { zeroYaw() }
     }
-
-
-    //move robot to pose given in endpose argument
-    fun moveToPoseCommand(endPose: Pose2d): Command {
-        return run {
-            setModuleStates(
-                    constructModuleStatesFromChassisSpeeds(
-                            -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(getPose().x, endPose.x),
-                            -SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(getPose().y, endPose.y),
-                            -SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(getYaw().degrees, endPose.rotation.degrees),
-                            true
-                    ))
-        }.until { abs(getPose().translation.getDistance(endPose.translation)) < 0.02 && abs(getYaw().degrees - endPose.rotation.degrees) < 1.5 }
-    }
-
+    
     //getters
-    private fun getYaw(): Rotation2d = -(gyro.rotation2d.degrees + yawOffset).IEEErem(360.0).rotation2dFromDeg()
+    private fun getYaw(): Rotation2d = -(gyro.rotation2d.degrees).IEEErem(360.0).rotation2dFromDeg()
     fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
     fun getPose(): Pose2d = Pose2d(poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
