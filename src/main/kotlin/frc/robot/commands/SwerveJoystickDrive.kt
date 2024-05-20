@@ -2,9 +2,8 @@ package frc.robot.commands
 
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.math.MathUtil
-import edu.wpi.first.wpilibj.DriverStation
-import frc.lib.basics.SwerveDriveBase
-import frc.lib.constants.SwerveDriveConstants
+import frc.lib.SwerveDriveBase
+import frc.lib.SwerveDriveConstants
 import java.util.function.*
 
 import frc.robot.Constants
@@ -41,7 +40,7 @@ class SwerveJoystickDrive(
 
     // Called once the command ends or is interrupted.
     override fun end(interrupted: Boolean) {
-        drive.stopAll()
+        drive.stop()
     }
 
     // Returns true when the command should end.

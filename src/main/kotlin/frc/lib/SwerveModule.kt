@@ -1,4 +1,4 @@
-package frc.lib.basics
+package frc.lib
 
 import com.revrobotics.*
 import edu.wpi.first.math.controller.PIDController
@@ -7,8 +7,6 @@ import edu.wpi.first.math.kinematics.*
 import edu.wpi.first.networktables.GenericEntry
 import edu.wpi.first.wpilibj.AnalogEncoder
 import edu.wpi.first.wpilibj.shuffleboard.*
-import frc.lib.constants.SwerveDriveConstants
-import frc.lib.utils.rotation2dFromDeg
 import kotlin.math.*
 
 /*
@@ -17,13 +15,11 @@ Get: Cancoder measurement, Module state(velocity) and position
 Set: Module state
  */
 class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
+    private val ShuffleboardTab = Shuffleboard.getTab("Swerve Module " + moduleConstants.MODULE_NUMBER)
+    val setPointEntry: GenericEntry = ShuffleboardTab.add("Setpoint", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
-    //shuffleboard
-    private val shuffleboardTab = Shuffleboard.getTab("Swerve Module " + moduleConstants.MODULE_NUMBER)
-    val setPointEntry:GenericEntry = shuffleboardTab.add("Setpoint", 0.0).withWidget(BuiltInWidgets.kGyro).entry
-
-    val angleEncoderEntry:GenericEntry = shuffleboardTab.add("Angle Encoder (Relative)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
-    val absoluteEncoderEntry:GenericEntry = shuffleboardTab.add("Angle Encoder (Absolute)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
+    val angleEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder (Relative)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
+    val absoluteEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder (Absolute)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
     private val driveMotor = CANSparkMax(moduleConstants.DRIVE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
     private val angleMotor = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
@@ -37,14 +33,14 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
 
     init {
         absoluteEncoder.distancePerRotation =
-            SwerveDriveConstants.Encoder.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
+                SwerveDriveConstants.Encoder.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
         absoluteEncoder.positionOffset = moduleConstants.ANGLE_OFFSET.degrees
         driveEncoder.positionConversionFactor =
-            SwerveDriveConstants.DriveMotor.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION
+                SwerveDriveConstants.DriveMotor.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION
         driveEncoder.velocityConversionFactor =
-            SwerveDriveConstants.DriveMotor.VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND
+                SwerveDriveConstants.DriveMotor.VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND
         angleEncoder.positionConversionFactor =
-            SwerveDriveConstants.AngleMotor.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
+                SwerveDriveConstants.AngleMotor.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
 
         driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
         angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
@@ -59,22 +55,22 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
     }
 
-    fun updateShuffleboard(){
+    fun updateShuffleboard() {
         angleEncoderEntry.setDouble(getState().angle.degrees)
         absoluteEncoderEntry.setDouble(getAbsoluteEncoderMeasurement().degrees)
     }
 
-    fun resetToAbsolute(){
+    fun resetToAbsolute() {
         driveEncoder.position = 0.0
         angleEncoder.position = getAbsoluteEncoderMeasurement().degrees
     }
 
     private fun getAbsoluteEncoderMeasurement(): Rotation2d = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
-    fun getState() = SwerveModuleState(-driveEncoder.velocity, ( (-getAbsoluteEncoderMeasurement().degrees).IEEErem(360.0).rotation2dFromDeg()))
+    fun getState() = SwerveModuleState(-driveEncoder.velocity, ((-getAbsoluteEncoderMeasurement().degrees).IEEErem(360.0).rotation2dFromDeg()))
     fun getPosition() = SwerveModulePosition(-driveEncoder.position, (-getAbsoluteEncoderMeasurement().degrees).IEEErem(360.0).rotation2dFromDeg())
 
-    fun setDesiredState(desiredState: SwerveModuleState){
-        if (abs(desiredState.speedMetersPerSecond) < 0.01){
+    fun setDesiredState(desiredState: SwerveModuleState) {
+        if (abs(desiredState.speedMetersPerSecond) < 0.01) {
             stop()
             return
         }
@@ -83,11 +79,11 @@ class SwerveModule(val moduleConstants: SwerveDriveConstants.ModuleConstants) {
         driveMotor.set(optimizedState.speedMetersPerSecond / SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
         angleMotor.set(turnController.calculate(getState().angle.degrees, optimizedState.angle.degrees))
     }
-    fun stop(){
+
+    fun stop() {
         driveMotor.set(0.0)
         angleMotor.set(0.0)
     }
-
 
 
 }

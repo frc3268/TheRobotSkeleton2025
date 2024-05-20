@@ -1,18 +1,24 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.units.Units
+
+import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
-import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.Commands
-import edu.wpi.first.wpilibj2.command.InstantCommand
-import edu.wpi.first.wpilibj2.command.WaitCommand
+import edu.wpi.first.wpilibj2.command.*
+import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.lib.basics.SwerveDriveBase
-import frc.lib.utils.rotation2dFromDeg
+import frc.lib.*
 import frc.robot.commands.*
 import frc.robot.subsystems.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import java.io.File
+import java.util.function.Supplier
+import kotlin.math.atan
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,8 +27,8 @@ import frc.robot.subsystems.*
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
-    private val generalTab = Shuffleboard.getTab("General")
-    private val troubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
+    private val GeneralTab = Shuffleboard.getTab("General")
+    private val TroubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
 
     val intakeSubsystem = IntakeSubsystem()
     val shooterSubsystem = ShooterSubsystem()
@@ -45,159 +51,159 @@ class RobotContainer {
         { true }
     )
 
-    val ring1BooleanBox = generalTab.add("Collect ring 1?", false).withWidget(BuiltInWidgets.kToggleSwitch)
-            .withPosition(1, 1)
-    val ring2BooleanBox = generalTab.add("Collect ring 2?", false).withWidget(BuiltInWidgets.kToggleSwitch)
-            .withPosition(2, 1)
-    val ring3BooleanBox = generalTab.add("Collect ring 3?", false).withWidget(BuiltInWidgets.kToggleSwitch)
-            .withPosition(3, 1)
+    val autos: MutableMap<String, Command> = mutableMapOf(
+        "gotoSpeaker" to goToSpeakerCloser(),
+        "gotoSpeakerCenter" to goto(FieldPositions.speakerCenter),
+        "gotoSpeakerRight" to goto(FieldPositions.speakerRight),
+        "gotoSpeakerLeft" to goto(FieldPositions.speakerLeft),
+        "gotoAmp" to goto(FieldPositions.amp),
+        "goToSourceCloserToBaseline" to goto(FieldPositions.sourceBaseline),
+        "goToSourceFurtherFromBaseline" to goto(FieldPositions.sourceNotBaseline),
+        "goToRing" to WaitCommand(1.0),
+        //todo: other rings
+    )
+
+    fun goto(goal: FieldLocation): Command {
+        val color = DriverStation.getAlliance()
+        val to =
+            if (color.isPresent && color.get() == DriverStation.Alliance.Red)
+                goal.red
+            else
+                goal.blue
+        return SwerveAutoDrive(
+            to,
+            Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg()),
+            driveSubsystem,
+            { driverController.getRawAxis(1) },
+            { -driverController.getRawAxis(0) },
+            { -driverController.getRawAxis(4) },
+        )
+    }
+
+    fun goToSpeakerCloser(): Command {
+        var startingPose = Pose2d()
+        return runOnce({
+            startingPose = driveSubsystem.getPose()
+        }, driveSubsystem).andThen(
+            //red
+            goto(
+                FieldPositions.closest(
+                    startingPose,
+                    listOf(
+                        FieldPositions.speakerRight,
+                        FieldPositions.speakerCenter,
+                        FieldPositions.speakerLeft
+                    )
+                )
+            )
+        )
+    }
+
+
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
+    //on true
+    //while true
+    //toggle
     init {
+        AutoCommand(
+            SequentialCommandGroup(
+                intakeSubsystem.armDownCommand(),
+                intakeSubsystem.takeInCommand(),
+                intakeSubsystem.stopIntake(),
+                intakeSubsystem.armUpCommand(),
+            ),
+            autos,
+            name = "Intake and up",
+            binding = driverController.leftTrigger(),
+        )
+
+        AutoCommand(
+            shooterSubsystem.runAtSpeedCommand(0.8).andThen(shooterSubsystem.stopCommand()),
+            autos,
+            name = "Rev Shooters",
+            binding = driverController.rightBumper(),
+            triggerType = TriggerType.TOGGLE
+        )
+
+        AutoCommand(
+            intakeSubsystem.takeOutCommand(),
+            autos,
+            name = "Outtake Note",
+            binding = driverController.rightTrigger(),
+            triggerType = TriggerType.WHILE_TRUE
+        )
+
+        AutoCommand(
+            ParallelCommandGroup(
+                leftClimberSubsystem.up(),
+                rightClimberSubsystem.up()
+            ),
+            name = "Climbers Up",
+            shuffleboardTab = GeneralTab
+        )
+
+        AutoCommand(
+            ParallelCommandGroup(
+                leftClimberSubsystem.down(),
+                rightClimberSubsystem.down()
+            ),
+            name = "Climbers Down",
+            shuffleboardTab = GeneralTab
+        )
+
+        AutoCommand(
+            ParallelCommandGroup(
+                leftClimberSubsystem.stop(),
+                rightClimberSubsystem.stop()
+            ),
+            name = "Climbers Stop",
+            shuffleboardTab = TroubleshootingTab
+        )
+
+        AutoCommand(
+            SequentialCommandGroup(
+                shooterSubsystem.stopCommand(),
+                intakeSubsystem.stopAllCommand()
+            ),
+            name = "Emergency STOP",
+            shuffleboardTab = GeneralTab,
+            binding = driverController.y()
+        )
+
         driveSubsystem.defaultCommand = teleopCommand
 
-        autochooser.setDefaultOption("Taxi", Autos.taxiAuto(driveSubsystem))
-        autochooser.addOption("Do nothing", WaitCommand(1.0))
-        autochooser.addOption("One ring auto", Autos.oneRingAuto(driveSubsystem, intakeSubsystem, shooterSubsystem, rightClimberSubsystem, leftClimberSubsystem))
-        autochooser.addOption("Shoot to speaker", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem))
-        autochooser.addOption("Shoot to speaker + taxi", Autos.shootSpeakerCommand(intakeSubsystem, shooterSubsystem).andThen(Autos.taxiAuto(driveSubsystem)))
-        autochooser.addOption("Shoot, Intake, Shoot", Autos.driveUpShootSpeakerAndReturnToRingsCommand(driveSubsystem, intakeSubsystem, shooterSubsystem))
-        autochooser.addOption("Shoot, Take rings and Shoot", Autos.collectStartingRingsAndShoot(driveSubsystem, intakeSubsystem, shooterSubsystem, 2, arrayOf(ring1BooleanBox.entry, ring2BooleanBox.entry, ring3BooleanBox.entry)))
-
-
-        //GeneralTab
-        //.addCamera("Driver Camera", "USB Camera 0")
-        //.withPosition(4, 0)
-         //       .withSize(3, 3);
-
-        //lb chooser
-        leftBumperChooser.setDefaultOption("Do nothing", WaitCommand(0.0))
-        leftBumperChooser.addOption("reset robot pose", InstantCommand({driveSubsystem.zeroPoseToFieldPosition(Pose2d())}))
-        leftBumperChooser.addOption("Go to Speaker", Autos.goto(driveSubsystem, Pose2d(), Pose2d()))
-        leftBumperChooser.addOption("Go to Speaker + shoot", Autos.driveUpAndShootSpeakerCommand(driveSubsystem, intakeSubsystem, shooterSubsystem, leftClimberSubsystem, rightClimberSubsystem))
-
-
-        //x button chooser
-        xButtonChooser.setDefaultOption("Do nothing", WaitCommand(0.0))
-        xButtonChooser.addOption("go to source", Autos.goto(driveSubsystem,
-            Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(550.0), edu.wpi.first.math.util.Units.inchesToMeters(-200.0), 0.0.rotation2dFromDeg()),Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(550.0), edu.wpi.first.math.util.Units.inchesToMeters(200.0), 0.0.rotation2dFromDeg())
-        ))
-
-
-        generalTab
+        GeneralTab
             .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
             .withSize(2, 1)
-        generalTab
+        GeneralTab
             .add("LB Command", leftBumperChooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(2, 0)
             .withSize(2, 1)
 
-        generalTab.add("LR stop", Autos.climberStop(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-            .withPosition(0, 2)
-        generalTab.add("LR down", Autos.climberDown(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-            .withPosition(1, 2)
-        generalTab.add("LR up", Autos.climberUp(leftClimberSubsystem, rightClimberSubsystem)).withWidget(BuiltInWidgets.kCommand)
-            .withPosition(2, 2)
-        generalTab.add("Source Intake", Autos.sourceIntakeCommand(shooterSubsystem, intakeSubsystem))
-            .withPosition(3, 2)
-
         // Troubleshooting tab holds manual controls for the climber and a reset for the arm encoder
-        troubleshootingTab.add("L down test", leftClimberSubsystem.testdown())
-            .withWidget(BuiltInWidgets.kCommand)
-            .withPosition(0, 1)
-        troubleshootingTab.add("L up test", leftClimberSubsystem.testup())
-            .withWidget(BuiltInWidgets.kCommand)
-            .withPosition(0, 0)
-        troubleshootingTab.add("L enc zero", leftClimberSubsystem.reset())
-            .withWidget(BuiltInWidgets.kCommand)
-            .withPosition(0, 2)
-        troubleshootingTab.add("R down test", rightClimberSubsystem.testdown())
-            .withWidget(BuiltInWidgets.kCommand)
-            .withPosition(1, 1)
-        troubleshootingTab.add("R up test", rightClimberSubsystem.testup())
-            .withWidget(BuiltInWidgets.kCommand)
-            .withPosition(1, 0)
-        troubleshootingTab.add("R enc zero", rightClimberSubsystem.reset())
-            .withWidget(BuiltInWidgets.kCommand)
-            .withPosition(1, 2)
+        TroubleshootingTab.add("CLIMBER L down", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBER L up", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
 
-        troubleshootingTab.add("Arm enc zero", intakeSubsystem.zeroArmEncoderCommand())
-            .withWidget(BuiltInWidgets.kCommand)
-            .withPosition(2, 3)
+        TroubleshootingTab.add("CLIMBER R down", rightClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBER R up", rightClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
+
+        TroubleshootingTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
 
 
-        // Configure the trigger bindings
-        configureBindings()
-    }
+        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
+            autochooser.addOption(file.name,Json.decodeFromStream<AutoSequence>(
+               file.inputStream()
+            ).toCommandGroup(autos))
+        }
 
-    /**
-     * Use this method to define your trigger->command mappings. Triggers can be created via the
-     * [Trigger#Trigger(java.util.function.BooleanSupplier)] constructor with an arbitrary
-     * predicate, or via the named factories in [edu.wpi.first.wpilibj2.command.button.CommandGenericHID]'s subclasses for
-     * [CommandXboxController]/[edu.wpi.first.wpilibj2.command.button.CommandPS4Controller] controllers
-     * or [edu.wpi.first.wpilibj2.command.button.CommandJoystick].
-     */
-    private fun configureBindings() {
-        // Schedule ExampleCommand when exampleCondition changes to true
-        //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
-
-        /*
-        LT (Intake):
-            runs intake and up sequence
-            1. arm goes down
-            2. intake turns on until
-            3. a piece has been detected in the intake, then
-            4. intake stops and arm goes up
-         */
-        driverController.leftTrigger().onTrue(Autos.intakeAndUpCommand(intakeSubsystem))
-        
-        /*
-        LB (Go to speaker): run a given go to command
-        you can pick a place to go to in the lbchooser
-        (reasoning: driver is able to focus on other things while robot goes to speaker autonomously and drifting is not an issue)
-         */
-        driverController.leftBumper().onTrue(Autos.goto(driveSubsystem, Pose2d(0.0,0.0,0.0.rotation2dFromDeg()), Pose2d(0.0,0.0,0.0.rotation2dFromDeg())))
-
-        /*
-        RT (Shoot Toggle):
-            1) Rev up shooter
-         */
-        driverController.rightTrigger().onTrue(intakeSubsystem.runIntakeAtSpeed(IntakeSubsystem.OUTTAKE_SPEED))
-        driverController.rightTrigger().onFalse(intakeSubsystem.stopIntake())
-
-        /*
-        RB - REV UP SHOOTER (TOGGLE)
-         */
-        driverController.rightBumper().toggleOnTrue(Commands.startEnd({shooterSubsystem.leftFlywheelMotor.set(-1.0)
-            shooterSubsystem.rightFlywheelMotor.set(-1.0)}, {shooterSubsystem.leftFlywheelMotor.stopMotor()
-            shooterSubsystem.rightFlywheelMotor.stopMotor()}, shooterSubsystem))
-
-        /*
-        Y (EMERGENCY STOP): Stop the intake gears, the arm, and the shooter.
-        (The intention is to be able to prevent damage if the encoder is faulty and damaging any moving parts.)
-         */
-        driverController.y().onTrue(Autos.emergencyStopCommand(shooterSubsystem ,driveSubsystem, intakeSubsystem, leftClimberSubsystem, rightClimberSubsystem))
-
-        /*
-        x - see button chooser
-         */
-        driverController.x().onTrue( Autos.goto(driveSubsystem,
-            Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(550.0), edu.wpi.first.math.util.Units.inchesToMeters(-200.0), 0.0.rotation2dFromDeg()),Pose2d(edu.wpi.first.math.util.Units.inchesToMeters(550.0), edu.wpi.first.math.util.Units.inchesToMeters(200.0), 0.0.rotation2dFromDeg())
-        ))
-
-        /*
-        A runs intake when held
-         */
-        driverController.a().onTrue(intakeSubsystem.runIntakeAtSpeed(IntakeSubsystem.INTAKE_SPEED))
-        driverController.a().onFalse(intakeSubsystem.stopIntake())
-
-        /*
-        POV up and down bring arm up and down
-         */
-        driverController.povUp().onTrue(intakeSubsystem.armUpCommand())
-        driverController.povDown().onTrue(intakeSubsystem.armDownCommand())
+        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/buttons").listFiles()?.filter { it.isFile }!!){
+            GeneralTab.add(file.name,Json.decodeFromStream<AutoSequence>(
+                file.inputStream()
+            ).toCommandGroup(autos)).withWidget(BuiltInWidgets.kCommand)
+        }
     }
 
     /**
@@ -207,7 +213,6 @@ class RobotContainer {
      */
     val autonomousCommand: Command
         get() {
-            // wait 3 seconds...
             return autochooser.selected
         }
 }

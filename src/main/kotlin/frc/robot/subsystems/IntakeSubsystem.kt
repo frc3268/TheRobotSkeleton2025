@@ -6,7 +6,8 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.*
-import frc.lib.utils.*
+import frc.lib.Motor
+import frc.lib.rotation2dFromDeg
 import frc.robot.Constants
 
 class IntakeSubsystem: SubsystemBase() {
@@ -42,14 +43,14 @@ class IntakeSubsystem: SubsystemBase() {
     }
 
     init {
-        armMotor.inverted = true
+        armMotor.controller.inverted = true
         armEncoder.positionConversionFactor = 360 / 112.5
         intakeEncoder.velocityConversionFactor = 1.0 / 1600
         intakeEncoder.positionConversionFactor = 1.0/12.0
     }
 
     fun stopIntake(): Command =
-        runOnce { intakeMotor.stopMotor() }
+        runOnce { intakeMotor.stop() }
 
     /*
     intakeAndStopCommand: Command
@@ -68,7 +69,7 @@ class IntakeSubsystem: SubsystemBase() {
         )
 
     fun stopArm(): Command =
-        runOnce { armMotor.stopMotor() }
+        runOnce { armMotor.stop() }
 
     /**
      * Stops both the arm and intake gears immediately.
@@ -86,46 +87,14 @@ class IntakeSubsystem: SubsystemBase() {
         runOnce { intakeMotor.setVoltage(speed * 12.0) }
 
     fun armUpCommand(): Command =
-        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, UP_ANGLE-5.0)) }
+        run { armMotor.setPercentOutput(armPIDController.calculate(getArmPosition().degrees, UP_ANGLE-5.0)) }
             .until { getArmPosition().degrees < UP_ANGLE }
             .andThen(stopArm())
 
     fun armDownCommand(): Command =
-        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, DOWN_ANGLE+5.0)) }
+        run { armMotor.setPercentOutput(armPIDController.calculate(getArmPosition().degrees, DOWN_ANGLE+5.0)) }
             .until { getArmPosition().degrees > DOWN_ANGLE }
-
-    /**
-     * Sets the arm to the amp shoot or source intake angle, which are the same.
-     */
-    fun armToAmpAngleCommand(): Command =
-        run { armMotor.set(armPIDController.calculate(getArmPosition().degrees, 105.0)) }
-            .until { getArmPosition().degrees > 100.0 }
             .andThen(stopArm())
-
-    /**
-     * Brings the arm up to the amp angle and shoots the note into the amp.
-     */
-    fun ampCommand(): Command =
-        SequentialCommandGroup(
-            armToAmpAngleCommand(),
-            runIntakeAtSpeed(SHOOT_AMP_SPEED),
-            WaitCommand(2.0),
-            stopIntake(),
-            armUpCommand()
-        )
-
-    /**
-     * Brings the arm up to the source intake angle and then intakes a note.
-     */
-    fun armUpAndIntakeCommand(): Command =
-        SequentialCommandGroup(
-            armToAmpAngleCommand(),
-            runIntakeAtSpeed(INTAKE_SPEED),
-            WaitCommand(0.1),
-            stopIntake(),
-            armUpCommand()
-        )
-
     fun takeInCommand(): Command =
         SequentialCommandGroup(
             runIntakeAtSpeed(INTAKE_SPEED),
@@ -146,9 +115,6 @@ class IntakeSubsystem: SubsystemBase() {
         armEncoder.position.rotation2dFromDeg()
 
     override fun periodic() {
-
-        // Stop arm guard in case it screws itself over
-
         if (getArmPosition().degrees >= 190.0 || getArmPosition().degrees <= -5.0)
             stopArm().schedule()
 
