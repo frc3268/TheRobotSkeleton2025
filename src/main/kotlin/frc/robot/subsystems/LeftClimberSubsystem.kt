@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
 import edu.wpi.first.wpilibj2.command.*
-import frc.lib.utils.*
+import frc.lib.Motor
 
 class LeftClimberSubsystem: SubsystemBase(){
     val motor = Motor(14)
@@ -18,7 +18,7 @@ class LeftClimberSubsystem: SubsystemBase(){
             .entry
 
     init {
-        motor.inverted = true
+        motor.controller.inverted = true
         // TODO test if this is needed
         //rightEncoder.inverted = true
         
@@ -32,26 +32,26 @@ class LeftClimberSubsystem: SubsystemBase(){
      */
 
     fun down(): Command =
-        run { motor.set(-1.0) }
+        run { motor.setPercentOutput(-1.0) }
             .until { encoder.position < 0.1 }
-            .andThen(runOnce { motor.stopMotor() })
+            .andThen(runOnce { motor.stop() })
 
     fun up(): Command =
-        run { motor.set(1.0) }
+        run { motor.setPercentOutput(1.0) }
             .until { encoder.position > 0.9 }
-            .andThen(runOnce { motor.stopMotor() })
+            .andThen(runOnce { motor.stop() })
 
     fun reset(): Command =
         runOnce { encoder.position = 0.0 }
 
     fun testup():Command =
-        runOnce { motor.set(0.2) }
+        runOnce { motor.setPercentOutput(0.2) }
 
     fun testdown():Command =
-        runOnce { motor.set(-0.2) }
+        runOnce { motor.setPercentOutput(-0.2) }
 
     fun stop(): Command =
-        runOnce { motor.set(0.0) }
+        runOnce { motor.setPercentOutput(0.0) }
 
     override fun periodic() {
         System.out.println("Left climber: " + encoder.position)

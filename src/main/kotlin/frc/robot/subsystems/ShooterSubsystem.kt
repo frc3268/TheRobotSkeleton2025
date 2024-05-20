@@ -1,7 +1,7 @@
 package frc.robot.subsystems
 
 import edu.wpi.first.wpilibj2.command.*
-import frc.lib.utils.*
+import frc.lib.Motor
 
 class ShooterSubsystem: SubsystemBase() {
     val leftFlywheelMotor = Motor(11)
@@ -27,8 +27,8 @@ class ShooterSubsystem: SubsystemBase() {
 
     // if there are issues stopping the shooter this might be the problem however all instances should be taken care of
     fun stopCommand() : Command = runOnce {
-        leftFlywheelMotor.stopMotor()
-        rightFlywheelMotor.stopMotor()
+        leftFlywheelMotor.stop()
+        rightFlywheelMotor.stop()
     }
 
     /** This method will be called once per scheduler run  */
