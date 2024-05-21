@@ -22,7 +22,6 @@
 - Keep it simple
 - Don't appeal to boilerplate if you don't have to
 - Allow extensibility
-- 
 
 
 **Usage:**
