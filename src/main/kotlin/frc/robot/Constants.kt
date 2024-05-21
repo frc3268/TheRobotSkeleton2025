@@ -9,9 +9,11 @@ package frc.robot
  * It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-class Constants {
+object Constants {
     object OperatorConstants {
         const val kDriverControllerPort = 0
         const val STICK_DEADBAND = 0.1
     }
+
+    const val TROUBLESHOOTING_TAB = "Troubleshooting"
 }

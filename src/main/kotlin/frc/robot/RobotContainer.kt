@@ -1,26 +1,24 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.geometry.Translation2d
-import edu.wpi.first.networktables.GenericEntry
-import edu.wpi.first.wpilibj.Joystick
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
-import edu.wpi.first.wpilibj.smartdashboard.Field2d
-import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.WaitCommand
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+
+import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.Filesystem
+import edu.wpi.first.wpilibj.shuffleboard.*
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
+import edu.wpi.first.wpilibj2.command.*
+import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import edu.wpi.first.wpilibj2.command.button.Trigger
-import frc.lib.basics.SwerveDriveBase
-import frc.lib.utils.Camera
-import frc.lib.utils.TrajectoryOrchestrator
-import frc.robot.commands.Autos
-import frc.robot.commands.ExampleCommand
-import frc.robot.commands.SwerveJoystickDrive
-import frc.robot.subsystems.ExampleSubsystem
+import frc.lib.*
+import frc.robot.commands.*
+import frc.robot.subsystems.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import java.io.File
+import java.util.function.Supplier
+import kotlin.math.atan
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -29,53 +27,183 @@ import frc.robot.subsystems.ExampleSubsystem
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
+    private val GeneralTab = Shuffleboard.getTab("General")
+    private val TroubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
 
-    // The robot's subsystems and commands are defined here...
-    //todo: change this to reflect a field position. Maybe use a constant?
-    val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
+    val intakeSubsystem = IntakeSubsystem()
+    val shooterSubsystem = ShooterSubsystem()
+    val leftClimberSubsystem = LeftClimberSubsystem()
+    val rightClimberSubsystem = RightClimberSubsystem()
+    val driveSubsystem = SwerveDriveBase(Pose2d())
 
-    //todo: set limelight up
-    //private val cameraSubsystem:Camera = Camera("Spy Balloon Camera", "")
+    private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
 
-    // Replace with CommandPS4Controller or CommandJoystick if needed
-    private val driverController = Joystick(Constants.OperatorConstants.kDriverControllerPort)
+    val autochooser = SendableChooser<Command>()
+    val leftBumperChooser = SendableChooser<Command>()
+    val xButtonChooser = SendableChooser<Command>()
 
-    private val orchestrator:TrajectoryOrchestrator = TrajectoryOrchestrator()
 
-    val autoCommand:Command = orchestrator.beelineCommand(
-        driveSubsystem,
-        Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90.0))
-    )
-
-    //this is the command called when teleop mode is enabled
-     val teleopCommand = SwerveJoystickDrive(
+    val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
         { driverController.getRawAxis(1) },
-        { driverController.getRawAxis(0) },
-        { -driverController.getRawAxis(2) },
-        { !driverController.triggerPressed }
+        { -driverController.getRawAxis(0) },
+        { -driverController.getRawAxis(4) },
+        { true }
     )
-    /** The container for the robot. Contains subsystems, OI devices, and commands.  */
-    init {
-        driveSubsystem.setDefaultCommand(teleopCommand)
-        // Configure the trigger bindings
-        configureBindings()
+
+    val autos: MutableMap<String, Command> = mutableMapOf(
+        "gotoSpeaker" to goToSpeakerCloser(),
+        "gotoSpeakerCenter" to goto(FieldPositions.speakerCenter),
+        "gotoSpeakerRight" to goto(FieldPositions.speakerRight),
+        "gotoSpeakerLeft" to goto(FieldPositions.speakerLeft),
+        "gotoAmp" to goto(FieldPositions.amp),
+        "goToSourceCloserToBaseline" to goto(FieldPositions.sourceBaseline),
+        "goToSourceFurtherFromBaseline" to goto(FieldPositions.sourceNotBaseline),
+        "goToRing" to WaitCommand(1.0),
+        //todo: other rings
+    )
+
+    fun goto(goal: FieldLocation): Command {
+        val color = DriverStation.getAlliance()
+        val to =
+            if (color.isPresent && color.get() == DriverStation.Alliance.Red)
+                goal.red
+            else
+                goal.blue
+        return SwerveAutoDrive(
+            to,
+            Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg()),
+            driveSubsystem,
+            { driverController.getRawAxis(1) },
+            { -driverController.getRawAxis(0) },
+            { -driverController.getRawAxis(4) },
+        )
     }
 
-    /**
-     * Use this method to define your trigger->command mappings. Triggers can be created via the
-     * [Trigger#Trigger(java.util.function.BooleanSupplier)] constructor with an arbitrary
-     * predicate, or via the named factories in [edu.wpi.first.wpilibj2.command.button.CommandGenericHID]'s subclasses for
-     * [CommandXboxController]/[edu.wpi.first.wpilibj2.command.button.CommandPS4Controller] controllers
-     * or [edu.wpi.first.wpilibj2.command.button.CommandJoystick].
-     */
-    private fun configureBindings() {
-        // Schedule ExampleCommand when exampleCondition changes to true
-        //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
+    fun goToSpeakerCloser(): Command {
+        var startingPose = Pose2d()
+        return runOnce({
+            startingPose = driveSubsystem.getPose()
+        }, driveSubsystem).andThen(
+            //red
+            goto(
+                FieldPositions.closest(
+                    startingPose,
+                    listOf(
+                        FieldPositions.speakerRight,
+                        FieldPositions.speakerCenter,
+                        FieldPositions.speakerLeft
+                    )
+                )
+            )
+        )
+    }
 
-        // Schedule exampleMethodCommand when the Xbox controller's B button is pressed,
-        // cancelling on release.
-        //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand())
+
+    /** The container for the robot. Contains subsystems, OI devices, and commands.  */
+    //on true
+    //while true
+    //toggle
+    init {
+        AutoCommand(
+            SequentialCommandGroup(
+                intakeSubsystem.armDownCommand(),
+                intakeSubsystem.takeInCommand(),
+                intakeSubsystem.stopIntake(),
+                intakeSubsystem.armUpCommand(),
+            ),
+            autos,
+            name = "Intake and up",
+            binding = driverController.leftTrigger(),
+        )
+
+        AutoCommand(
+            shooterSubsystem.runAtSpeedCommand(0.8).andThen(shooterSubsystem.stopCommand()),
+            autos,
+            name = "Rev Shooters",
+            binding = driverController.rightBumper(),
+            triggerType = TriggerType.TOGGLE
+        )
+
+        AutoCommand(
+            intakeSubsystem.takeOutCommand(),
+            autos,
+            name = "Outtake Note",
+            binding = driverController.rightTrigger(),
+            triggerType = TriggerType.WHILE_TRUE
+        )
+
+        AutoCommand(
+            ParallelCommandGroup(
+                leftClimberSubsystem.up(),
+                rightClimberSubsystem.up()
+            ),
+            name = "Climbers Up",
+            shuffleboardTab = GeneralTab
+        )
+
+        AutoCommand(
+            ParallelCommandGroup(
+                leftClimberSubsystem.down(),
+                rightClimberSubsystem.down()
+            ),
+            name = "Climbers Down",
+            shuffleboardTab = GeneralTab
+        )
+
+        AutoCommand(
+            ParallelCommandGroup(
+                leftClimberSubsystem.stop(),
+                rightClimberSubsystem.stop()
+            ),
+            name = "Climbers Stop",
+            shuffleboardTab = TroubleshootingTab
+        )
+
+        AutoCommand(
+            SequentialCommandGroup(
+                shooterSubsystem.stopCommand(),
+                intakeSubsystem.stopAllCommand()
+            ),
+            name = "Emergency STOP",
+            shuffleboardTab = GeneralTab,
+            binding = driverController.y()
+        )
+
+        driveSubsystem.defaultCommand = teleopCommand
+
+        GeneralTab
+            .add("Autonomous Mode", autochooser)
+            .withWidget(BuiltInWidgets.kComboBoxChooser)
+            .withPosition(0, 0)
+            .withSize(2, 1)
+        GeneralTab
+            .add("LB Command", leftBumperChooser)
+            .withWidget(BuiltInWidgets.kComboBoxChooser)
+            .withPosition(2, 0)
+            .withSize(2, 1)
+
+        // Troubleshooting tab holds manual controls for the climber and a reset for the arm encoder
+        TroubleshootingTab.add("CLIMBER L down", leftClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBER L up", leftClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
+
+        TroubleshootingTab.add("CLIMBER R down", rightClimberSubsystem.testdown()).withWidget(BuiltInWidgets.kCommand)
+        TroubleshootingTab.add("CLIMBER R up", rightClimberSubsystem.testup()).withWidget(BuiltInWidgets.kCommand)
+
+        TroubleshootingTab.add("Zero ARM ENCODER", intakeSubsystem.zeroArmEncoderCommand()).withWidget(BuiltInWidgets.kCommand)
+
+
+        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
+            autochooser.addOption(file.name,Json.decodeFromStream<AutoSequence>(
+               file.inputStream()
+            ).toCommandGroup(autos))
+        }
+
+        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/buttons").listFiles()?.filter { it.isFile }!!){
+            GeneralTab.add(file.name,Json.decodeFromStream<AutoSequence>(
+                file.inputStream()
+            ).toCommandGroup(autos)).withWidget(BuiltInWidgets.kCommand)
+        }
     }
 
     /**
@@ -85,7 +213,6 @@ class RobotContainer {
      */
     val autonomousCommand: Command
         get() {
-            // wait 3 seconds...
-            return autoCommand
+            return autochooser.selected
         }
 }

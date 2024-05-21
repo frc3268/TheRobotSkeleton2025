@@ -10,9 +10,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-class Robot : TimedRobot() {
+class Robot: TimedRobot() {
     private var autonomousCommand: Command? = null
     private var robotContainer: RobotContainer? = null
+
+    private lateinit var visionThread:Thread
+
+
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -22,6 +26,7 @@ class Robot : TimedRobot() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = RobotContainer()
+
     }
 
     /**
@@ -49,7 +54,15 @@ class Robot : TimedRobot() {
     /** This autonomous runs the autonomous command selected by your [RobotContainer] class.  */
     override fun autonomousInit() {
         autonomousCommand = robotContainer?.autonomousCommand
-        robotContainer?.driveSubsystem?.zeroYaw()
+        /*
+        TODO: this may need to be deleted
+        robotContainer?.driveSubsystem?.zeroPoseToFieldPositionCommand(
+            SwerveDriveConstants.startCoordinates
+                [DriverStation.getAlliance().get()]!!
+                [DriverStation.getLocation().asInt - 1]
+        )
+        */
+
 
         // Schedule the autonomous command (example)
         // Note the Kotlin safe-call(?.), this ensures autonomousCommand is not null before scheduling it
@@ -71,7 +84,10 @@ class Robot : TimedRobot() {
     }
 
     /** This function is called periodically during operator control.  */
-    override fun teleopPeriodic() {}
+    override fun teleopPeriodic() {
+
+
+    }
 
     /** This function is called once when test mode is enabled.  */
     override fun testInit() {
