@@ -38,6 +38,9 @@ class Robot: LoggedRobot() {
             // Logger.addDataReceiver(WPILOGWriter()) // Log to a USB stick ("/U/logs")
             Logger.addDataReceiver(NT4Publisher()) // Publish data to NetworkTables
             PowerDistribution(1, PowerDistribution.ModuleType.kRev) // Enables power distribution logging
+        }else if (isSimulation()){
+            // Running a physics simulator, log to NT
+            Logger.addDataReceiver(NT4Publisher())
         } else if (Constants.mode == Constants.States.REPLAY){
             setUseTiming(false) // Run as fast as possible
             val logPath = LogFileUtil.findReplayLog() // Pull the replay log from AdvantageScope (or prompt the user)
@@ -50,9 +53,6 @@ class Robot: LoggedRobot() {
                     )
                 )
             ) // Save outputs to a new log
-        } else if (Constants.mode == Constants.States.SIM){
-            // Running a physics simulator, log to NT
-            Logger.addDataReceiver(NT4Publisher())
         }
 // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
         Logger.start() // Start logging! No more data receivers, replay sources, or metadata values may be added.
