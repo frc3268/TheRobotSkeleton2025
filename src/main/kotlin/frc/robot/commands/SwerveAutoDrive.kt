@@ -4,8 +4,8 @@ import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj2.command.Command
-import frc.lib.SwerveDriveBase
-import frc.lib.SwerveDriveConstants
+import frc.lib.swerve.SwerveDriveBase
+import frc.lib.swerve.SwerveDriveConstants
 import frc.lib.rotation2dFromDeg
 import frc.robot.Constants
 import java.util.function.DoubleSupplier

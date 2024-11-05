@@ -1,28 +1,51 @@
-package frc.lib
+package frc.lib.swerve
 
-import com.kauailabs.navx.frc.AHRS
 import edu.wpi.first.math.VecBuilder
+import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.math.kinematics.*
 import edu.wpi.first.networktables.GenericEntry
-import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.*
+import frc.lib.*
+import frc.robot.Constants
+import org.littletonrobotics.junction.Logger
 import org.photonvision.EstimatedRobotPose
 import java.util.*
-import kotlin.math.*
 
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val field = Field2d()
     private val shuffleboardTab = Shuffleboard.getTab("Drivetrain")
-
+    private val gyroInputs = GyroIOInputsAutoLogged()
     private var poseEstimator: SwerveDrivePoseEstimator
     private val modules: List<SwerveModule> =
-            SwerveDriveConstants.modules.mapIndexed { _, swerveMod -> SwerveModule(swerveMod) }
-    private val gyro = AHRS(SPI.Port.kMXP)
+        when (Constants.mode){
+            Constants.States.REAL -> {
+                SwerveDriveConstants.modules.mapIndexed { _, swerveMod -> SwerveModule(SwerveModuleIOSparkMax(swerveMod),swerveMod.MODULE_NUMBER) }
+            }
+            Constants.States.REPLAY -> {
+                SwerveDriveConstants.modules.mapIndexed { _, swerveMod -> SwerveModule(object: SwerveModuleIO {
+                    override val turnPIDController: PIDController = swerveMod.PID_CONTROLLER
+                } ,swerveMod.MODULE_NUMBER) }
+            }
+            Constants.States.SIM -> {
+                SwerveDriveConstants.modules.mapIndexed { _, swerveMod -> SwerveModule(SwerveModuleIOSim(swerveMod.MODULE_NUMBER),swerveMod.MODULE_NUMBER) }
+            }
+        }
+    private val gyro = when (Constants.mode){
+        Constants.States.REAL -> {
+            GyroIOKauai()
+        }
+        Constants.States.REPLAY -> {
+            object : GyroIO {}
+        }
+        Constants.States.SIM -> {
+            object : GyroIO {}
+        }
+    }
 
     private var joystickControlledEntry: GenericEntry = shuffleboardTab
             .add("Joystick Control", true)
@@ -45,7 +68,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         Timer.delay(1.0)
         resetModulesToAbsolute()
         shuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
-        shuffleboardTab.add("Robot Heading", gyro).withWidget(BuiltInWidgets.kGyro)
+        shuffleboardTab.add("Robot Heading", gyroInputs.yawPosition.degrees).withWidget(BuiltInWidgets.kGyro)
 
         shuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
 
@@ -56,25 +79,29 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //estimate robot pose based on what the encoders say
         poseEstimator.update(getYaw(), getModulePositions())
         //estimate robot pose based on what the camera sees
-        if(gyro.rate < 180.0) {
-            seesAprilTag.setBoolean(camera.captureFrame().hasTargets())
-            val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
-            visionEst?.ifPresent { est ->
-                poseEstimator.addVisionMeasurement(
-                    est.estimatedPose.toPose2d(),
-                    est.timestampSeconds,
-                    camera.getEstimationStdDevs(est.estimatedPose.toPose2d())
-                )
+        if(gyroInputs.yawVelocityRadPerSec < Math.PI) {
+            if(Constants.mode != Constants.States.SIM) {
+                seesAprilTag.setBoolean(camera.captureFrame().hasTargets())
+                val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
+                visionEst?.ifPresent { est ->
+                    poseEstimator.addVisionMeasurement(
+                        est.estimatedPose.toPose2d(),
+                        est.timestampSeconds,
+                        camera.getEstimationStdDevs(est.estimatedPose.toPose2d())
+                    )
+                }
             }
         }
         //update module tabs on shuffleboard
         for (mod in modules) {
-            mod.updateShuffleboard()
+            mod.update()
         }
+        gyro.updateInputs(gyroInputs)
         //update drivetrain tab on shuffleboard
         field.robotPose = getPose()
         poseXEntry.setDouble(getPose().x)
         poseYEntry.setDouble(getPose().y)
+        Logger.recordOutput("Robot/Pose", getPose())
 
 
     }
@@ -86,7 +113,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
 
     private fun zeroYaw() {
-        gyro.reset()
+        gyro.zeroYaw()
     }
 
     private fun resetModulesToAbsolute() {
@@ -96,10 +123,12 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
 
     fun setModuleStates(desiredStates: Array<SwerveModuleState>) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND)
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
+            SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
+        )
 
         for (mod in modules) {
-            mod.setDesiredState(desiredStates[mod.moduleConstants.MODULE_NUMBER - 1])
+            mod.setDesiredState(desiredStates[mod.index - 1])
         }
     }
 
@@ -123,8 +152,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
     
     //getters
-    private fun getYaw(): Rotation2d = -(gyro.rotation2d.degrees).IEEErem(360.0).rotation2dFromDeg()
-    fun getPitch(): Rotation2d = gyro.pitch.toDouble().rotation2dFromDeg()
+    private fun getYaw(): Rotation2d = gyroInputs.yawPosition
     fun getPose(): Pose2d = Pose2d(poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
     private fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()

@@ -16,4 +16,9 @@ object Constants {
     }
 
     const val TROUBLESHOOTING_TAB = "Troubleshooting"
+
+
+    enum class States{REAL, SIM, REPLAY}
+
+    val mode = States.SIM
 }

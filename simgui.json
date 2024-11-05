@@ -2,7 +2,24 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/Shuffleboard/Drivetrain/Robot Heading": "Gyro"
+      "/Shuffleboard/Drivetrain/Field": "Field2d",
+      "/Shuffleboard/Drivetrain/Robot Heading": "Gyro",
+      "/Shuffleboard/Drivetrain/Zero Heading": "Command",
+      "/Shuffleboard/General/Autonomous Mode": "String Chooser",
+      "/Shuffleboard/General/LB Command": "String Chooser"
+    },
+    "windows": {
+      "/Shuffleboard/Drivetrain/Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
@@ -32,5 +49,17 @@
         "open": true
       }
     }
+  },
+  "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "open": true
+    },
+    "visible": true
   }
 }

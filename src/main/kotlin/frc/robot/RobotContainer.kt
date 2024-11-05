@@ -8,16 +8,13 @@ import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.*
 import edu.wpi.first.wpilibj2.command.Commands.runOnce
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import frc.lib.*
+import frc.lib.swerve.SwerveDriveBase
 import frc.robot.commands.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
-import java.util.function.Supplier
-import kotlin.math.atan
-import kotlin.math.cos
-import kotlin.math.sin
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,7 +28,7 @@ class RobotContainer {
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
 
-    private val driverController = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
+    private val driverController = CommandPS4Controller(Constants.OperatorConstants.kDriverControllerPort)
 
     val autochooser = SendableChooser<Command>()
     val leftBumperChooser = SendableChooser<Command>()
@@ -42,7 +39,7 @@ class RobotContainer {
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { -driverController.getRawAxis(0) },
-        { -driverController.getRawAxis(4) },
+        { -driverController.getRawAxis(2) },
         { true }
     )
 
@@ -111,9 +108,19 @@ class RobotContainer {
             .withSize(2, 1)
 
         for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
-            autochooser.addOption(file.name,Json.decodeFromStream<AutoSequence>(
-               file.inputStream()
-            ).toCommandGroup(autos))
+            if(autochooser.selected == null){
+
+                autochooser.setDefaultOption(file.name,Json.decodeFromStream<AutoSequence>(
+                    file.inputStream()
+                ).toCommandGroup(autos))
+            }
+            else {
+                autochooser.addOption(
+                    file.name, Json.decodeFromStream<AutoSequence>(
+                        file.inputStream()
+                    ).toCommandGroup(autos)
+                )
+            }
         }
 
         for (file:File in File(Filesystem.getDeployDirectory().toString() + "/buttons").listFiles()?.filter { it.isFile }!!){
