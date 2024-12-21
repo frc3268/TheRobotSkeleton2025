@@ -1,5 +1,7 @@
 package frc.lib.swerve
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration
+import com.ctre.phoenix6.hardware.TalonFX
 import com.revrobotics.CANSparkBase.IdleMode
 import com.revrobotics.CANSparkLowLevel
 import com.revrobotics.CANSparkMax
@@ -14,13 +16,11 @@ import kotlin.math.IEEErem
 
 class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConstants) : SwerveModuleIO {
 
-    private val driveMotor = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
-    private val angleMotor = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
+    private val driveMotor = TalonFX(moduleConstants.ANGLE_MOTOR_ID, "rio")
+    private val angleMotor = TalonFX(moduleConstants.ANGLE_MOTOR_ID,"rio")
 
     override val turnPIDController: PIDController = moduleConstants.PID_CONTROLLER
 
-    private val driveEncoder: RelativeEncoder = driveMotor.encoder
-    private val angleEncoder: RelativeEncoder = angleMotor.encoder
 
     private val absoluteEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
 
@@ -29,44 +29,45 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
     private val TURN_GEAR_RATIO: Double = 150.0 / 7.0
 
     init {
+                val dconfig = TalonFXConfiguration()
+                val tconfig = TalonFXConfiguration()
                 absoluteEncoder.distancePerRotation =
                     SwerveDriveConstants.Encoder.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
                 absoluteEncoder.positionOffset = moduleConstants.ANGLE_OFFSET.degrees
-                driveEncoder.positionConversionFactor =
+                dconfig.Feedback.SensorToMechanismRatio=
                     SwerveDriveConstants.DriveMotor.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION
-                driveEncoder.velocityConversionFactor =
-                    SwerveDriveConstants.DriveMotor.VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND
-                angleEncoder.positionConversionFactor =
+                tconfig.Feedback.SensorToMechanismRatio =
                     SwerveDriveConstants.AngleMotor.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
 
                 driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
                 angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
 
-                driveMotor.setOpenLoopRampRate(SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS)
-                angleMotor.setOpenLoopRampRate(SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS)
+                dconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
+                tconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
 
-                driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
+                driveMotor.position.setUpdateFrequency(5.0, 15.0)
                 //todo: fix? below
-                angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
+                angleMotor.position.setUpdateFrequency(5.0, 15.0)
     }
+
 
     override fun updateInputs(inputs: ModuleIOInputs) {
         inputs.drivePositionMeters =
-            -driveEncoder.position
+            -driveMotor.position.valueAsDouble
         inputs.driveVelocityMetersPerSec =
-            -driveEncoder.velocity
-        inputs.driveAppliedVolts = driveMotor.appliedOutput * driveMotor.busVoltage
-        inputs.driveCurrentAmps = doubleArrayOf(driveMotor.outputCurrent)
+            -driveMotor.velocity.valueAsDouble
+        inputs.driveAppliedVolts = driveMotor.motorVoltage.valueAsDouble
+        inputs.driveCurrentAmps = doubleArrayOf(driveMotor.statorCurrent.valueAsDouble)
 
         inputs.turnAbsolutePosition =
             ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
         inputs.turnPosition =
             ((-inputs.turnAbsolutePosition.degrees).IEEErem(360.0).rotation2dFromDeg())
         inputs.turnVelocityRadPerSec = (
-                Units.rotationsPerMinuteToRadiansPerSecond(angleEncoder.velocity)
+                Units.rotationsPerMinuteToRadiansPerSecond(angleMotor.velocity.valueAsDouble)
                         / TURN_GEAR_RATIO)
-        inputs.turnAppliedVolts = angleMotor.appliedOutput * angleMotor.busVoltage
-        inputs.turnCurrentAmps = doubleArrayOf(angleMotor.outputCurrent)
+        inputs.turnAppliedVolts = angleMotor.motorVoltage.valueAsDouble
+        inputs.turnCurrentAmps = doubleArrayOf(angleMotor.statorCurrent.valueAsDouble)
     }
 
     override fun setDriveVoltage(volts: Double) {
@@ -77,16 +78,17 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
         angleMotor.setVoltage(volts)
     }
 
+    //todo: fix the two functions below this
     override fun setDriveBrakeMode(enable: Boolean) {
-        driveMotor.setIdleMode(if (enable) IdleMode.kBrake else IdleMode.kCoast)
+        //driveMotor.setIdleMode(if (enable) IdleMode.kBrake else IdleMode.kCoast)
     }
 
     override fun setTurnBrakeMode(enable: Boolean) {
-        angleMotor.setIdleMode(if (enable) IdleMode.kBrake else IdleMode.kCoast)
+        //angleMotor.setIdleMode(if (enable) IdleMode.kBrake else IdleMode.kCoast)
     }
 
     override fun reset() {
-        driveEncoder.position = 0.0
-        angleEncoder.position = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees)
+        driveMotor.setPosition(0.0)
+        angleMotor.setPosition((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees)
     }
 }
