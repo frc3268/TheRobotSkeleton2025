@@ -24,11 +24,28 @@
   },
   "NetworkTables": {
     "transitory": {
+      "AdvantageKit": {
+        "Drive": {
+          "module1": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
       "Shuffleboard": {
         "Drivetrain": {
           "Robot Heading": {
             "open": true
           },
+          "open": true
+        },
+        "General": {
+          "Autonomous Mode": {
+            "open": true
+          }
+        },
+        "Swerve Module 1": {
           "open": true
         },
         "Swerve Module1": {

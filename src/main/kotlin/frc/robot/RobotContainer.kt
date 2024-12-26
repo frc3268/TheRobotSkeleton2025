@@ -62,6 +62,7 @@ class RobotContainer {
                 goal.red
             else
                 goal.blue
+
         return SwerveAutoDrive(
             to,
             Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg()),
@@ -109,10 +110,11 @@ class RobotContainer {
 
         for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
             if(autochooser.selected == null){
-
                 autochooser.setDefaultOption(file.name,Json.decodeFromStream<AutoSequence>(
                     file.inputStream()
                 ).toCommandGroup(autos))
+
+                Shuffleboard.getTab("General").addString("something35", {"test"})
             }
             else {
                 autochooser.addOption(

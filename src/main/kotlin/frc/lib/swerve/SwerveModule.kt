@@ -22,14 +22,23 @@ class SwerveModule(val io: SwerveModuleIO, val index:Int) {
 
     val turnController: PIDController = io.turnPIDController
 
+    private var lastPosition:SwerveModulePosition = SwerveModulePosition()
+    var delta:SwerveModulePosition = SwerveModulePosition()
+
     init {
         turnController.enableContinuousInput(-180.0, 180.0)
     }
 
     fun update() {
+        io.updateInputs(inputs)
         Logger.processInputs("Drive/module" + index.toString(), inputs)
         angleEncoderEntry.setDouble(getState().angle.degrees)
         absoluteEncoderEntry.setDouble(inputs.turnAbsolutePosition.degrees)
+        delta = SwerveModulePosition(
+            getPosition().distanceMeters
+                    - lastPosition.distanceMeters,
+            getPosition().angle);
+        lastPosition = getPosition()
     }
 
     fun resetToAbsolute() {

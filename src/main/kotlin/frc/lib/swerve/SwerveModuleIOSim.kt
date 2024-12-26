@@ -35,22 +35,21 @@ class SwerveModuleIOSim(val index: Int) : SwerveModuleIO {
     private val turnAbsoluteInitPosition = Rotation2d(Math.random() * 2.0 * Math.PI)
     private var driveAppliedVolts = 0.0
     private var turnAppliedVolts = 0.0
-    override val turnPIDController: PIDController = PIDController(0.0,0.0,0.0)
+    override val turnPIDController: PIDController = PIDController(0.1,0.0,0.0)
 
     override fun updateInputs(inputs: ModuleIOInputs) {
         driveSim.update(LOOP_PERIOD_SECS)
         turnSim.update(LOOP_PERIOD_SECS)
 
         //FIX
-        // is there supposed to be a drive position?
-        inputs.driveVelocityMetersPerSec = driveSim.angularPositionRad
+        inputs.drivePositionMeters = inputs.drivePositionMeters + driveSim.angularVelocityRadPerSec * 0.02
         inputs.driveVelocityMetersPerSec = driveSim.angularVelocityRadPerSec
         inputs.driveAppliedVolts = driveAppliedVolts
         inputs.driveCurrentAmps = doubleArrayOf(abs(driveSim.currentDrawAmps))
 
         inputs.turnAbsolutePosition =
             Rotation2d(turnSim.angularPositionRad).plus(turnAbsoluteInitPosition)
-        inputs.turnPosition = Rotation2d(turnSim.angularPositionRad)
+        inputs.turnPosition = inputs.turnPosition + Rotation2d.fromRotations(turnSim.angularVelocityRadPerSec * 0.02)
         inputs.turnVelocityRadPerSec = turnSim.angularVelocityRadPerSec
         inputs.turnAppliedVolts = turnAppliedVolts
         inputs.turnCurrentAmps = doubleArrayOf(abs(turnSim.currentDrawAmps))

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.*
 import frc.lib.*
+import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.kinematics
 import frc.robot.Constants
 import org.littletonrobotics.junction.Logger
 import org.photonvision.EstimatedRobotPose
@@ -96,7 +97,13 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         for (mod in modules) {
             mod.update()
         }
-        gyro.updateInputs(gyroInputs)
+        if(gyroInputs.connected) {
+            gyro.updateInputs(gyroInputs)
+        } else{
+            val deltas = modules.map { it.delta }.toTypedArray()
+            val twist = kinematics.toTwist2d(*deltas);
+            gyroInputs.yawPosition = gyroInputs.yawPosition + twist.dtheta.rotation2dFromRad()
+        }
         //update drivetrain tab on shuffleboard
         field.robotPose = getPose()
         poseXEntry.setDouble(getPose().x)
@@ -133,7 +140,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
 
     fun constructModuleStatesFromChassisSpeeds(xSpeedMetersPerSecond: Double, ySpeedMetersPerSecond: Double, turningSpeedDegreesPerSecond: Double, fieldOriented: Boolean): Array<SwerveModuleState> =
-            SwerveDriveConstants.DrivetrainConsts.kinematics.toSwerveModuleStates(
+            kinematics.toSwerveModuleStates(
                     if (fieldOriented)
                         ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians, getYaw())
                     else
