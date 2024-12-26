@@ -37,15 +37,12 @@
         "Drivetrain": {
           "Robot Heading": {
             "open": true
-          },
-          "open": true
+          }
         },
         "General": {
           "Autonomous Mode": {
             "open": true
-          }
-        },
-        "Swerve Module 1": {
+          },
           "open": true
         },
         "Swerve Module1": {
