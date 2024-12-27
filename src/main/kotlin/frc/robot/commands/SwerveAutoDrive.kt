@@ -47,7 +47,7 @@ class SwerveAutoDrive(
             if (controlsRot > 0.1)
                 (controlsRot * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND).rotation2dFromDeg()
             else
-                (SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(drive.getPose().y, TrapezoidProfile.State(setpoint.y, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND).rotation2dFromDeg(),
+                (SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(drive.getPose().rotation.degrees, TrapezoidProfile.State(setpoint.rotation.degrees, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND).rotation2dFromDeg(),
 
         )
 

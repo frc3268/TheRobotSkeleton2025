@@ -25,19 +25,14 @@
   "NetworkTables": {
     "transitory": {
       "AdvantageKit": {
-        "Drive": {
-          "module1": {
-            "open": true
-          },
-          "open": true
-        },
         "open": true
       },
       "Shuffleboard": {
         "Drivetrain": {
           "Robot Heading": {
             "open": true
-          }
+          },
+          "open": true
         },
         "General": {
           "Autonomous Mode": {
