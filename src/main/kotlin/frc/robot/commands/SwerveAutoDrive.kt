@@ -60,7 +60,7 @@ class SwerveAutoDrive(
         return (
         abs(drive.getPose().x - setpoint.x) < tolerance.x &&
         abs(drive.getPose().y - setpoint.y) < tolerance.y &&
-        abs(drive.getPose().rotation.degrees - setpoint.rotation.degrees) < tolerance.rotation.degrees
+        abs(drive.getPose().rotation.minus(setpoint.rotation).degrees) < tolerance.rotation.degrees
                 )
     }
 

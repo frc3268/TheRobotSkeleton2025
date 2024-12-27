@@ -1,10 +1,9 @@
 {"commands" : [
-
-[
-  "gotoSpeakerLeft"
-],
   [
     "gotoAmp"
+  ],
+  [
+    "gotoSpeakerLeft"
   ]
 ]
 }
