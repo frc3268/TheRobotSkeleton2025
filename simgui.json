@@ -23,9 +23,6 @@
     }
   },
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
     "transitory": {
       "AdvantageKit": {
         "open": true

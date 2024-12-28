@@ -9,12 +9,12 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 class AutoSequence (val commands:Array<Array<String>>){
-    fun toCommandGroup(commandsMap:Map<String, Command>):SequentialCommandGroup{
+    fun toCommandGroup(commandsMap:Map<String, () -> Command>):SequentialCommandGroup{
         val sq = SequentialCommandGroup()
         for (commandList in commands) {
             val pcg = ParallelCommandGroup()
             for (command in commandList) {
-                pcg.addCommands (commandsMap[command])
+                pcg.addCommands (commandsMap[command]?.invoke())
             }
             sq.addCommands(pcg)
         }

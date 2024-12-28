@@ -15,6 +15,7 @@ import frc.robot.commands.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
+import java.util.function.Supplier
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -43,15 +44,16 @@ class RobotContainer {
         { true }
     )
 
-    val autos: MutableMap<String, Command> = mutableMapOf(
-        "gotoSpeaker" to goToSpeakerCloser(),
-        "gotoSpeakerCenter" to goto(FieldPositions.speakerCenter),
-        "gotoSpeakerRight" to goto(FieldPositions.speakerRight),
-        "gotoSpeakerLeft" to goto(FieldPositions.speakerLeft),
-        "gotoAmp" to goto(FieldPositions.amp),
-        "goToSourceCloserToBaseline" to goto(FieldPositions.sourceBaseline),
-        "goToSourceFurtherFromBaseline" to goto(FieldPositions.sourceNotBaseline),
-        "goToRing" to WaitCommand(1.0),
+    //type is () -> Command because otherwise CommandScheduler complains that each one has already been scheduled
+    val autos: MutableMap<String, () -> Command> = mutableMapOf(
+        "gotoSpeaker" to { goToSpeakerCloser() },
+        "gotoSpeakerCenter" to {goto(FieldPositions.speakerCenter)},
+        "gotoSpeakerRight" to {goto(FieldPositions.speakerRight)},
+        "gotoSpeakerLeft" to {goto(FieldPositions.speakerLeft)},
+        "gotoAmp" to {goto(FieldPositions.amp)},
+        "goToSourceCloserToBaseline" to {goto(FieldPositions.sourceBaseline)},
+        "goToSourceFurtherFromBaseline" to {goto(FieldPositions.sourceNotBaseline)},
+        "goToRing" to {WaitCommand(1.0)},
         //todo: other rings
     )
 
