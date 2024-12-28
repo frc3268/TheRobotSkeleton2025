@@ -65,6 +65,12 @@ class RobotContainer {
             else
                 goal.blue
 
+        //if theres a obstacle in the way:
+        //find a point that fixes that
+        //return 2 goto(), one to midpoint and one to endpoint
+        //this will be hard to do because start position is determined at runtime
+        //everything else should be easy enough
+
         return SwerveAutoDrive(
             to,
             Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg()),

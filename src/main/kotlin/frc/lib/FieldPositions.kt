@@ -5,6 +5,8 @@ import java.util.function.Supplier
 
 //for clarity, blue is the pose of the field element on the blue side, and red is the same but on the red side
 data class FieldLocation(val red: Pose2d, val blue: Pose2d)
+data class Obstacle(val location: FieldLocation, val radiusMeters: Double)
+
 object FieldPositions {
     val speakerCenter = FieldLocation(Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),
             Pose2d(1.6096, 5.547868, 180.0.rotation2dFromDeg()))
@@ -34,7 +36,9 @@ object FieldPositions {
         Pose2d(16.185134, 0.883666, 120.0.rotation2dFromDeg())
     )
 
+    //obstacles do need to be iterated through, but they do not need to have names
+    val obstacles:Array<Obstacle> = arrayOf(
+        //list obstacles here...
+    )
 
-    //todo: source, all of the rings
-    //val source = FieldLocation
 }
