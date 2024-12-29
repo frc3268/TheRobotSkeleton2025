@@ -17,6 +17,7 @@ import frc.robot.commands.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
+import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Supplier
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -29,6 +30,7 @@ import kotlin.math.sqrt
  */
 class RobotContainer {
     private val GeneralTab = Shuffleboard.getTab("General")
+    private val thingy = GeneralTab.add("Thing", 0.0).entry
     private val TroubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
@@ -77,52 +79,65 @@ class RobotContainer {
     OK, why is this here?
     Because this relies on recursion
     since we are evaluating the conditions at runtime, we need to break it all down
-    this isnt possible with goto because you pass in a FieldLocation, but midpoint has no fieldlocation
+    this isn't possible with goto because you pass in a FieldLocation, but midpoint has no fieldlocation
     therefore, goToPose
-    as for the weird variable names... talk to matthew and maybe he'll fix them later
+    as for the weird variable names... talk to matthew, and maybe he'll fix them later
 
      */
     fun gotoPose(to: Pose2d):Command {
-        var midpoint = Pose2d()
+        val midpoint = AtomicReference(Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg()))
+        val points = AtomicReference(mutableListOf<Pose2d>())
+        val toRun = AtomicReference(SequentialCommandGroup())
          return runOnce({
             val pose = driveSubsystem.getPose()
+             thingy.setDouble(pose.x)
             val m: Double = (to.y - pose.y) / (to.x - pose.x)
-            val b: Double = -to.y / to.x + to.x
+            val b: Double = -m*to.x + to.y
 
             for (obstacle in obstacles) {
                 val ntwo = b - obstacle.location.y
                 val obx = obstacle.location.x
-                val btwo = -obx * 2 + ntwo * 2
-                val a = m.pow(2)
+                val btwo = -obx * 2 + ntwo * 2 * m
+                val a = m.pow(2) + 1
                 val c = ntwo.pow(2) + obx.pow(2) - obstacle.radiusMeters.pow(2)
                 val det = btwo.pow(2) - 4 * a * c
                 if (det >= 0) {
                     val intersection: Pose2d = if (pose.x > obstacle.location.x) Pose2d(
-                        ((-btwo + sqrt(det)) / 2 * a), (m * ((-btwo + sqrt(det)) / 2 * a) + b), pose.rotation
+                        ((-btwo + sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), pose.rotation
                     ) else Pose2d(
-                        ((-btwo - sqrt(det)) / 2 * a), (m * ((-btwo + sqrt(det)) / 2 * a) + b), pose.rotation
+                        ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), pose.rotation
                     )
-
-                    midpoint = Pose2d(
-                        intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS,
-                        -1 / m * (intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS) + b,
+                    midpoint.set(Pose2d(
+                        //FIX THIS SO IT DOESNt COLLIDE WITH WALLS
+                        intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS+obstacle.radiusMeters,
+                        -1 / m * (intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS + obstacle.radiusMeters - midpoint.get().x) + midpoint.get().y,
                         pose.rotation
-                    )
-
+                    ))
+                    //REWRITE!!!
+                    val pts = points.get()
+                    pts.add(midpoint.get())
+                    points.set(pts)
                 }
             }
+             val pts = points.get()
+             pts.add(to)
+             points.set(pts)
+
+             val sqi = toRun.get()
+             for (point in points.get()){
+                 sqi.addCommands(SwerveAutoDrive(
+                     {point},
+                     Pose2d(0.1,0.1,10.0.rotation2dFromDeg()),
+                     driveSubsystem,
+                     { driverController.getRawAxis(1) },
+                     { -driverController.getRawAxis(0) },
+                     { -driverController.getRawAxis(2) }
+                 ))
+             }
+             toRun.set(sqi)
         }, driveSubsystem).andThen(
-            if (midpoint == Pose2d())
-                SwerveAutoDrive(
-                    to,
-                    Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg()),
-                    driveSubsystem,
-                    { driverController.getRawAxis(1) },
-                    { -driverController.getRawAxis(0) },
-                    { -driverController.getRawAxis(4) },
-                ) else SequentialCommandGroup(
-                    gotoPose(midpoint), gotoPose(to)
-                ))
+            toRun.get()
+        )
     }
 
 

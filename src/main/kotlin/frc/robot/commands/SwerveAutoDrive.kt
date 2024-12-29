@@ -11,6 +11,7 @@ import frc.lib.swerve.SwerveDriveConstants
 import frc.lib.rotation2dFromDeg
 import frc.robot.Constants
 import java.util.function.DoubleSupplier
+import java.util.function.Supplier
 import kotlin.math.abs
 
 /*
@@ -18,7 +19,7 @@ SwerveAutoDrive, command for swerve driving which fuses setpoint following and r
 allows the user to take manual control of the joysticks to make adjustments while also sending the robot to the setpoint
  */
 class SwerveAutoDrive(
-    private val setpoint: Pose2d,
+    private val setpoint: Supplier<Pose2d>,
     private val tolerance: Pose2d,
     private val drive: SwerveDriveBase,
     private val translationX: DoubleSupplier,
@@ -39,15 +40,15 @@ class SwerveAutoDrive(
             if (controlsX > 0.1)
                 controlsX* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
             else
-                SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(drive.getPose().x, TrapezoidProfile.State(setpoint.x, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
+                SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(drive.getPose().x, TrapezoidProfile.State(setpoint.get().x, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
             if (controlsY > 0.1)
                 controlsY* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
             else
-                SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(drive.getPose().y, TrapezoidProfile.State(setpoint.y, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
+                SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(drive.getPose().y, TrapezoidProfile.State(setpoint.get().y, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
             if (controlsRot > 0.1)
                 (controlsRot * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND).rotation2dFromDeg()
             else
-                (SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(drive.getPose().rotation.degrees, TrapezoidProfile.State(setpoint.rotation.degrees, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND).rotation2dFromDeg(),
+                (SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(drive.getPose().rotation.degrees, TrapezoidProfile.State(setpoint.get().rotation.degrees, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND).rotation2dFromDeg(),
 
         )
 
@@ -58,9 +59,9 @@ class SwerveAutoDrive(
 
     override fun isFinished(): Boolean {
         return (
-        abs(drive.getPose().x - setpoint.x) < tolerance.x &&
-        abs(drive.getPose().y - setpoint.y) < tolerance.y &&
-        abs(drive.getPose().rotation.minus(setpoint.rotation).degrees) < tolerance.rotation.degrees
+        abs(drive.getPose().x - setpoint.get().x) < tolerance.x &&
+        abs(drive.getPose().y - setpoint.get().y) < tolerance.y &&
+        abs(drive.getPose().rotation.minus(setpoint.get().rotation).degrees) < tolerance.rotation.degrees
                 )
     }
 

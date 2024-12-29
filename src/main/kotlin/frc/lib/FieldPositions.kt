@@ -38,6 +38,7 @@ object FieldPositions {
 
     //obstacles do need to be iterated through, but they do not need to have names
     val obstacles:Array<Obstacle> = arrayOf(
+        Obstacle(Pose2d(1.0, 1.0, 0.0.rotation2dFromDeg()), 1.0),
         //list obstacles here...
     )
 
