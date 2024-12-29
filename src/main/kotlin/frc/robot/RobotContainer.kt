@@ -10,12 +10,16 @@ import edu.wpi.first.wpilibj2.command.*
 import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import frc.lib.*
+import frc.lib.FieldPositions.obstacles
 import frc.lib.swerve.SwerveDriveBase
+import frc.lib.swerve.SwerveDriveConstants
 import frc.robot.commands.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
 import java.util.function.Supplier
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -64,21 +68,63 @@ class RobotContainer {
                 goal.red
             else
                 goal.blue
+        var midpoint = Pose2d()
 
-        //if theres a obstacle in the way:
-        //find a point that fixes that
-        //return 2 goto(), one to midpoint and one to endpoint
-        //this will be hard to do because start position is determined at runtime
-        //everything else should be easy enough
-
-        return GoToCommand(
-            to,
-            driveSubsystem,
-            { driverController.getRawAxis(1) },
-            { -driverController.getRawAxis(0) },
-            { -driverController.getRawAxis(4) },
-        )
+        return gotoPose(to)
     }
+
+    /*
+    OK, why is this here?
+    Because this relies on recursion
+    since we are evaluating the conditions at runtime, we need to break it all down
+    this isnt possible with goto because you pass in a FieldLocation, but midpoint has no fieldlocation
+    therefore, goToPose
+    as for the weird variable names... talk to matthew and maybe he'll fix them later
+
+     */
+    fun gotoPose(to: Pose2d):Command {
+        var midpoint = Pose2d()
+         return runOnce({
+            val pose = driveSubsystem.getPose()
+            val m: Double = (to.y - pose.y) / (to.x - pose.x)
+            val b: Double = -to.y / to.x + to.x
+
+            for (obstacle in obstacles) {
+                val ntwo = b - obstacle.location.y
+                val obx = obstacle.location.x
+                val btwo = -obx * 2 + ntwo * 2
+                val a = m.pow(2)
+                val c = ntwo.pow(2) + obx.pow(2) - obstacle.radiusMeters.pow(2)
+                val det = btwo.pow(2) - 4 * a * c
+                if (det >= 0) {
+                    val intersection: Pose2d = if (pose.x > obstacle.location.x) Pose2d(
+                        ((-btwo + sqrt(det)) / 2 * a), (m * ((-btwo + sqrt(det)) / 2 * a) + b), pose.rotation
+                    ) else Pose2d(
+                        ((-btwo - sqrt(det)) / 2 * a), (m * ((-btwo + sqrt(det)) / 2 * a) + b), pose.rotation
+                    )
+
+                    midpoint = Pose2d(
+                        intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS,
+                        -1 / m * (intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS) + b,
+                        pose.rotation
+                    )
+
+                }
+            }
+        }, driveSubsystem).andThen(
+            if (midpoint == Pose2d())
+                SwerveAutoDrive(
+                    to,
+                    Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg()),
+                    driveSubsystem,
+                    { driverController.getRawAxis(1) },
+                    { -driverController.getRawAxis(0) },
+                    { -driverController.getRawAxis(4) },
+                ) else SequentialCommandGroup(
+                    gotoPose(midpoint), gotoPose(to)
+                ))
+    }
+
 
     fun goToSpeakerCloser(): Command {
         var startingPose = Pose2d()
