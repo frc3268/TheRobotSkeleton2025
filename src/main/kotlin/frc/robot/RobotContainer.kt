@@ -70,8 +70,6 @@ class RobotContainer {
                 goal.red
             else
                 goal.blue
-        var midpoint = Pose2d()
-
         return gotoPose(to)
     }
 
@@ -85,46 +83,11 @@ class RobotContainer {
 
      */
     fun gotoPose(to: Pose2d):Command {
-        val midpoint = AtomicReference(Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg()))
-        val points = AtomicReference(mutableListOf<Pose2d>())
         val toRun = AtomicReference(SequentialCommandGroup())
          return runOnce({
-            val pose = driveSubsystem.getPose()
-             thingy.setDouble(pose.x)
-            val m: Double = (to.y - pose.y) / (to.x - pose.x)
-            val b: Double = -m*to.x + to.y
-
-            for (obstacle in obstacles) {
-                val ntwo = b - obstacle.location.y
-                val obx = obstacle.location.x
-                val btwo = -obx * 2 + ntwo * 2 * m
-                val a = m.pow(2) + 1
-                val c = ntwo.pow(2) + obx.pow(2) - obstacle.radiusMeters.pow(2)
-                val det = btwo.pow(2) - 4 * a * c
-                if (det >= 0) {
-                    val intersection: Pose2d = if (pose.x > obstacle.location.x) Pose2d(
-                        ((-btwo + sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), pose.rotation
-                    ) else Pose2d(
-                        ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), pose.rotation
-                    )
-                    midpoint.set(Pose2d(
-                        //FIX THIS SO IT DOESNt COLLIDE WITH WALLS
-                        intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS+obstacle.radiusMeters,
-                        -1 / m * (intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS + obstacle.radiusMeters - midpoint.get().x) + midpoint.get().y,
-                        pose.rotation
-                    ))
-                    //REWRITE!!!
-                    val pts = points.get()
-                    pts.add(midpoint.get())
-                    points.set(pts)
-                }
-            }
-             val pts = points.get()
-             pts.add(to)
-             points.set(pts)
-
+            val points = pathfind(driveSubsystem.getPose(), to)
              val sqi = toRun.get()
-             for (point in points.get()){
+             for (point in points){
                  sqi.addCommands(SwerveAutoDrive(
                      {point},
                      Pose2d(0.1,0.1,10.0.rotation2dFromDeg()),
@@ -138,6 +101,40 @@ class RobotContainer {
         }, driveSubsystem).andThen(
             toRun.get()
         )
+    }
+
+    fun pathfind(from:Pose2d, to:Pose2d):List<Pose2d> {
+        val pose = from
+        val m: Double = (to.y - pose.y) / (to.x - pose.x)
+        val b: Double = -m*to.x + to.y
+        for (obstacle in obstacles) {
+            val ntwo = b - obstacle.location.y
+            val obx = obstacle.location.x
+            val btwo = -obx * 2 + ntwo * 2 * m
+            val a = m.pow(2) + 1
+            val c = ntwo.pow(2) + obx.pow(2) - obstacle.radiusMeters.pow(2)
+            val det = btwo.pow(2) - 4 * a * c
+            if (det >= 0) {
+                val intersection: Pose2d = if (pose.x > obstacle.location.x) Pose2d(
+                    ((-btwo + sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), pose.rotation
+                ) else Pose2d(
+                    ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), pose.rotation
+                )
+                if(intersection.x in pose.x..to.x || intersection.x in to.x..pose.x) {
+                    val midpoint =
+                        Pose2d(
+                            //FIX THIS SO IT DOESNt COLLIDE WITH WALLS
+                            intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS + obstacle.radiusMeters,
+                            -1 / m * (intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS + obstacle.radiusMeters),
+                            pose.rotation
+                        )
+                    driveSubsystem.field.getObject(midpoint.x.toString()).pose = intersection
+                    return listOf(pathfind(from, midpoint), pathfind(midpoint, to)).flatten()
+
+                }
+            }
+        }
+        return listOf(to)
     }
 
 

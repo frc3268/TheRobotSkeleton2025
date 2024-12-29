@@ -22,7 +22,8 @@ object FieldPositions {
 
     }
 
-    val amp = FieldLocation(Pose2d(14.929358, 8.2042, 270.0.rotation2dFromDeg()),
+    val amp = FieldLocation(
+            Pose2d(14.929358, 8.2042, 270.0.rotation2dFromDeg()),
             Pose2d(1.84404, 8.2042, 270.0.rotation2dFromDeg()))
 
     val sourceBaseline = FieldLocation(
@@ -38,7 +39,7 @@ object FieldPositions {
 
     //obstacles do need to be iterated through, but they do not need to have names
     val obstacles:Array<Obstacle> = arrayOf(
-        Obstacle(Pose2d(1.0, 1.0, 0.0.rotation2dFromDeg()), 1.0),
+        Obstacle(Pose2d(4.6, 4.2, 0.0.rotation2dFromDeg()), 1.5)
         //list obstacles here...
     )
 

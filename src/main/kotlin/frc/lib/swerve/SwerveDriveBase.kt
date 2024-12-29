@@ -20,7 +20,7 @@ import kotlin.math.IEEErem
 import kotlin.math.PI
 
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
-    private val field = Field2d()
+    val field = Field2d()
     private val shuffleboardTab = Shuffleboard.getTab("Drivetrain")
     private val gyroInputs = GyroIOInputsAutoLogged()
     private var poseEstimator: SwerveDrivePoseEstimator
@@ -63,7 +63,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     private val camera: Camera
     init {
-        field.getObject("Obstacle").pose = Pose2d(1.0,2.0,0.0.rotation2dFromDeg())
+        field.getObject("Obstacle").pose = Pose2d(4.6,4.2,0.0.rotation2dFromDeg())
         SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
                 180.0, -180.0
         )

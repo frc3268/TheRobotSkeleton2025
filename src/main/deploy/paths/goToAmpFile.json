@@ -1,21 +1,6 @@
 {"commands" : [
   [
     "gotoAmp"
-  ],
-  [
-    "gotoSpeakerLeft"
-  ],
-  [
-    "gotoAmp"
-  ],
-  [
-    "gotoSpeakerLeft"
-  ],
-  [
-    "gotoAmp"
-  ],
-  [
-    "gotoSpeakerLeft"
   ]
 ]
 }
