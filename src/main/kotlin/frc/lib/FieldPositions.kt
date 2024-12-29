@@ -5,7 +5,7 @@ import java.util.function.Supplier
 
 //for clarity, blue is the pose of the field element on the blue side, and red is the same but on the red side
 data class FieldLocation(val red: Pose2d, val blue: Pose2d)
-data class Obstacle(val location: FieldLocation, val radiusMeters: Double)
+data class Obstacle(val location: Pose2d, val radiusMeters: Double)
 
 object FieldPositions {
     val speakerCenter = FieldLocation(Pose2d(15.256, 5.547868, 0.0.rotation2dFromDeg()),

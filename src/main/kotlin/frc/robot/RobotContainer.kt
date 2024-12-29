@@ -71,9 +71,8 @@ class RobotContainer {
         //this will be hard to do because start position is determined at runtime
         //everything else should be easy enough
 
-        return SwerveAutoDrive(
+        return GoToCommand(
             to,
-            Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg()),
             driveSubsystem,
             { driverController.getRawAxis(1) },
             { -driverController.getRawAxis(0) },
