@@ -6,7 +6,8 @@
       "/Shuffleboard/Drivetrain/Robot Heading": "Gyro",
       "/Shuffleboard/Drivetrain/Zero Heading": "Command",
       "/Shuffleboard/General/Autonomous Mode": "String Chooser",
-      "/Shuffleboard/General/LB Command": "String Chooser"
+      "/Shuffleboard/General/LB Command": "String Chooser",
+      "/Shuffleboard/General/soething": "Command"
     },
     "windows": {
       "/Shuffleboard/Drivetrain/Field": {
@@ -41,7 +42,10 @@
           "Autonomous Mode": {
             "open": true
           },
-          "open": true
+          "open": true,
+          "soething": {
+            "open": true
+          }
         },
         "Swerve Module1": {
           "Absolute_Encoder": {

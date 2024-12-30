@@ -2,6 +2,7 @@ package frc.robot.commands
 
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.math.MathUtil
+import edu.wpi.first.math.geometry.Pose2d
 import frc.lib.swerve.SwerveDriveBase
 import frc.lib.swerve.SwerveDriveConstants
 import java.util.function.*
@@ -15,8 +16,7 @@ class SwerveJoystickDrive(
     private val rotation: DoubleSupplier,
     private val fieldOriented: BooleanSupplier
 ) : Command() {
-    //multiply x and y values from controller by this
-    var sideMultiplier = 1
+
 
     init {
         // Use addRequirements() here to declare subsystem dependencies.
@@ -25,6 +25,7 @@ class SwerveJoystickDrive(
 
     // Called when the command is initially scheduled.
     override fun initialize() {
+
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -47,4 +48,6 @@ class SwerveJoystickDrive(
     override fun isFinished(): Boolean {
         return false
     }
+
+
 }

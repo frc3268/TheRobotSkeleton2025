@@ -6,6 +6,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
 import edu.wpi.first.wpilibj2.command.Command
+import frc.lib.FieldPositions.obstacles
 import frc.lib.swerve.SwerveDriveBase
 import frc.lib.swerve.SwerveDriveConstants
 import frc.lib.rotation2dFromDeg
@@ -13,6 +14,8 @@ import frc.robot.Constants
 import java.util.function.DoubleSupplier
 import java.util.function.Supplier
 import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /*
 SwerveAutoDrive, command for swerve driving which fuses setpoint following and remote control
@@ -26,9 +29,16 @@ class SwerveAutoDrive(
     private val translationY: DoubleSupplier,
     private val rotation: DoubleSupplier,
 ): Command() {
+    var index = 0
+    var points = listOf<Pose2d>()
+    var next = Pose2d()
     init{
         addRequirements(drive)
-
+    }
+    override fun initialize() {
+        index = 0
+        points = pathfind(drive.getPose(), setpoint.get())
+        next = points[0]
     }
     override fun execute() {
         /*collect speeds based on which controls are used*/
@@ -40,15 +50,15 @@ class SwerveAutoDrive(
             if (controlsX > 0.1)
                 controlsX* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
             else
-                SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(drive.getPose().x, TrapezoidProfile.State(setpoint.get().x, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
+                SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(drive.getPose().x, TrapezoidProfile.State(next.x, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
             if (controlsY > 0.1)
                 controlsY* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
             else
-                SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(drive.getPose().y, TrapezoidProfile.State(setpoint.get().y, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
+                SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(drive.getPose().y, TrapezoidProfile.State(next.y, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND,
             if (controlsRot > 0.1)
                 (controlsRot * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND).rotation2dFromDeg()
             else
-                (SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(drive.getPose().rotation.degrees, TrapezoidProfile.State(setpoint.get().rotation.degrees, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND).rotation2dFromDeg(),
+                (SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(drive.getPose().rotation.degrees, TrapezoidProfile.State(next.rotation.degrees, 0.0)) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND).rotation2dFromDeg(),
 
         )
 
@@ -58,14 +68,53 @@ class SwerveAutoDrive(
     }
 
     override fun isFinished(): Boolean {
-        return (
-        abs(drive.getPose().x - setpoint.get().x) < tolerance.x &&
-        abs(drive.getPose().y - setpoint.get().y) < tolerance.y &&
-        abs(drive.getPose().rotation.minus(setpoint.get().rotation).degrees) < tolerance.rotation.degrees
-                )
+        if(
+        abs(drive.getPose().x - next.x) < tolerance.x &&
+        abs(drive.getPose().y - next.y) < tolerance.y &&
+        abs(drive.getPose().rotation.minus(next.rotation).degrees) < tolerance.rotation.degrees){
+            if(index >= points.size - 1){
+                return true
+            }
+            index++
+            next = points[index]
+        }
+        return false
     }
 
     override fun end(interrupted: Boolean) {
+    }
+
+    fun pathfind(from:Pose2d, to:Pose2d):List<Pose2d> {
+        val pose = from
+        val m: Double = (to.y - pose.y) / (to.x - pose.x)
+        val b: Double = -m*to.x + to.y
+        for (obstacle in obstacles) {
+            val ntwo = b - obstacle.location.y
+            val obx = obstacle.location.x
+            val btwo = -obx * 2 + ntwo * 2 * m
+            val a = m.pow(2) + 1
+            val c = ntwo.pow(2) + obx.pow(2) - obstacle.radiusMeters.pow(2)
+            val det = btwo.pow(2) - 4 * a * c
+            if (det >= 0) {
+                val intersection: Pose2d = if (pose.x > obstacle.location.x) Pose2d(
+                    ((-btwo + sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), pose.rotation
+                ) else Pose2d(
+                    ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), pose.rotation
+                )
+                if(intersection.x in pose.x..to.x || intersection.x in to.x..pose.x) {
+                    val midpoint =
+                        Pose2d(
+                            //FIX THIS SO IT DOESNt COLLIDE WITH WALLS
+                            intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS + obstacle.radiusMeters,
+                            -1 / m * (intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS + obstacle.radiusMeters),
+                            pose.rotation
+                        )
+                    return listOf(pathfind(from, midpoint), pathfind(midpoint, to)).flatten()
+
+                }
+            }
+        }
+        return listOf(to)
     }
 
 }
