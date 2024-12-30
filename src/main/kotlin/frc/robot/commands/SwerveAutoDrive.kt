@@ -2,6 +2,7 @@ package frc.robot.commands
 
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
@@ -102,18 +103,31 @@ class SwerveAutoDrive(
                     ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), pose.rotation
                 )
                 if(intersection.x in pose.x..to.x || intersection.x in to.x..pose.x) {
+                    var plist = (if(abs(m) > 1) {
+                        listOf(Pose2d(
+                            obstacle.location.x - obstacle.radiusMeters - 2 * SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS,
+                            obstacle.location.y,
+                            obstacle.location.rotation
+                        ),
+                        Pose2d(
+                            obstacle.location.x + obstacle.radiusMeters + 2 * SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS,
+                            obstacle.location.y,
+                            obstacle.location.rotation
+                        ))
+                    } else (listOf(Pose2d(obstacle.location.x, obstacle.location.y - obstacle.radiusMeters - 2 * SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS, obstacle.location.rotation),
+                        Pose2d(obstacle.location.x, obstacle.location.y + obstacle.radiusMeters + 2 * SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS, obstacle.location.rotation))))
+                    }
                     val midpoint =
                         Pose2d(
                             //FIX THIS SO IT DOESNt COLLIDE WITH WALLS
-                            intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS + obstacle.radiusMeters,
-                            -1 / m * (intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS + obstacle.radiusMeters),
+                            intersection.x +  SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS,
+                            -0.5 / m * (intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS) + obstacle.location.y,
                             pose.rotation
                         )
+                    drive.field.getObject("mid").pose = midpoint
                     return listOf(pathfind(from, midpoint), pathfind(midpoint, to)).flatten()
-
                 }
             }
-        }
         return listOf(to)
     }
 
