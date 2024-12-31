@@ -1,6 +1,7 @@
 package frc.robot.commands
 
 import edu.wpi.first.math.MathUtil
+import edu.wpi.first.math.Vector
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj2.command.Command
@@ -113,21 +114,43 @@ class SwerveAutoDrive(
             val c = ntwo.pow(2) + obx.pow(2) - obstacle.radiusMeters.pow(2)
             val det = btwo.pow(2) - 4 * a * c
             if (det >= 0) {
-                val intersection: Pose2d = if (from.x > obstacle.location.x) Pose2d(
+                val intersectiona: Pose2d = if (from.x > obstacle.location.x) Pose2d(
                     ((-btwo + sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), from.rotation
                 ) else Pose2d(
-                    ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), from.rotation
+                    ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo - sqrt(det)) / (2 * a)) + b), from.rotation
                 )
-                if (intersection.x in from.x..to.x || intersection.x in to.x..from.x) {
-                    val midpoint =
+                drive.field.getObject("inta").pose = intersectiona
+                if (intersectiona.x in from.x..to.x || intersectiona.x in to.x..from.x) {
+
+                        val intersectionb = if (from.x < obstacle.location.x) Pose2d(
+                            ((-btwo + sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), from.rotation
+                        ) else Pose2d(
+                            ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo - sqrt(det)) / (2 * a)) + b), from.rotation
+                        )
+                    drive.field.getObject("intb").pose = intersectionb
+
+                    val linmidpoint = Pose2d(
+                        (intersectionb.x + intersectiona.x) / 2,
+                        (intersectionb.y + intersectiona.y) / 2,
+                        0.0.rotation2dFromDeg()
+                    )
+
+                    val dist = obstacle.radiusMeters - abs(linmidpoint.translation.getDistance(obstacle.location.translation))
+
+                    val rates = Pose2d( (dist + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS) * (((linmidpoint.x - obstacle.location.x) / abs((linmidpoint.x - obstacle.location.x))) * linmidpoint.x * (obstacle.radiusMeters/ sqrt(linmidpoint.x + linmidpoint.y)))/obstacle.radiusMeters ,
+                        (dist + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS) * (((linmidpoint.y - obstacle.location.y) / abs((linmidpoint.y - obstacle.location.y))) * linmidpoint.y * (obstacle.radiusMeters/ sqrt(linmidpoint.x + linmidpoint.y) )) / obstacle.radiusMeters,
+                            from.rotation
+
+                    )
+
+                    val waypoint =
                         Pose2d(
-                            //FIX THIS SO IT DOESNt COLLIDE WITH WALLS
-                            intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS,
-                            -0.5 / m * (intersection.x + SwerveDriveConstants.DrivetrainConsts.TRACK_WIDTH_METERS) + obstacle.location.y,
+                            //scalar is wrong! we just need to add distance
+                            linmidpoint.translation.plus(rates.translation),
                             from.rotation
                         )
-                    drive.field.getObject("mid").pose = midpoint
-                    return listOf(pathfind(from, midpoint), pathfind(midpoint, to)).flatten()
+                    drive.field.getObject("mid").pose = waypoint
+                    return listOf(pathfind(from, waypoint), pathfind(waypoint, to)).flatten()
                 }
             }
         }

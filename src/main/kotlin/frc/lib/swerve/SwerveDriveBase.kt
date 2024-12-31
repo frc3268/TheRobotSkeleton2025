@@ -20,7 +20,6 @@ import kotlin.math.IEEErem
 import kotlin.math.PI
 
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
-    val field = Field2d()
     private val shuffleboardTab = Shuffleboard.getTab("Drivetrain")
     private val gyroInputs = GyroIOInputsAutoLogged()
     private var poseEstimator: SwerveDrivePoseEstimator
@@ -60,10 +59,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private var poseYEntry = shuffleboardTab.add("Pose Y", 0.0).entry
     private var headingEntry = shuffleboardTab.add("Robot Heading", gyroInputs.yawPosition.degrees).withWidget(BuiltInWidgets.kGyro).entry
     private var seesAprilTag = shuffleboardTab.add("Sees April Tag?", false).withWidget(BuiltInWidgets.kBooleanBox).entry
+    var field:Field2d
 
     private val camera: Camera
     init {
-        field.getObject("Obstacle").pose = Pose2d(4.6,4.2,0.0.rotation2dFromDeg())
+
         SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
                 180.0, -180.0
         )
@@ -73,10 +73,10 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         Timer.delay(1.0)
         resetModulesToAbsolute()
         shuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
-
-        shuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
-
         poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1), VecBuilder.fill(0.5, 0.5, 0.5))
+        field= Field2d()
+        shuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
+        field.getObject("Obstacle").pose = Pose2d(4.6,4.2,0.0.rotation2dFromDeg())
     }
 
     override fun periodic() {
