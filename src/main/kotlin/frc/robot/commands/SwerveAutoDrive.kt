@@ -21,13 +21,10 @@ allows the user to take manual control of the joysticks to make adjustments whil
  */
 class SwerveAutoDrive(
     private val setpoint: Supplier<Pose2d>,
-    private val drive: SwerveDriveBase,
-    private val translationX: DoubleSupplier,
-    private val translationY: DoubleSupplier,
-    private val rotation: DoubleSupplier,
+    private val drive: SwerveDriveBase
 ): Command() {
     private var index = 0
-    private var points = listOf<Pose2d>()
+    private var points = mutableListOf<Pose2d>()
     var next = Pose2d()
     private var tolerance: Pose2d = Pose2d(0.1,0.1, 10.0.rotation2dFromDeg())
 
@@ -38,14 +35,13 @@ class SwerveAutoDrive(
     override fun initialize() {
         index = 0
         points = pathfind(drive.getPose(), setpoint.get())
+        points.add(0, drive.getPose())
+        drive.field.getObject("points").setPoses(points)
         next = points[0]
     }
 
     override fun execute() {
         /*collect speeds based on which controls are used*/
-        val controlsX = MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
-        val controlsY = MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
-        val controlsRot = MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND)
 
         val speeds = Pose2d(
                 SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(
@@ -93,7 +89,7 @@ class SwerveAutoDrive(
     override fun end(interrupted: Boolean) {
     }
 
-    private fun pathfind(from: Pose2d, to: Pose2d): List<Pose2d> {
+    private fun pathfind(from: Pose2d, to: Pose2d): MutableList<Pose2d> {
         val m: Double = (to.y - from.y) / (to.x - from.x)
         val b: Double = -m * to.x + to.y
         for (obstacle in obstacles) {
@@ -125,26 +121,36 @@ class SwerveAutoDrive(
 
                     val dist = obstacle.radiusMeters - abs(linmidpoint.translation.getDistance(obstacle.location.translation))
 
-                    val rates = Pose2d( (dist) * (((linmidpoint.x - obstacle.location.x) / abs((linmidpoint.x - obstacle.location.x))) * linmidpoint.x * (obstacle.radiusMeters/ sqrt(linmidpoint.x + linmidpoint.y)))/obstacle.radiusMeters ,
+                    var rates = Pose2d( (dist) * (((linmidpoint.x - obstacle.location.x) / abs((linmidpoint.x - obstacle.location.x))) * linmidpoint.x * (obstacle.radiusMeters/ sqrt(linmidpoint.x + linmidpoint.y)))/obstacle.radiusMeters ,
                         (dist) * (((linmidpoint.y - obstacle.location.y) / abs((linmidpoint.y - obstacle.location.y))) * linmidpoint.y * (obstacle.radiusMeters/ sqrt(linmidpoint.x + linmidpoint.y) )) / obstacle.radiusMeters,
                             from.rotation
 
                     )
 
-
-                    val waytran = linmidpoint.translation.plus(rates.translation)
-
-                    val waypoint =
+                    var waypoint =
                         Pose2d(
-                            waytran,
+                            linmidpoint.translation.plus(rates.translation),
                             from.rotation
-                            // (acos((waytran.x - obstacle.location.x) / obstacle.radiusMeters) + (PI/2)).rotation2dFromRad()
                         )
 
-                    return listOf(pathfind(from, waypoint), pathfind(waypoint, to)).flatten()
+                    if(waypoint.x !in 0.0..16.4846 || waypoint.y !in 0.0..8.1026) {
+                        rates = Pose2d( (dist) * -(((linmidpoint.x - obstacle.location.x) / abs((linmidpoint.x - obstacle.location.x))) * linmidpoint.x * (obstacle.radiusMeters/ sqrt(linmidpoint.x + linmidpoint.y)))/obstacle.radiusMeters ,
+                            (dist) * -(((linmidpoint.y - obstacle.location.y) / abs((linmidpoint.y - obstacle.location.y))) * linmidpoint.y * (obstacle.radiusMeters/ sqrt(linmidpoint.x + linmidpoint.y) )) / obstacle.radiusMeters,
+                            from.rotation
+
+                        )
+                        waypoint =
+                            Pose2d(
+                                linmidpoint.translation.plus(rates.translation),
+                                from.rotation
+                            )
+                    }
+
+
+                    return mutableListOf(pathfind(from, waypoint), pathfind(waypoint, to)).flatten().toMutableList()
                 }
             }
         }
-            return listOf(to)
+            return mutableListOf(to)
     }
 }

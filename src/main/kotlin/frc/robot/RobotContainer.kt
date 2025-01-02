@@ -73,10 +73,7 @@ class RobotContainer {
                 goal.blue
         return SwerveAutoDrive(
             {to},
-            driveSubsystem,
-            { driverController.getRawAxis(1) },
-            { -driverController.getRawAxis(0) },
-            { -driverController.getRawAxis(2) }
+            driveSubsystem
         )
     }
 
