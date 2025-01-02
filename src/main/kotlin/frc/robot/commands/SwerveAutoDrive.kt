@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj2.command.Command
 import frc.lib.FieldPositions.obstacles
+import frc.lib.Obstacle
 import frc.lib.rotation2dFromDeg
 import frc.lib.rotation2dFromRad
 import frc.lib.swerve.SwerveDriveBase
@@ -90,9 +91,11 @@ class SwerveAutoDrive(
     }
 
     private fun pathfind(from: Pose2d, to: Pose2d): MutableList<Pose2d> {
+        //this whole thing could be faster...
+        val sortedObstacles = obstacles.sortedBy { it.location.translation.getDistance(from.translation) }
         val m: Double = (to.y - from.y) / (to.x - from.x)
         val b: Double = -m * to.x + to.y
-        for (obstacle in obstacles) {
+        for (obstacle in sortedObstacles) {
             val ntwo = b - obstacle.location.y
             val obx = obstacle.location.x
             val btwo = -obx * 2 + ntwo * 2 * m
