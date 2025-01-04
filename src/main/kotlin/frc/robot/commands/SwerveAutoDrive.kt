@@ -103,22 +103,22 @@ class SwerveAutoDrive(
             val c = ntwo.pow(2) + obx.pow(2) - obstacle.radiusMeters.pow(2)
             val det = btwo.pow(2) - 4 * a * c
             if (det >= 0) {
-                val intersectiona: Pose2d = if (from.x > obstacle.location.x) Pose2d(
+                val intersection_a: Pose2d = if (from.x > obstacle.location.x) Pose2d(
                     ((-btwo + sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), from.rotation
                 ) else Pose2d(
                     ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo - sqrt(det)) / (2 * a)) + b), from.rotation
                 )
-                if (intersectiona.x in from.x..to.x || intersectiona.x in to.x..from.x) {
+                if (intersection_a.x in from.x..to.x || intersection_a.x in to.x..from.x) {
 
-                        val intersectionb = if (from.x < obstacle.location.x) Pose2d(
+                        val intersection_b = if (from.x < obstacle.location.x) Pose2d(
                             ((-btwo + sqrt(det)) / (2 * a)), (m * ((-btwo + sqrt(det)) / (2 * a)) + b), from.rotation
                         ) else Pose2d(
                             ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo - sqrt(det)) / (2 * a)) + b), from.rotation
                         )
 
                     val linmidpoint = Pose2d(
-                        (intersectionb.x + intersectiona.x) / 2,
-                        (intersectionb.y + intersectiona.y) / 2,
+                        (intersection_b.x + intersection_a.x) / 2,
+                        (intersection_b.y + intersection_a.y) / 2,
                         0.0.rotation2dFromDeg()
                     )
 
