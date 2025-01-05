@@ -80,11 +80,12 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
 
     override fun periodic() {
+        camera.captureFrame()
         //estimate robot pose based on what the encoders say
         poseEstimator.update(getYaw(), getModulePositions())
         //estimate robot pose based on what the camera sees
         if(gyroInputs.yawVelocityRadPerSec < Math.PI && Constants.mode != Constants.States.SIM) {
-                seesAprilTag.setBoolean(camera.captureFrame().hasTargets())
+                seesAprilTag.setBoolean(camera.frame.hasTargets())
                 val visionEst: Optional<EstimatedRobotPose>? = camera.getEstimatedPose()
                 visionEst?.ifPresent { est ->
                     poseEstimator.addVisionMeasurement(

@@ -1,5 +1,6 @@
 package frc.lib
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
 import edu.wpi.first.math.*
 import edu.wpi.first.math.geometry.*
@@ -13,16 +14,15 @@ import java.util.*
 
 class Camera(name: String) {
     private val limelight = PhotonCamera(name)
-    private var frame = PhotonPipelineResult()
+    var frame = PhotonPipelineResult()
     private var poseEstimator: PhotonPoseEstimator? = null
 
     init {
         try {
             poseEstimator =
                     PhotonPoseEstimator(
-                            AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(),
+                        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
                             PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                            limelight,
                             Transform3d(
                                     Translation3d(
                                             Units.inchesToMeters(0.0),
@@ -43,29 +43,20 @@ class Camera(name: String) {
         }
     }
     //call periodically
-    fun captureFrame(): PhotonPipelineResult =
-            limelight.latestResult
-
-    fun getAprilTagTarget(): PhotonTrackedTarget? {
-        limelight.pipelineIndex = 1
-        frame = captureFrame()
-        return if (frame.hasTargets()) frame.bestTarget else null
+    //does this work?? consult documentation
+    fun captureFrame(){
+        frame = limelight.allUnreadResults.first()
     }
 
-    fun getReflectiveTapeTarget(): PhotonTrackedTarget? {
-        limelight.pipelineIndex = 0
-        frame = captureFrame()
-        return if (frame.hasTargets()) frame.bestTarget else null
-    }
 
     fun getEstimatedPose(): Optional<EstimatedRobotPose>? =
-            poseEstimator?.update()
+            poseEstimator?.update(frame)
 
     //stolen from  photonvision(blatantly)
     fun getEstimationStdDevs(estimatedPose: Pose2d): Matrix<N3, N1> {
         //todo: expiriment with vecbuilder values(somehow)
         var estStdDevs = VecBuilder.fill(.7, .7, .9999999)
-        val targets = captureFrame().getTargets()
+        val targets = frame.getTargets()
         var numTags = 0
         var avgDist = 0.0
 
