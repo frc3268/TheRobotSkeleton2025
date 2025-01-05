@@ -29,9 +29,6 @@ class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleCon
     private val TURN_GEAR_RATIO: Double = 150.0 / 7.0
 
     init {
-                absoluteEncoder.distancePerRotation =
-                    SwerveDriveConstants.Encoder.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
-                absoluteEncoder.positionOffset = moduleConstants.ANGLE_OFFSET.degrees
                 driveEncoder.positionConversionFactor =
                     SwerveDriveConstants.DriveMotor.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION
                 driveEncoder.velocityConversionFactor =
@@ -59,7 +56,7 @@ class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleCon
         inputs.driveCurrentAmps = doubleArrayOf(driveMotor.outputCurrent)
 
         inputs.turnAbsolutePosition =
-            ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
+            ((absoluteEncoder.get() * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
         inputs.turnPosition =
             ((-inputs.turnAbsolutePosition.degrees).IEEErem(360.0).rotation2dFromDeg())
         inputs.turnVelocityRadPerSec = (
@@ -87,6 +84,6 @@ class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleCon
 
     override fun reset() {
         driveEncoder.position = 0.0
-        angleEncoder.position = ((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees)
+        angleEncoder.position = ((absoluteEncoder.get() * 360.0) + moduleConstants.ANGLE_OFFSET.degrees)
     }
 }

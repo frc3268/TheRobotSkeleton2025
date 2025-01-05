@@ -16,6 +16,7 @@ import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.system.plant.DCMotor
+import edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem
 import edu.wpi.first.wpilibj.simulation.DCMotorSim
 import frc.lib.swerve.SwerveModuleIO.ModuleIOInputs
 import kotlin.math.abs
@@ -29,8 +30,8 @@ import kotlin.math.abs
  * approximation for the behavior of the module.
  */
 class SwerveModuleIOSim(val index: Int) : SwerveModuleIO {
-    private val driveSim = DCMotorSim(DCMotor.getNEO(1), 6.75, 0.025)
-    private val turnSim = DCMotorSim(DCMotor.getNEO(1), 150.0 / 7.0, 0.004)
+    private val driveSim = DCMotorSim(createDCMotorSystem(DCMotor.getNEO(1), 6.75, 0.025),DCMotor.getNEO(1) )
+    private val turnSim = DCMotorSim(createDCMotorSystem(DCMotor.getNEO(1), 150.0 / 7.0, 0.004), DCMotor.getNEO(1))
 
     private val turnAbsoluteInitPosition = Rotation2d(Math.random() * 2.0 * Math.PI)
     private var driveAppliedVolts = 0.0

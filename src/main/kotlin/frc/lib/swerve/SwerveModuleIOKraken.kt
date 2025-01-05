@@ -29,7 +29,8 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
     private val TURN_GEAR_RATIO: Double = 150.0 / 7.0
 
     init {
-                val dconfig = TalonFXConfiguration()
+        /*
+        val dconfig = TalonFXConfiguration()
                 val tconfig = TalonFXConfiguration()
                 absoluteEncoder.distancePerRotation =
                     SwerveDriveConstants.Encoder.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
@@ -39,8 +40,8 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
                 tconfig.Feedback.SensorToMechanismRatio =
                     SwerveDriveConstants.AngleMotor.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
 
-                driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
-                angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
+                //driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
+                //angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
 
                 dconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
                 tconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
@@ -48,10 +49,13 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
                 driveMotor.position.setUpdateFrequency(5.0, 15.0)
                 //todo: fix? below
                 angleMotor.position.setUpdateFrequency(5.0, 15.0)
+
+         */
     }
 
 
     override fun updateInputs(inputs: ModuleIOInputs) {
+        /*
         inputs.drivePositionMeters =
             -driveMotor.position.valueAsDouble
         inputs.driveVelocityMetersPerSec =
@@ -68,6 +72,8 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
                         / TURN_GEAR_RATIO)
         inputs.turnAppliedVolts = angleMotor.motorVoltage.valueAsDouble
         inputs.turnCurrentAmps = doubleArrayOf(angleMotor.statorCurrent.valueAsDouble)
+
+         */
     }
 
     override fun setDriveVoltage(volts: Double) {
@@ -88,7 +94,7 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
     }
 
     override fun reset() {
-        driveMotor.setPosition(0.0)
-        angleMotor.setPosition((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees)
+        //driveMotor.setPosition(0.0)
+        //angleMotor.setPosition((absoluteEncoder.absolutePosition * 360.0) + moduleConstants.ANGLE_OFFSET.degrees)
     }
 }
