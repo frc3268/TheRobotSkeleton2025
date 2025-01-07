@@ -55,11 +55,11 @@ object FieldPositions {
         Pose2d(11.56081, 8.05561, 270.0.rotation2dFromDeg())
     )
     
-    // Not implemented
-    // reefs do need to be iterated through, but they do not need to have names
-    val reef:Array<Obstacle> = arrayOf(
-        Obstacle(Pose2d(4.6, 4.2, 0.0.rotation2dFromDeg()), 1.0)
-        //list reefs here...
+    // TODO: Implement reef positions
+    val reef = arrayOf(
+        FieldLocation(
+            Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg()),
+            Pose2d(0.0, 0.9, 0.0.rotation2dFromDeg())
+        )
     )
-
 }
