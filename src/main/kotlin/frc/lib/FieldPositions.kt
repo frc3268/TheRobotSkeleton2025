@@ -29,7 +29,7 @@ data class Obstacle(val location: Pose2d, val radiusMeters: Double)
 // 13 33.51 291.20 58.50 306 0 Coral-Station-Top-Blue
 // 14 325.68 241.64 73.54 180 30 Blue-Barge-Facing-Blue
 // 15 325.68 75.39 73.54 180 30 Red-Barge-Facing-Blue
-// 16 235.73 -0.15 51.25 90 0 Red-Processor
+// ~~16 235.73 -0.15 51.25 90 0 Red-Processor~~
 // 17 160.39 130.17 12.13 240 0 Blue-Reef
 // 18 144.00 158.50 12.13 180 0 Blue-Reef
 // 19 160.39 186.83 12.13 120 0 Blue-Reef
