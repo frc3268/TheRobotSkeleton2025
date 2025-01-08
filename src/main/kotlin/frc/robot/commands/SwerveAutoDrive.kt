@@ -120,6 +120,7 @@ class SwerveAutoDrive(
                         ((-btwo - sqrt(det)) / (2 * a)), (m * ((-btwo - sqrt(det)) / (2 * a)) + b), from.rotation
                     )
 
+
                     //midpoint on the line between the two intersection points
                     val linmidpoint = Pose2d(
                         (intersection_b.x + intersection_a.x) / 2,

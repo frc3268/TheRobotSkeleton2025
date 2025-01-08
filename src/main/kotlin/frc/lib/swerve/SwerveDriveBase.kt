@@ -71,6 +71,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     init {
 
+
         SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
                 180.0, -180.0
         )
@@ -85,6 +86,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1), VecBuilder.fill(0.5, 0.5, 0.5))
         field= Field2d()
         shuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
+        field.getObject("obr").setPoses(Pose2d(
+            13.0856, 4.0259, 0.0.rotation2dFromDeg()
+        ), Pose2d(
+            4.4895, 4.0259, 0.0.rotation2dFromDeg()
+        ))
     }
 
     override fun periodic() {
