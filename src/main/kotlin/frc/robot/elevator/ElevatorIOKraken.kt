@@ -1,24 +1,24 @@
 package frc.robot.elevator
 
-import com.ctre.phoenix6.hardware.TalonFX
-import com.revrobotics.CANSparkLowLevel
-import com.revrobotics.CANSparkMax
+import com.ctre.phoenix6.hardware.*
+import com.ctre.phoenix6.configs.*
 import edu.wpi.first.math.controller.PIDController
-import edu.wpi.first.units.AngleUnit
-import edu.wpi.first.units.Units
-import edu.wpi.first.units.measure.Angle
+import edu.wpi.first.units.*
 import frc.lib.swerve.ElevatorIO
 
 class ElevatorIOKraken(override val pidController: PIDController) : ElevatorIO{
     val leftMotor = TalonFX(0, "rio")
     val rightMotor = TalonFX(0, "rio")
 
-
     init{
-        //todo!
-        //leftEncoder.positionConversionFactor = 0.0
-        //rightEncoder.positionConversionFactor = 0.0
+        val leftConfig = TalonFXConfiguration()
+        val rightConfig = TalonFXConfiguration()
 
+        leftConfig.Feedback.SensorToMechanismRatio = 0.0
+        rightConfig.Feedback.SensorToMechanismRatio = 0.0
+
+        leftMotor.configurator.apply(leftConfig)
+        rightMotor.configurator.apply(rightConfig)
     }
     override fun updateInputs(inputs: ElevatorIO.ElevatorIOInputs) {
         //this formula may need to me changed to reflect the reality
