@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.*
 import com.ctre.phoenix6.configs.*
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.units.*
+import edu.wpi.first.units.measure.*
 import frc.lib.swerve.ElevatorIO
 
 class ElevatorIOKraken(override val pidController: PIDController) : ElevatorIO{
