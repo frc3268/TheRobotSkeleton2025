@@ -39,7 +39,10 @@ class ElevatorIOKraken(override val pidController: PIDController) : ElevatorIO{
     }
 
     override fun reset() {
+        //not totally sure if this works as intended
+        //as intended means that it just changes the value reported by encoder
         rightMotor.setPosition(Angle.ofRelativeUnits(0.0, Units.Degree))
+        leftMotor.setPosition(Angle.ofRelativeUnits(0.0, Units.Degree))
     }
 
     override fun stop() {
