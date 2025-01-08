@@ -29,6 +29,14 @@
     },
     "transitory": {
       "AdvantageKit": {
+        "Drive": {
+          "module1": {
+            "open": true
+          }
+        },
+        "DriverStation": {
+          "open": true
+        },
         "open": true
       },
       "Shuffleboard": {
@@ -70,8 +78,14 @@
     "Clients": {
       "open": true
     },
+    "Connections": {
+      "open": true
+    },
     "Server": {
       "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
         "open": true
       },
       "open": true

@@ -62,4 +62,8 @@ object FieldPositions {
             Pose2d(0.0, 0.9, 0.0.rotation2dFromDeg())
         )
     )
+
+    val obstacles:List<Obstacle> = listOf(
+
+    )
 }

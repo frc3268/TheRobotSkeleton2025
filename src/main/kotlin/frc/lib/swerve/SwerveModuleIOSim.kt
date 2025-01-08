@@ -30,8 +30,8 @@ import kotlin.math.abs
  * approximation for the behavior of the module.
  */
 class SwerveModuleIOSim(val index: Int) : SwerveModuleIO {
-    private val driveSim = DCMotorSim(createDCMotorSystem(DCMotor.getNEO(1), 6.75, 0.025),DCMotor.getNEO(1) )
-    private val turnSim = DCMotorSim(createDCMotorSystem(DCMotor.getNEO(1), 150.0 / 7.0, 0.004), DCMotor.getNEO(1))
+    private val driveSim = DCMotorSim(createDCMotorSystem(DCMotor.getNEO(10), 0.025, 6.75),DCMotor.getNEO(10) )
+    private val turnSim = DCMotorSim(createDCMotorSystem(DCMotor.getNEO(10), 0.004, 150.0 / 7.0), DCMotor.getNEO(10))
 
     private val turnAbsoluteInitPosition = Rotation2d(Math.random() * 2.0 * Math.PI)
     private var driveAppliedVolts = 0.0
@@ -50,7 +50,7 @@ class SwerveModuleIOSim(val index: Int) : SwerveModuleIO {
 
         inputs.turnAbsolutePosition =
             Rotation2d(turnSim.angularPositionRad).plus(turnAbsoluteInitPosition)
-        inputs.turnPosition = inputs.turnPosition + Rotation2d.fromRotations(turnSim.angularVelocityRadPerSec * 0.002)
+        inputs.turnPosition = inputs.turnPosition + Rotation2d.fromRotations(turnSim.angularVelocityRadPerSec * 0.02)
         inputs.turnVelocityRadPerSec = turnSim.angularVelocityRadPerSec
         inputs.turnAppliedVolts = turnAppliedVolts
         inputs.turnCurrentAmps = doubleArrayOf(abs(turnSim.currentDrawAmps))

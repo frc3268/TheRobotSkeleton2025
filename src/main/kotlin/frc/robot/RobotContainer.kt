@@ -53,15 +53,7 @@ class RobotContainer {
 
     //type is () -> Command because otherwise CommandScheduler complains that each one has already been scheduled
     val autos: MutableMap<String, () -> Command> = mutableMapOf(
-        "gotoSpeaker" to { goToSpeakerCloser() },
-        "gotoSpeakerCenter" to {goto(FieldPositions.speakerCenter)},
-        "gotoSpeakerRight" to {goto(FieldPositions.speakerRight)},
-        "gotoSpeakerLeft" to {goto(FieldPositions.speakerLeft)},
-        "gotoAmp" to {goto(FieldPositions.amp)},
-        "goToSourceCloserToBaseline" to {goto(FieldPositions.sourceBaseline)},
-        "goToSourceFurtherFromBaseline" to {goto(FieldPositions.sourceNotBaseline)},
-        "goToRing" to {WaitCommand(1.0)},
-        //todo: other rings
+        "goToProcessor" to { goto(FieldPositions.processor) }
     )
 
     fun goto(goal: FieldLocation): Command {
@@ -77,25 +69,6 @@ class RobotContainer {
         )
     }
 
-
-    fun goToSpeakerCloser(): Command {
-        var startingPose = Pose2d()
-        return runOnce({
-            startingPose = driveSubsystem.getPose()
-        }, driveSubsystem).andThen(
-            //red
-            goto(
-                FieldPositions.closest(
-                    startingPose,
-                    listOf(
-                        FieldPositions.speakerRight,
-                        FieldPositions.speakerCenter,
-                        FieldPositions.speakerLeft
-                    )
-                )
-            )
-        )
-    }
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
