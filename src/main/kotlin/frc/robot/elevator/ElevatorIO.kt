@@ -37,6 +37,8 @@ interface ElevatorIO {
     /** Run both motors at the specified voltage.  */
     fun setBothVolts(volts: Double) {}
 
+    fun stop() {}
+
     /**Zero everything **/
     fun reset() {}
 }
