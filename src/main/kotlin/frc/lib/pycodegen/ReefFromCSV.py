@@ -45,8 +45,8 @@ with open('Reefs.csv', newline='') as csvfile:
                     cDict["BZROT"] = float(rl[rowIndex+6][colIndex])
 
 
-        reefStr += f'       Pose2d({cDict["RXPOS"]}, {cDict["RYPOS"]}, {cDict["RZROT"]}.rotation2dFromDeg(),\n'
-        reefStr += f'       Pose2d({cDict["BXPOS"]}, {cDict["BYPOS"]}, {cDict["BZROT"]}.rotation2dFromDeg()'
+        reefStr += f'       Pose2d({cDict["RXPOS"]}, {cDict["RYPOS"]}, {cDict["RZROT"]}.rotation2dFromDeg()),\n'
+        reefStr += f'       Pose2d({cDict["BXPOS"]}, {cDict["BYPOS"]}, {cDict["BZROT"]}.rotation2dFromDeg())'
         # // TODO: Implement reef positions
         # val reef = arrayOf(
         #     FieldLocation(
