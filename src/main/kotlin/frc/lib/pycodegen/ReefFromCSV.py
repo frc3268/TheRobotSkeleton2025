@@ -29,16 +29,16 @@ with open('Reefs.csv', newline='') as csvfile:
                     cDict["BID"] = rl[rowIndex+6][colIndex]
 
                 case 1:
-                    cDict["RXPOS"] = float(col) / 0.0254
-                    cDict["BXPOS"] = float(rl[rowIndex+6][colIndex]) / 0.0254
+                    cDict["RXPOS"] = float(col) / 39.37
+                    cDict["BXPOS"] = float(rl[rowIndex+6][colIndex]) / 39.37
 
                 case 2:
-                    cDict["RYPOS"] = float(col) / 0.0254
-                    cDict["BYPOS"] = float(rl[rowIndex+6][colIndex]) / 0.0254
+                    cDict["RYPOS"] = float(col) / 39.37
+                    cDict["BYPOS"] = float(rl[rowIndex+6][colIndex]) / 39.37
 
                 case 3:
-                    cDict["RZPOS"] = float(col) / 0.0254
-                    cDict["BZPOS"] = float(rl[rowIndex+6][colIndex]) / 0.0254
+                    cDict["RZPOS"] = float(col) / 39.37
+                    cDict["BZPOS"] = float(rl[rowIndex+6][colIndex]) / 39.37
 
                 case 4:
                     cDict["RZROT"] = float(col)
