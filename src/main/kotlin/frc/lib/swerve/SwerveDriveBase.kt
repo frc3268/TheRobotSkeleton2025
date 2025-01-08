@@ -11,7 +11,12 @@ import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.*
 import frc.lib.*
+import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
+import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.kinematics
+import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.thetaPIDController
+import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.xPIDController
+import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.yPIDController
 import frc.robot.Constants
 import org.littletonrobotics.junction.Logger
 import org.photonvision.EstimatedRobotPose
@@ -165,6 +170,30 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     fun zeroHeadingCommand(): Command {
         return runOnce { zeroYaw() }
     }
+
+    fun alignToAprilTagCommand(): Command =
+        if(Constants.mode == Constants.States.REAL){
+            run{
+                val target = camera!!.frame.bestTarget
+                setModuleStates(
+                    //these are negative cause otherwise robot would crash out trying to go backwards
+                    //fieldoriented is false for a similar reason
+                    constructModuleStatesFromChassisSpeeds(
+                        //may want to change setpoints
+                        xPIDController.calculate(-target.bestCameraToTarget.x, 0.0) * MAX_SPEED_METERS_PER_SECOND,
+                        yPIDController.calculate(-target.bestCameraToTarget.y, 0.0) * MAX_SPEED_METERS_PER_SECOND,
+                        thetaPIDController.calculate(-target.getYaw(), 0.0) * MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND,
+                        false
+                    )
+                )
+                //go only if we see april tags
+            }.onlyIf({camera!!.frame.hasTargets()})
+                //tolerances
+                .until({camera!!.frame.bestTarget.yaw < 5.0 && camera!!.frame.bestTarget.bestCameraToTarget.translation.getDistance(Translation3d(0.0,0.0,0.0)) < 0.1})
+        } else{
+            //if in sim do nothing. this should be changed
+            InstantCommand()
+        }
     
     //getters
     private fun getYaw(): Rotation2d = gyroInputs.yawPosition
