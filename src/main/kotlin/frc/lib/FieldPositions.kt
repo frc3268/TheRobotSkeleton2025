@@ -55,13 +55,32 @@ object FieldPositions {
         Pose2d(11.56081, 8.05561, 270.0.rotation2dFromDeg())
     )
     
-    // TODO: Implement reef positions
     val reef = arrayOf(
         FieldLocation(
-            Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg()),
-            Pose2d(0.0, 0.9, 0.0.rotation2dFromDeg())
-        )
-    )
+           Pose2d(13.474472948945898, 3.306324612649225, 300.0.rotation2dFromDeg()),
+           Pose2d(4.073914147828296, 3.306324612649225, 240.0.rotation2dFromDeg())
+      ),
+        FieldLocation(
+           Pose2d(13.890525781051563, 4.025908051816104, 0.0.rotation2dFromDeg()),
+           Pose2d(3.6576073152146305, 4.025908051816104, 180.0.rotation2dFromDeg())
+      ),
+        FieldLocation(
+           Pose2d(13.474472948945898, 4.745491490982983, 60.0.rotation2dFromDeg()),
+           Pose2d(4.073914147828296, 4.745491490982983, 120.0.rotation2dFromDeg())
+      ),
+        FieldLocation(
+           Pose2d(12.643383286766573, 4.745491490982983, 120.0.rotation2dFromDeg()),
+           Pose2d(4.904749809499619, 4.745491490982983, 60.0.rotation2dFromDeg())
+      ),
+        FieldLocation(
+           Pose2d(12.22733045466091, 4.025908051816104, 180.0.rotation2dFromDeg()),
+           Pose2d(5.321056642113285, 4.025908051816104, 0.0.rotation2dFromDeg())
+      ),
+        FieldLocation(
+           Pose2d(12.643383286766573, 3.306324612649225, 240.0.rotation2dFromDeg()),
+           Pose2d(4.904749809499619, 3.306324612649225, 300.0.rotation2dFromDeg())
+      ),
+    );
 
     val obstacles:List<Obstacle> = listOf(
         Obstacle(
