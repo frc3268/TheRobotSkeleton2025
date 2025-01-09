@@ -36,6 +36,29 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             Constants.States.REPLAY -> {
                 SwerveDriveConstants.modules.mapIndexed { _, swerveMod -> SwerveModule(object: SwerveModuleIO {
                     override val turnPIDController: PIDController = swerveMod.PID_CONTROLLER
+                    override fun updateInputs(inputs: SwerveModuleIO.ModuleIOInputs) {
+                        //no
+                    }
+
+                    override fun setDriveVoltage(volts: Double) {
+                        //no
+                    }
+
+                    override fun setTurnVoltage(volts: Double) {
+                        //no
+                    }
+
+                    override fun setDriveBrakeMode(enable: Boolean) {
+                        //no
+                    }
+
+                    override fun setTurnBrakeMode(enable: Boolean) {
+                        //no
+                    }
+
+                    override fun reset() {
+                        //no
+                    }
                 } ,swerveMod.MODULE_NUMBER) }
             }
             Constants.States.SIM -> {
@@ -47,10 +70,26 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             GyroIOKauai()
         }
         Constants.States.REPLAY -> {
-            object : GyroIO {}
+            object : GyroIO {
+                override fun updateInputs(inputs: GyroIO.GyroIOInputs) {
+                    //no
+                }
+
+                override fun zeroYaw() {
+                    //no
+                }
+            }
         }
         Constants.States.SIM -> {
-            object : GyroIO {}
+            object : GyroIO {
+                override fun updateInputs(inputs: GyroIO.GyroIOInputs) {
+                    //no
+                }
+
+                override fun zeroYaw() {
+                    //no
+                }
+            }
         }
     }
 

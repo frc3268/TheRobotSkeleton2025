@@ -33,4 +33,8 @@ class GyroIOKauai : GyroIO {
 
 
     }
+
+    override fun zeroYaw() {
+        gyro.zeroYaw()
+    }
 }

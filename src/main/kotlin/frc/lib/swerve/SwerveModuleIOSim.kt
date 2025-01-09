@@ -66,6 +66,18 @@ class SwerveModuleIOSim(val index: Int) : SwerveModuleIO {
         turnSim.setInputVoltage(turnAppliedVolts)
     }
 
+    override fun setDriveBrakeMode(enable: Boolean) {
+        //no...
+    }
+
+    override fun setTurnBrakeMode(enable: Boolean) {
+        //no...
+    }
+
+    override fun reset() {
+        //no...
+    }
+
     companion object {
         private const val LOOP_PERIOD_SECS = 0.02
     }
