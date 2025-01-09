@@ -9,10 +9,10 @@ data class Obstacle(val location: Pose2d, val radiusMeters: Double)
 
 // TODO: IMPLEMENT! Size is in inches.
 // +Z is up into the air from the carpet, +X is horizontal to the right (Based off the image below), +Y runs from the Field Border towards the REEFS.
-// For the Z-Rotation (I pressume?) 0° faces the red alliance station, 90° faces the non- scoring table side, and 180° faces the blue alliance station. 
+// For the Z-Rotation (I presume?) 0° faces the red alliance station, 90° faces the non- scoring table side, and 180° faces the blue alliance station.
 // For the X-Rotation, 0 is perpendicular to the Z plane, and 90 degrees is facing the carpet. Distances are measured to the center of the tag.
 // Distances are measured to the center of the tag.
-// AprilTag Cordinates found in page 4 at https://firstfrc.blob.core.windows.net/frc2025/FieldAssets/2025FieldDrawings-FieldLayoutAndMarking.pdf
+// AprilTag Coordinates found in page 4 at https://firstfrc.blob.core.windows.net/frc2025/FieldAssets/2025FieldDrawings-FieldLayoutAndMarking.pdf
 // ID X Y Z Z-Rotation X-Rotation Common-Name
 // ~~1 657.37 25.80 58.50 126 0 Coral-Station-Bottom-Red~~
 // 2 657.37 291.20 58.50 234 0 Coral-Station-Top-Red
@@ -55,13 +55,32 @@ object FieldPositions {
         Pose2d(11.56081, 8.05561, 270.0.rotation2dFromDeg())
     )
     
-    // TODO: Implement reef positions
     val reef = arrayOf(
         FieldLocation(
-            Pose2d(0.0, 0.0, 0.0.rotation2dFromDeg()),
-            Pose2d(0.0, 0.9, 0.0.rotation2dFromDeg())
-        )
-    )
+           Pose2d(13.474472948945898, 3.306324612649225, 300.0.rotation2dFromDeg()),
+           Pose2d(4.073914147828296, 3.306324612649225, 240.0.rotation2dFromDeg())
+      ),
+        FieldLocation(
+           Pose2d(13.890525781051563, 4.025908051816104, 0.0.rotation2dFromDeg()),
+           Pose2d(3.6576073152146305, 4.025908051816104, 180.0.rotation2dFromDeg())
+      ),
+        FieldLocation(
+           Pose2d(13.474472948945898, 4.745491490982983, 60.0.rotation2dFromDeg()),
+           Pose2d(4.073914147828296, 4.745491490982983, 120.0.rotation2dFromDeg())
+      ),
+        FieldLocation(
+           Pose2d(12.643383286766573, 4.745491490982983, 120.0.rotation2dFromDeg()),
+           Pose2d(4.904749809499619, 4.745491490982983, 60.0.rotation2dFromDeg())
+      ),
+        FieldLocation(
+           Pose2d(12.22733045466091, 4.025908051816104, 180.0.rotation2dFromDeg()),
+           Pose2d(5.321056642113285, 4.025908051816104, 0.0.rotation2dFromDeg())
+      ),
+        FieldLocation(
+           Pose2d(12.643383286766573, 3.306324612649225, 240.0.rotation2dFromDeg()),
+           Pose2d(4.904749809499619, 3.306324612649225, 300.0.rotation2dFromDeg())
+      ),
+    );
 
     val obstacles:List<Obstacle> = listOf(
         Obstacle(
