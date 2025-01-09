@@ -9,10 +9,10 @@ data class Obstacle(val location: Pose2d, val radiusMeters: Double)
 
 // TODO: IMPLEMENT! Size is in inches.
 // +Z is up into the air from the carpet, +X is horizontal to the right (Based off the image below), +Y runs from the Field Border towards the REEFS.
-// For the Z-Rotation (I pressume?) 0° faces the red alliance station, 90° faces the non- scoring table side, and 180° faces the blue alliance station. 
+// For the Z-Rotation (I presume?) 0° faces the red alliance station, 90° faces the non- scoring table side, and 180° faces the blue alliance station.
 // For the X-Rotation, 0 is perpendicular to the Z plane, and 90 degrees is facing the carpet. Distances are measured to the center of the tag.
 // Distances are measured to the center of the tag.
-// AprilTag Cordinates found in page 4 at https://firstfrc.blob.core.windows.net/frc2025/FieldAssets/2025FieldDrawings-FieldLayoutAndMarking.pdf
+// AprilTag Coordinates found in page 4 at https://firstfrc.blob.core.windows.net/frc2025/FieldAssets/2025FieldDrawings-FieldLayoutAndMarking.pdf
 // ID X Y Z Z-Rotation X-Rotation Common-Name
 // ~~1 657.37 25.80 58.50 126 0 Coral-Station-Bottom-Red~~
 // 2 657.37 291.20 58.50 234 0 Coral-Station-Top-Red

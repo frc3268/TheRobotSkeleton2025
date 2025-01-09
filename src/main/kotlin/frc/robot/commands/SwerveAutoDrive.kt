@@ -3,6 +3,7 @@ package frc.robot.commands
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.trajectory.TrapezoidProfile
+import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
 import frc.lib.FieldPositions.obstacles
 import frc.lib.Obstacle
@@ -26,7 +27,10 @@ class SwerveAutoDrive(
 ): Command() {
     private var index = 0
     private var points = mutableListOf<Pose2d>()
+
+    private var start = 0.0
     var next = Pose2d()
+    var startPose = drive.getPose()
     private var tolerance: Pose2d = Pose2d(0.1,0.1, 10.0.rotation2dFromDeg())
 
     init {
@@ -39,19 +43,24 @@ class SwerveAutoDrive(
         points.add(0, drive.getPose())
         drive.field.getObject("points").setPoses(points)
         next = points[0]
+        start = Timer.getFPGATimestamp()
     }
 
     override fun execute() {
         /*collect speeds based on which controls are used*/
 
+        //may have to tune this
+        val xnew = startPose.x + (Timer.getFPGATimestamp() - start + 0.5)
+        val ynew = startPose.y + (Timer.getFPGATimestamp() - start + 0.5) * (next.y - startPose.y) / (next.x - startPose.x)
+
         val speeds = Pose2d(
                 SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(
                     drive.getPose().x,
-                    TrapezoidProfile.State(next.x, 0.0)
+                    TrapezoidProfile.State(xnew, 0.0)
                 ) * MAX_SPEED_METERS_PER_SECOND,
                 SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(
                     drive.getPose().y,
-                    TrapezoidProfile.State(next.y, 0.0)
+                    TrapezoidProfile.State(ynew, 0.0)
                 ) * MAX_SPEED_METERS_PER_SECOND,
                 (SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(
                     drive.getPose().rotation.degrees,
@@ -83,6 +92,8 @@ class SwerveAutoDrive(
             }
             index++
             next = points[index]
+            start = Timer.getFPGATimestamp()
+            startPose = drive.getPose()
         }
         return false
     }
