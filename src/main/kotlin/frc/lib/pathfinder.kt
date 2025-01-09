@@ -88,5 +88,4 @@ fun main() {
         listOf(true, true, true, true),
         listOf(true, true, true, true)
     )))
-    println("hi")
 }
