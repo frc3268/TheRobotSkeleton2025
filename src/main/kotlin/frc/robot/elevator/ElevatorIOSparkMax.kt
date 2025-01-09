@@ -9,7 +9,7 @@ class ElevatorIOSparkMax(override val pidController: PIDController) :ElevatorIO 
     val leftMotor = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
     val rightMotor = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
 
-    val leftEncoder =  leftMotor.encoder
+    val leftEncoder = leftMotor.encoder
     val rightEncoder = rightMotor.encoder
 
     init{

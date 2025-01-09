@@ -19,8 +19,8 @@ class ElevatorSubsystem(val io:ElevatorIO) : SubsystemBase() {
     fun setToPosition(setPointMeters:Double): Command =
         run{
             io.setBothVolts(io.pidController.calculate(inputs.elevatorPositionMeters, setPointMeters) * 12.0) }
-        .until({abs(inputs.elevatorPositionMeters - setPointMeters) < 0.01})
-        .andThen(
+        .until { abs(inputs.elevatorPositionMeters - setPointMeters) < 0.01 }
+            .andThen(
         if(setPointMeters > 0){
             run{io.setBothVolts(kg * 12.0)}
         } else {

@@ -11,6 +11,10 @@ interface AlgaeIntakeIO {
     open class AlgaeIntakeIOInputs {
         var appliedVolts: Double = 0.0
         var velocityMetersPerSec: Double = 0.0
-        var currentAmps: Double = 0.0
+        var currentAmps: DoubleArray = doubleArrayOf()
     }
+
+    fun updateInputs(inputs: AlgaeIntakeIOInputs)
+
+    fun setVoltage(voltage: Double)
 }
