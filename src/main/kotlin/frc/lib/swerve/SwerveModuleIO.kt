@@ -25,21 +25,21 @@ interface SwerveModuleIO {
     val turnPIDController:PIDController
 
     /** Updates the set of loggable inputs.  */
-    fun updateInputs(inputs: ModuleIOInputs) {}
+    fun updateInputs(inputs: ModuleIOInputs)
 
     /** Run the drive motor at the specified voltage.  */
-    fun setDriveVoltage(volts: Double) {}
+    fun setDriveVoltage(volts: Double)
 
     /** Run the turn motor at the specified voltage.  */
-    fun setTurnVoltage(volts: Double) {}
+    fun setTurnVoltage(volts: Double)
 
     /** Enable or disable brake mode on the drive motor.  */
-    fun setDriveBrakeMode(enable: Boolean) {}
+    fun setDriveBrakeMode(enable: Boolean)
 
     /** Enable or disable brake mode on the turn motor.  */
-    fun setTurnBrakeMode(enable: Boolean) {}
+    fun setTurnBrakeMode(enable: Boolean)
 
-    fun reset() {}
+    fun reset()
 }
 
 class ModuleIOInputsAutoLogged : SwerveModuleIO.ModuleIOInputs(), LoggableInputs {

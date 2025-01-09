@@ -26,21 +26,21 @@ interface ElevatorIO {
     val pidController:PIDController
 
     /** Updates the set of loggable inputs.  */
-    fun updateInputs(inputs: ElevatorIOInputs) {}
+    fun updateInputs(inputs: ElevatorIOInputs)
 
     /** Run the left motor at the specified voltage.  */
-    fun setLeftVolts(volts: Double) {}
+    fun setLeftVolts(volts: Double)
 
     /** Run the right motor at the specified voltage.  */
-    fun setRightVolts(volts: Double) {}
+    fun setRightVolts(volts: Double)
 
     /** Run both motors at the specified voltage.  */
-    fun setBothVolts(volts: Double) {}
+    fun setBothVolts(volts: Double)
 
-    fun stop() {}
+    fun stop()
 
     /**Zero everything **/
-    fun reset() {}
+    fun reset()
 }
 
 class ElevatorIOInputsAutoLogged : ElevatorIO.ElevatorIOInputs(), LoggableInputs {
