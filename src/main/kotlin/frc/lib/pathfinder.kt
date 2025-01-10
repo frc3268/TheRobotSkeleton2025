@@ -39,7 +39,7 @@ fun construct_path(closed:MutableList<Point>) : List<Pair<Int, Int>>{
     val list = mutableListOf(first.loc)
     var next = first.from
     while(next != null){
-        list.addFirst(next.loc)
+        list.add(0,next.loc)
         next = next.from
     }
     return list.toList()
@@ -74,7 +74,7 @@ fun a_star(start:Pair<Int,Int>, end:Pair<Int,Int>, grid:List<List<Boolean>>): Mu
                 }
             }
         }
-        closed.addLast(openqueue.peek())
+        closed.add(openqueue.peek())
         openqueue.remove()
         rootNow = closed.last()
     }
