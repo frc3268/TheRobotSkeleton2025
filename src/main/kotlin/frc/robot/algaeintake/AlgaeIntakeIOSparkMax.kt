@@ -2,6 +2,7 @@ package frc.robot.algaeintake
 
 import com.revrobotics.CANSparkLowLevel
 import com.revrobotics.CANSparkMax
+import frc.robot.coralintake.CoralIntakeIO
 
 class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     val motor = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
@@ -11,7 +12,7 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
         encoder.positionConversionFactor = 0.0
     }
 
-    override fun updateInputs(inputs: AlgaeIntakeIO.AlgaeIntakeIOInputs) {
+    override fun updateInputs(inputs: AlgaeIntakeIO.Inputs) {
         inputs.velocityMetersPerSec = encoder.velocity
         inputs.appliedVolts = motor.busVoltage
         inputs.currentAmps = doubleArrayOf(motor.outputCurrent)
@@ -19,5 +20,9 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
 
     override fun setVoltage(voltage: Double) {
         motor.setVoltage(voltage)
+    }
+
+    override fun stop() {
+        motor.stopMotor()
     }
 }

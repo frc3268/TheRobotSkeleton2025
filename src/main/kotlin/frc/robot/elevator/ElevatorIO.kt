@@ -1,32 +1,59 @@
 package frc.lib.swerve
 
 import edu.wpi.first.math.controller.PIDController
-import edu.wpi.first.math.geometry.Rotation2d
 import org.littletonrobotics.junction.AutoLog
 import org.littletonrobotics.junction.LogTable
 import org.littletonrobotics.junction.inputs.LoggableInputs
+import kotlin.reflect.KClass
 
 
 interface ElevatorIO {
     @AutoLog
-    open class ElevatorIOInputs {
-        var rightMotorPositionMeters: Double = 0.0
-        var rightMotorVelocityMetersPerSec: Double = 0.0
-        var rightMotorAppliedVolts: Double = 0.0
-        var rightMotorCurrentAmps: DoubleArray = doubleArrayOf()
+    open class Inputs {
+        var rightMotorPositionMeters = 0.0
+        var rightMotorVelocityMetersPerSec = 0.0
+        var rightMotorAppliedVolts = 0.0
+        var rightMotorCurrentAmps = doubleArrayOf()
 
-        var leftMotorPositionMeters: Double = 0.0
-        var leftMotorVelocityMetersPerSec: Double = 0.0
-        var leftMotorAppliedVolts: Double = 0.0
-        var leftMotorCurrentAmps: DoubleArray = doubleArrayOf()
+        var leftMotorPositionMeters = 0.0
+        var leftMotorVelocityMetersPerSec = 0.0
+        var leftMotorAppliedVolts = 0.0
+        var leftMotorCurrentAmps = doubleArrayOf()
 
-        var elevatorPositionMeters:Double = 0.0
+        var elevatorPositionMeters = 0.0
     }
+
+    class LoggedInputs : Inputs(), LoggableInputs {
+        override fun toLog(table: LogTable) {
+            table.put("rightMotorPositionMeters", rightMotorPositionMeters)
+            table.put("leftMotorPositionMeters", leftMotorPositionMeters)
+            table.put("rightMotorVelocityMetersPerSec", rightMotorVelocityMetersPerSec)
+            table.put("leftMotorVelocityMetersPerSec", leftMotorVelocityMetersPerSec)
+            table.put("rightMotorAppliedVolts", rightMotorAppliedVolts)
+            table.put("leftMotorAppliedVolts", leftMotorAppliedVolts)
+            table.put("rightMotorCurrentAmps", rightMotorCurrentAmps)
+            table.put("leftMotorCurrentAmps", leftMotorCurrentAmps)
+            table.put("elevatorPositionMeters", elevatorPositionMeters)
+        }
+
+        override fun fromLog(table: LogTable) {
+            table.get("rightMotorPositionMeters", rightMotorPositionMeters)
+            table.get("leftMotorPositionMeters", leftMotorPositionMeters)
+            table.get("rightMotorVelocityMetersPerSec", rightMotorVelocityMetersPerSec)
+            table.get("leftMotorVelocityMetersPerSec", leftMotorVelocityMetersPerSec)
+            table.get("rightMotorAppliedVolts", rightMotorAppliedVolts)
+            table.get("leftMotorAppliedVolts", leftMotorAppliedVolts)
+            table.get("rightMotorCurrentAmps", rightMotorCurrentAmps)
+            table.get("leftMotorCurrentAmps", leftMotorCurrentAmps)
+            table.get("elevatorPositionMeters", elevatorPositionMeters)
+        }
+    }
+
 
     val pidController:PIDController
 
     /** Updates the set of loggable inputs.  */
-    fun updateInputs(inputs: ElevatorIOInputs)
+    fun updateInputs(inputs: Inputs)
 
     /** Run the left motor at the specified voltage.  */
     fun setLeftVolts(volts: Double)
@@ -41,30 +68,4 @@ interface ElevatorIO {
 
     /**Zero everything **/
     fun reset()
-}
-
-class ElevatorIOInputsAutoLogged : ElevatorIO.ElevatorIOInputs(), LoggableInputs {
-    override fun toLog(table: LogTable) {
-        table.put("rightMotorPositionMeters", rightMotorPositionMeters)
-        table.put("leftMotorPositionMeters", leftMotorPositionMeters)
-        table.put("rightMotorVelocityMetersPerSec", rightMotorVelocityMetersPerSec)
-        table.put("leftMotorVelocityMetersPerSec", leftMotorVelocityMetersPerSec)
-        table.put("rightMotorAppliedVolts", rightMotorAppliedVolts)
-        table.put("leftMotorAppliedVolts", leftMotorAppliedVolts)
-        table.put("rightMotorCurrentAmps", rightMotorCurrentAmps)
-        table.put("leftMotorCurrentAmps", leftMotorCurrentAmps)
-        table.put("elevatorPositionMeters", elevatorPositionMeters)
-    }
-
-    override fun fromLog(table: LogTable) {
-        table.get("rightMotorPositionMeters", rightMotorPositionMeters)
-        table.get("leftMotorPositionMeters", leftMotorPositionMeters)
-        table.get("rightMotorVelocityMetersPerSec", rightMotorVelocityMetersPerSec)
-        table.get("leftMotorVelocityMetersPerSec", leftMotorVelocityMetersPerSec)
-        table.get("rightMotorAppliedVolts", rightMotorAppliedVolts)
-        table.get("leftMotorAppliedVolts", leftMotorAppliedVolts)
-        table.get("rightMotorCurrentAmps", rightMotorCurrentAmps)
-        table.get("leftMotorCurrentAmps", leftMotorCurrentAmps)
-        table.get("elevatorPositionMeters", elevatorPositionMeters)
-    }
 }

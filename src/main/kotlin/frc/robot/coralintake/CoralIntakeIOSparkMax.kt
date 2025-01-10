@@ -11,7 +11,7 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
         encoder.positionConversionFactor = 0.0
     }
 
-    override fun updateInputs(inputs: CoralIntakeIO.CoralIntakeIOInputs) {
+    override fun updateInputs(inputs: CoralIntakeIO.Inputs) {
         inputs.velocityMetersPerSec = encoder.velocity
         inputs.appliedVolts = motor.busVoltage
         inputs.currentAmps = doubleArrayOf(motor.outputCurrent)
@@ -19,5 +19,9 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
 
     override fun setVoltage(voltage: Double) {
         motor.setVoltage(voltage)
+    }
+
+    override fun stop() {
+        motor.stopMotor()
     }
 }

@@ -17,7 +17,7 @@ class ElevatorIOSparkMax(override val pidController: PIDController) :ElevatorIO 
         rightEncoder.positionConversionFactor = 0.0
 
     }
-    override fun updateInputs(inputs: ElevatorIO.ElevatorIOInputs) {
+    override fun updateInputs(inputs: ElevatorIO.Inputs) {
         //this forumla may need to me changed to reflect the reality
         inputs.elevatorPositionMeters = (leftEncoder.position + rightEncoder.position) / 2
         inputs.rightMotorPositionMeters = rightEncoder.position

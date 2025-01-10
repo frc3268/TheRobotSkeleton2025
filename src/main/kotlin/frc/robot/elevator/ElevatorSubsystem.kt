@@ -3,11 +3,10 @@ package frc.robot.elevator
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.swerve.ElevatorIO
-import frc.lib.swerve.ElevatorIOInputsAutoLogged
 import kotlin.math.abs
 
-class ElevatorSubsystem(val io:ElevatorIO) : SubsystemBase() {
-    val inputs = ElevatorIOInputsAutoLogged()
+class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
+    val inputs = ElevatorIO.LoggedInputs()
     val kg = 0.0
     init {
 

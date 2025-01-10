@@ -21,7 +21,7 @@ class ElevatorIOKraken(override val pidController: PIDController) : ElevatorIO{
         leftMotor.configurator.apply(leftConfig)
         rightMotor.configurator.apply(rightConfig)
     }
-    override fun updateInputs(inputs: ElevatorIO.ElevatorIOInputs) {
+    override fun updateInputs(inputs: ElevatorIO.Inputs) {
         //this formula may need to me changed to reflect the reality
         inputs.elevatorPositionMeters = (leftMotor.position.valueAsDouble + rightMotor.position.valueAsDouble) / 2
         inputs.rightMotorPositionMeters = rightMotor.position.valueAsDouble
