@@ -31,7 +31,8 @@ allows the user to take manual control of the joysticks to make adjustments whil
  */
 class SwerveAutoDrive(
     private val setpoint: Supplier<Pose2d>,
-    private val drive: SwerveDriveBase
+    private val drive: SwerveDriveBase,
+    private val grid:Array<Array<Boolean>>
 ): Command() {
     private var index = 0
     private var points = mutableListOf<Pose2d>()
@@ -40,6 +41,7 @@ class SwerveAutoDrive(
     var next = Pose2d()
     var startPose = drive.getPose()
     private var tolerance: Pose2d = Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg())
+    val to = setpoint.get()
 
     init {
         addRequirements(drive)
@@ -47,7 +49,7 @@ class SwerveAutoDrive(
 
     override fun initialize() {
         index = 0
-        points = pathfind(drive.getPose(), setpoint.get())
+        points = pathfind(drive.getPose(),  to)
         points.add(0, drive.getPose())
         drive.field.getObject("points").setPoses(points)
         next = points[0]
@@ -66,7 +68,7 @@ class SwerveAutoDrive(
             ) * MAX_SPEED_METERS_PER_SECOND,
             (SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(
                 drive.getPose().rotation.degrees,
-                TrapezoidProfile.State(next.rotation.degrees, 0.0)
+                TrapezoidProfile.State(to.rotation.degrees, 0.0)
             ) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND).rotation2dFromDeg(),
 
             )
@@ -87,7 +89,7 @@ class SwerveAutoDrive(
         if (
             abs(drive.getPose().x - next.x) < tolerance.x &&
             abs(drive.getPose().y - next.y) < tolerance.y &&
-            abs(drive.getPose().rotation.minus(next.rotation).degrees) < tolerance.rotation.degrees
+            (abs(drive.getPose().rotation.minus(next.rotation).degrees) < tolerance.rotation.degrees || index <= points.size - 1)
         ) {
             if (index >= points.size - 1) {
                 return true
@@ -101,10 +103,7 @@ class SwerveAutoDrive(
     override fun end(interrupted: Boolean) {
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     private fun pathfind(from: Pose2d, to: Pose2d): MutableList<Pose2d> {
-        val grid = Json.decodeFromStream<gridFile>(
-            File(Filesystem.getDeployDirectory().toString() + "/pathplanner/navgrid.json").inputStream()).grid
         val path =
             smoothPath(
                 construct_path(

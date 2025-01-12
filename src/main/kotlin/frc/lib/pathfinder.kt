@@ -54,7 +54,7 @@ val directions = listOf(
 
 fun a_star(start:Pair<Int,Int>, end:Pair<Int,Int>, grid:Array<Array<Boolean>>): MutableList<Point>{
     val allPoints: MutableMap<Pair<Int, Int>, Double> = mutableMapOf(
-        start to (get_g(start, null, 0.0) + get_f(start, end))
+        start to (get_f(start, end))
     )
     val compareByLength: Comparator<Point> = compareBy { allPoints[it.loc] }
     val openqueue: PriorityQueue<Point> = PriorityQueue<Point>(compareByLength)
@@ -64,7 +64,7 @@ fun a_star(start:Pair<Int,Int>, end:Pair<Int,Int>, grid:Array<Array<Boolean>>): 
         for (direction in directions){
             if(rootNow.loc.second + direction.second in 0..grid.size-1){
                 if(rootNow.loc.first + direction.first in 0.. grid[rootNow.loc.second + direction.second].size-1 && !grid[rootNow.loc.second + direction.second][rootNow.loc.first + direction.first] && !closed.map { it.loc }.contains(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second))){
-                    allPoints.set(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second), (get_g(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second), rootNow, 0.0) + get_f(start, end)))
+                    allPoints.set(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second), (get_f(start, end)))
                     openqueue.add(Point(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second), rootNow))
                 }
             }
@@ -79,11 +79,11 @@ fun a_star(start:Pair<Int,Int>, end:Pair<Int,Int>, grid:Array<Array<Boolean>>): 
 fun smoothPath(poses: MutableList<Pose2d>): MutableList<Pose2d>{
     val movingA:MutableList<Pose2d> = mutableListOf()
     //
-    for (i in 0..poses.size - 3){
+    for (i in 0..poses.size - 7){
         movingA.add(
             Pose2d(
-            (poses[i].x + poses[i + 1].x + poses[i + 2].x) / 3,
-                (poses[i].y + poses[i + 1].y + poses[i + 2].y) / 3,
+            (poses[i].x + poses[i + 1].x + poses[i + 2].x + poses[i + 3].x + poses[i + 4].x + poses[i + 5].x + poses[i + 6].x) / 7,
+                (poses[i].y + poses[i + 1].y + poses[i + 2].y + poses[i + 3].y + poses[i + 4].y + poses[i + 5].y + poses[i + 6].y) / 7,
                 0.0.rotation2dFromDeg()
         )
         )
