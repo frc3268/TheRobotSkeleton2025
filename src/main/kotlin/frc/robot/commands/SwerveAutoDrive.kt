@@ -55,8 +55,6 @@ class SwerveAutoDrive(
 
     override fun execute() {
         /*collect speeds based on which controls are used*/
-
-
         val speeds = Pose2d(
             SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(
                 drive.getPose().x,
@@ -107,17 +105,16 @@ class SwerveAutoDrive(
     private fun pathfind(from: Pose2d, to: Pose2d): MutableList<Pose2d> {
         val grid = Json.decodeFromStream<gridFile>(
             File(Filesystem.getDeployDirectory().toString() + "/pathplanner/navgrid.json").inputStream()).grid
-        val path = smoothPath(
-            construct_path(
+        val path =
+            smoothPath(
+                construct_path(
                 a_star(
                     Pair((from.x / .3).toInt(), (from.y / .3).toInt()),
                     Pair((to.x / .3).toInt(), (to.y / .3).toInt()),
                     grid
                 )
-            )
-        )
+            ))
         path.add(to)
-        path.add(0, from)
         return path
     }
 }

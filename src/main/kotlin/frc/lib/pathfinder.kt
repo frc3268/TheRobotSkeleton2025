@@ -31,10 +31,10 @@ fun get_f(loc: Pair<Int, Int>, dest: Pair<Int, Int>) = pow(pow(loc.first.toDoubl
 
 fun construct_path(closed:MutableList<Point>) : MutableList<Pose2d>{
     val first = closed.last()
-    val list = mutableListOf(Pose2d())
+    val list:MutableList<Pose2d> = mutableListOf()
     var next = first.from
     while(next != null){
-        list.add(0,Pose2d(next.loc.first * 0.3 + 0.15,next.loc.first * 0.3 + 0.15, 0.0.rotation2dFromDeg()))
+        list.add(0,Pose2d(next.loc.first * 0.3 + 0.15,next.loc.second * 0.3 + 0.15, 0.0.rotation2dFromDeg()))
         next = next.from
     }
     return list
