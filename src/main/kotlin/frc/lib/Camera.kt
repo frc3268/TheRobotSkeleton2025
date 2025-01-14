@@ -19,28 +19,54 @@ class Camera(name: String) {
 
     init {
         try {
+            var robotToCam = Transform3d(
+                Translation3d(
+                    Units.inchesToMeters(0.0),
+                    Units.inchesToMeters(12.0),
+                    Units.inchesToMeters(15.0),
+                ),
+                Rotation3d(
+                    0.0,
+                    45.0,
+                    0.0
+                )
+            )
+
             poseEstimator =
                     PhotonPoseEstimator(
                         AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
                             PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                            Transform3d(
-                                    Translation3d(
-                                            Units.inchesToMeters(0.0),
-                                            Units.inchesToMeters(12.0),
-                                            Units.inchesToMeters(15.0),
-                                    ),
-                                    Rotation3d(
-                                            0.0,
-                                            45.0,
-                                            0.0
-
-                                    )
-                            )
+                            robotToCam
                     )
         } catch (e: IOException) {
             DriverStation.reportError("AprilTag: Failed to Load", e.stackTrace)
             // !add some way to lock down apriltage features after this
         }
+
+        // FIXME: This will never be run  
+        if (Constants.mode == Constants.States.SIM) {
+            var cameraProp = new SimCameraProperties();
+            // Create the vision system simulation which handles cameras and targets on the field.
+            var visionSim = VisionSystemSim("main");
+            // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
+            visionSim.addAprilTags(kTagLayout);
+            // Create simulated camera properties. These can be set to mimic your actual camera.
+            // TODO: Configure the camera!
+            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
+            cameraProp.setCalibError(0.35, 0.10);
+            cameraProp.setFPS(15);
+            cameraProp.setAvgLatencyMs(50);
+            cameraProp.setLatencyStdDevMs(15);
+            // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
+            // targets.
+            var cameraSim = PhotonCameraSim(camera, cameraProp);
+            // Add the simulated camera to view the targets on this simulated field.
+            visionSim.addCamera(cameraSim, robotToCam);
+
+            // Enable wireframe mode, this should be configureable
+            cameraSim.enableDrawWireframe(true);
+        }
+        
     }
     //call periodically
     //does this work?? consult documentation

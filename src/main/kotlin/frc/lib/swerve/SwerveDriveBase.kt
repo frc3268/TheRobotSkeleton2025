@@ -119,16 +119,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             camera = Camera("hawkeye")
         }
 
-        if (Constants.mode == Constants.States.SIM) {
-            var cameraProp = new SimCameraProperties();
-            
-            // TODO: Configure the camera!
-            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
-            cameraProp.setCalibError(0.35, 0.10);
-            cameraProp.setFPS(15);
-            cameraProp.setAvgLatencyMs(50);
-            cameraProp.setLatencyStdDevMs(15);
-        }
         zeroYaw()
         //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
         Timer.delay(1.0)
