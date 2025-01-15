@@ -16,6 +16,9 @@ class VRStream {
             // Do Something I guess
             this.loaded = true;
         }
+        else {
+            DriverStation.reportError("VRStream: Failed to Load")
+        }
 
     }
 }

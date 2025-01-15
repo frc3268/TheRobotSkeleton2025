@@ -17,6 +17,9 @@ class Camera(name: String) {
     var frame = PhotonPipelineResult()
     private var poseEstimator: PhotonPoseEstimator? = null
 
+    private var cameraProp: SimCameraProperties? = null
+    private var visionSim: VisionSystemSim?: = null
+
     init {
         try {
             var robotToCam = Transform3d(
@@ -45,9 +48,9 @@ class Camera(name: String) {
 
         // FIXME: This will never be run  
         if (Constants.mode == Constants.States.SIM) {
-            var cameraProp = new SimCameraProperties();
+            cameraProp = SimCameraProperties();
             // Create the vision system simulation which handles cameras and targets on the field.
-            var visionSim = VisionSystemSim("main");
+            visionSim = VisionSystemSim("main");
             // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
             visionSim.addAprilTags(AprilTagFields.kDefaultField);
             // Create simulated camera properties. These can be set to mimic your actual camera.
