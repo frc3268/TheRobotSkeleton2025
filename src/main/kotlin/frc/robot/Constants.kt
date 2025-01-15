@@ -15,6 +15,11 @@ object Constants {
         const val STICK_DEADBAND = 0.1
     }
 
+    object SimulationConstants {
+        const val camFps = 15;
+        const val useWireframe = true;
+    }
+
     const val TROUBLESHOOTING_TAB = "Troubleshooting"
 
 

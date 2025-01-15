@@ -49,12 +49,12 @@ class Camera(name: String) {
             // Create the vision system simulation which handles cameras and targets on the field.
             var visionSim = VisionSystemSim("main");
             // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
-            visionSim.addAprilTags(kTagLayout);
+            visionSim.addAprilTags(AprilTagFields.kDefaultField);
             // Create simulated camera properties. These can be set to mimic your actual camera.
             // TODO: Configure the camera!
             cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
             cameraProp.setCalibError(0.35, 0.10);
-            cameraProp.setFPS(15);
+            cameraProp.setFPS(Constants.SimulationConstants.camFps);
             cameraProp.setAvgLatencyMs(50);
             cameraProp.setLatencyStdDevMs(15);
             // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
@@ -64,7 +64,7 @@ class Camera(name: String) {
             visionSim.addCamera(cameraSim, robotToCam);
 
             // Enable wireframe mode, this should be configureable
-            cameraSim.enableDrawWireframe(true);
+            cameraSim.enableDrawWireframe(Constants.SimulationConstants.useWireframe);
         }
         
     }
@@ -72,6 +72,13 @@ class Camera(name: String) {
     //does this work?? consult documentation
     fun captureFrame(){
         frame = limelight.allUnreadResults.first()
+    }
+
+
+    // called periodically in a simulation
+    fun simPeriodic() {
+        // Update with the simulated drivetrain pose. This should be called every loop in simulation.
+        // visionSim.update(robotPoseMeters);
     }
 
 
