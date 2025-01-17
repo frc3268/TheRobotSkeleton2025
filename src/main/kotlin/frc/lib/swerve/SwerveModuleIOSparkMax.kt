@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkBase.ResetMode
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.SparkRelativeEncoder
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.util.Units
@@ -75,16 +76,17 @@ class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleCon
         angleMotor.setVoltage(volts)
     }
 
+    // TODO: Test
     override fun setDriveBrakeMode(enable: Boolean) {
-        driveMotor.setIdleMode(if (enable) IdleMode.kBrake else IdleMode.kCoast)
+        driveConfig.idleMode(if (enable) IdleMode.kBrake else IdleMode.kCoast)
     }
 
     override fun setTurnBrakeMode(enable: Boolean) {
-        angleMotor.setIdleMode(if (enable) IdleMode.kBrake else IdleMode.kCoast)
+        angleConfig.idleMode(if (enable) IdleMode.kBrake else IdleMode.kCoast)
     }
 
     override fun reset() {
-        driveEncoder.position = 0.0
-        angleEncoder.position = ((absoluteEncoder.get() * 360.0) + moduleConstants.ANGLE_OFFSET.degrees)
+        driveMotor.encoder.position = 0.0
+        angleMotor.encoder.position = ((absoluteEncoder.get() * 360.0) + moduleConstants.ANGLE_OFFSET.degrees)
     }
 }
