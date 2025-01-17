@@ -1,9 +1,11 @@
 package frc.lib.swerve
 
-import com.revrobotics.CANSparkBase.IdleMode
-import com.revrobotics.CANSparkLowLevel
-import com.revrobotics.CANSparkMax
-import com.revrobotics.RelativeEncoder
+import com.revrobotics.spark.SparkBase.PersistMode
+import com.revrobotics.spark.SparkBase.ResetMode
+import com.revrobotics.spark.SparkLowLevel
+import com.revrobotics.spark.SparkMax
+import com.revrobotics.spark.SparkRelativeEncoder
+import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.AnalogEncoder
@@ -14,13 +16,13 @@ import kotlin.math.IEEErem
 
 class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleConstants) : SwerveModuleIO {
 
-    private val driveMotor = CANSparkMax(moduleConstants.DRIVE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
-    private val angleMotor = CANSparkMax(moduleConstants.ANGLE_MOTOR_ID, CANSparkLowLevel.MotorType.kBrushless)
+    private val driveMotor = SparkMax(moduleConstants.DRIVE_MOTOR_ID, SparkLowLevel.MotorType.kBrushless)
+    private val angleMotor = SparkMax(moduleConstants.ANGLE_MOTOR_ID, SparkLowLevel.MotorType.kBrushless)
 
     override val turnPIDController: PIDController = moduleConstants.PID_CONTROLLER
 
-    private val driveEncoder: RelativeEncoder = driveMotor.encoder
-    private val angleEncoder: RelativeEncoder = angleMotor.encoder
+    private val driveConfig: SparkMaxConfig = SparkMaxConfig()
+    private val angleConfig: SparkMaxConfig = SparkMaxConfig()
 
     private val absoluteEncoder = AnalogEncoder(moduleConstants.ENCODER_ID)
 
@@ -29,29 +31,28 @@ class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleCon
     private val TURN_GEAR_RATIO: Double = 150.0 / 7.0
 
     init {
-                driveEncoder.positionConversionFactor =
-                    SwerveDriveConstants.DriveMotor.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION
-                driveEncoder.velocityConversionFactor =
-                    SwerveDriveConstants.DriveMotor.VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND
-                angleEncoder.positionConversionFactor =
-                    SwerveDriveConstants.AngleMotor.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
+                driveConfig.encoder.positionConversionFactor(SwerveDriveConstants.DriveMotor.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION)
+                driveConfig.encoder.velocityConversionFactor(SwerveDriveConstants.AngleMotor.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION)
 
-                driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
-                angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
+                // TODO: Stop using deprecated properties
+                driveConfig.inverted(moduleConstants.DRIVE_MOTOR_REVERSED)
+                angleConfig.inverted(moduleConstants.ANGLE_MOTOR_REVERSED)
 
-                driveMotor.setOpenLoopRampRate(SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS)
-                angleMotor.setOpenLoopRampRate(SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS)
+                driveConfig.openLoopRampRate(SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS)
+                angleConfig.openLoopRampRate(SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS)
 
-                driveMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
-                //todo: fix? below
-                angleMotor.setPeriodicFramePeriod(CANSparkLowLevel.PeriodicFrame.kStatus5, 15)
+
+                driveConfig.signals.primaryEncoderPositionPeriodMs(15)
+                driveConfig.signals.primaryEncoderPositionPeriodMs(15)
+                driveMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+                angleMotor.configure(angleConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters)
+
     }
-
     override fun updateInputs(inputs: ModuleIOInputs) {
         inputs.drivePositionMeters =
-            -driveEncoder.position
+            -driveMotor.encoder.position
         inputs.driveVelocityMetersPerSec =
-            -driveEncoder.velocity
+            -driveMotor.encoder.velocity
         inputs.driveAppliedVolts = driveMotor.appliedOutput * driveMotor.busVoltage
         inputs.driveCurrentAmps = doubleArrayOf(driveMotor.outputCurrent)
 
@@ -60,7 +61,7 @@ class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleCon
         inputs.turnPosition =
             ((-inputs.turnAbsolutePosition.degrees).IEEErem(360.0).rotation2dFromDeg())
         inputs.turnVelocityRadPerSec = (
-                Units.rotationsPerMinuteToRadiansPerSecond(angleEncoder.velocity)
+                Units.rotationsPerMinuteToRadiansPerSecond(angleMotor.encoder.velocity)
                         / TURN_GEAR_RATIO)
         inputs.turnAppliedVolts = angleMotor.appliedOutput * angleMotor.busVoltage
         inputs.turnCurrentAmps = doubleArrayOf(angleMotor.outputCurrent)
