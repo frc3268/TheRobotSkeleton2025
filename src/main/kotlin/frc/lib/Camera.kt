@@ -17,8 +17,8 @@ class Camera(name: String) {
     var frame = PhotonPipelineResult()
     private var poseEstimator: PhotonPoseEstimator? = null
 
-    private var cameraProp: SimCameraProperties? = null
-    private var visionSim: VisionSystemSim?: = null
+    //private var cameraProp: SimCameraProperties? = null
+    //private var visionSim: VisionSystemSim?: = null
 
     init {
         try {
@@ -47,28 +47,28 @@ class Camera(name: String) {
         }
 
         // FIXME: This will never be run  
-        if (Constants.mode == Constants.States.SIM) {
-            cameraProp = SimCameraProperties();
-            // Create the vision system simulation which handles cameras and targets on the field.
-            visionSim = VisionSystemSim("main");
-            // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
-            visionSim.addAprilTags(AprilTagFields.kDefaultField);
-            // Create simulated camera properties. These can be set to mimic your actual camera.
-            // TODO: Configure the camera!
-            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
-            cameraProp.setCalibError(0.35, 0.10);
-            cameraProp.setFPS(Constants.SimulationConstants.camFps);
-            cameraProp.setAvgLatencyMs(50);
-            cameraProp.setLatencyStdDevMs(15);
-            // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
-            // targets.
-            var cameraSim = PhotonCameraSim(camera, cameraProp);
-            // Add the simulated camera to view the targets on this simulated field.
-            visionSim.addCamera(cameraSim, robotToCam);
-
-            // Enable wireframe mode, this should be configureable
-            cameraSim.enableDrawWireframe(Constants.SimulationConstants.useWireframe);
-        }
+//        if (Constants.mode == Constants.States.SIM) {
+//            cameraProp = SimCameraProperties();
+//            // Create the vision system simulation which handles cameras and targets on the field.
+//            visionSim = VisionSystemSim("main");
+//            // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
+//            visionSim.addAprilTags(AprilTagFields.kDefaultField);
+//            // Create simulated camera properties. These can be set to mimic your actual camera.
+//            // TODO: Configure the camera!
+//            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
+//            cameraProp.setCalibError(0.35, 0.10);
+//            cameraProp.setFPS(Constants.SimulationConstants.camFps);
+//            cameraProp.setAvgLatencyMs(50);
+//            cameraProp.setLatencyStdDevMs(15);
+//            // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
+//            // targets.
+//            var cameraSim = PhotonCameraSim(camera, cameraProp);
+//            // Add the simulated camera to view the targets on this simulated field.
+//            visionSim.addCamera(cameraSim, robotToCam);
+//
+//            // Enable wireframe mode, this should be configureable
+//            cameraSim.enableDrawWireframe(Constants.SimulationConstants.useWireframe);
+//        }
         
     }
     //call periodically

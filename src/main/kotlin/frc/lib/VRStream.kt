@@ -2,6 +2,7 @@ package frc.lib
 
 import org.opencv.core.*
 import org.opencv.videoio.VideoCapture
+import edu.wpi.first.wpilibj.DriverStation
 
 class VRStream {
 
@@ -17,7 +18,7 @@ class VRStream {
             this.loaded = true;
         }
         else {
-            DriverStation.reportError("VRStream: Failed to Load")
+            //DriverStation.reportError("VRStream: Failed to Load")
         }
 
     }
