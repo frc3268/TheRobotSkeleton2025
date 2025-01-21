@@ -87,10 +87,11 @@ class SwerveAutoDrive(
 
     override fun isFinished(): Boolean {
         if (
-            abs(drive.getPose().x - next.x) < tolerance.x &&
-            abs(drive.getPose().y - next.y) < tolerance.y &&
-            (abs(drive.getPose().rotation.minus(next.rotation).degrees) < tolerance.rotation.degrees || index <= points.size - 1)
-        ) {
+            (abs(drive.getPose().x - next.x) < 0.5 &&
+            abs(drive.getPose().y - next.y) < 0.5) && index < points.size - 1 ||
+            (abs(drive.getPose().x - next.x) < tolerance.x &&
+                    abs(drive.getPose().y - next.y) < tolerance.y &&
+                    (abs(drive.getPose().rotation.minus(next.rotation).degrees) < tolerance.rotation.degrees) ) && index >= points.size - 1){
             if (index >= points.size - 1) {
                 return true
             }
