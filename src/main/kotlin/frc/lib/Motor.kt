@@ -1,16 +1,21 @@
 package frc.lib
 
-import com.revrobotics.CANSparkLowLevel
-import com.revrobotics.CANSparkMax
+import com.revrobotics.spark.SparkBase
+import com.revrobotics.spark.SparkMax
+import com.revrobotics.spark.SparkLowLevel
+import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.controller.ProfiledPIDController
 import edu.wpi.first.math.trajectory.TrapezoidProfile
+
 class Motor(id: Int, val positionPidController:ProfiledPIDController = ProfiledPIDController(0.0,0.0,0.0, TrapezoidProfile.Constraints(0.0,0.0)), val velocityPIDController: PIDController = PIDController(0.0,0.0,0.0), rotationsPerUnit: Double = 1.0) {
-    val controller = CANSparkMax(id, CANSparkLowLevel.MotorType.kBrushless)
-    val encoder = controller.encoder
+    val controller = SparkMax(id, SparkLowLevel.MotorType.kBrushless)
+    var config: SparkMaxConfig = SparkMaxConfig()
+
 
     init{
-        encoder.positionConversionFactor = 1/rotationsPerUnit
+        config.encoder.positionConversionFactor(1/rotationsPerUnit)
+        controller.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
     }
 
     fun setPercentOutput(percentOutput: Double){
@@ -34,6 +39,6 @@ class Motor(id: Int, val positionPidController:ProfiledPIDController = ProfiledP
     fun isAtVelocityGoal() = velocityPIDController.atSetpoint()
     fun isAtPositionGoal() = positionPidController.atGoal()
 
-    open fun getPositonMeasurement() = encoder.position
-    open fun getVelocityMeasurement() = encoder.velocity
+    open fun getPositonMeasurement() = controller.getEncoder().position
+    open fun getVelocityMeasurement() = controller.getEncoder().velocity
 }
