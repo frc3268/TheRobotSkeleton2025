@@ -1,18 +1,24 @@
 package frc.robot.coralintake
 
-import com.revrobotics.CANSparkLowLevel
-import com.revrobotics.CANSparkMax
+import com.revrobotics.spark.SparkBase
+import com.revrobotics.spark.SparkLowLevel
+import com.revrobotics.spark.SparkMax
+import com.revrobotics.spark.config.SparkMaxConfig
+
+
+
 
 class CoralIntakeIOSparkMax : CoralIntakeIO {
-    val motor = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
-    val encoder = motor.encoder
+    val motor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    var config = SparkMaxConfig()
 
     init {
-        encoder.positionConversionFactor = 0.0
+        config.encoder.positionConversionFactor(0.0)
+        motor.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
     }
 
     override fun updateInputs(inputs: CoralIntakeIO.Inputs) {
-        inputs.velocityMetersPerSec = encoder.velocity
+        inputs.velocityMetersPerSec = motor.getEncoder().velocity
         inputs.appliedVolts = motor.busVoltage
         inputs.currentAmps = doubleArrayOf(motor.outputCurrent)
     }
