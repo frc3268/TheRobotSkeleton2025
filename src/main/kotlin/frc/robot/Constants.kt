@@ -16,7 +16,9 @@ object Constants {
     }
 
     object SimulationConstants {
-        const val camFps = 15;
+        const val camFps = 15.0;
+        const val avgLatency = 50.0;
+        const val latencyStdDevMs = 15.0;
         const val useWireframe = true;
     }
 
@@ -26,5 +28,5 @@ object Constants {
     enum class States{REAL, SIM, REPLAY}
 
     //any way to make this not hardocded?
-    val mode = States.REAL
+    val mode = States.SIM
 }

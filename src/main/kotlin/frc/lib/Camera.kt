@@ -4,10 +4,14 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
 import edu.wpi.first.math.*
 import edu.wpi.first.math.geometry.*
+import frc.robot.Constants
 import edu.wpi.first.math.numbers.*
 import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.DriverStation
 import org.photonvision.*
+import org.photonvision.simulation.PhotonCameraSim
+import org.photonvision.simulation.SimCameraProperties
+import org.photonvision.simulation.VisionSystemSim
 import org.photonvision.targeting.*
 import java.io.IOException
 import java.util.*
@@ -17,23 +21,26 @@ class Camera(name: String) {
     var frame = PhotonPipelineResult()
     private var poseEstimator: PhotonPoseEstimator? = null
 
+    private var visionSim: VisionSystemSim? = null;
+
+    private var robotToCam = Transform3d(
+        Translation3d(
+            Units.inchesToMeters(0.0),
+            Units.inchesToMeters(12.0),
+            Units.inchesToMeters(15.0),
+        ),
+        Rotation3d(
+            0.0,
+            45.0,
+            0.0
+        )
+    )
+
     //private var cameraProp: SimCameraProperties? = null
     //private var visionSim: VisionSystemSim?: = null
 
     init {
         try {
-            var robotToCam = Transform3d(
-                Translation3d(
-                    Units.inchesToMeters(0.0),
-                    Units.inchesToMeters(12.0),
-                    Units.inchesToMeters(15.0),
-                ),
-                Rotation3d(
-                    0.0,
-                    45.0,
-                    0.0
-                )
-            )
 
             poseEstimator =
                     PhotonPoseEstimator(
@@ -47,29 +54,28 @@ class Camera(name: String) {
         }
 
         // FIXME: This will never be run  
-//        if (Constants.mode == Constants.States.SIM) {
-//            cameraProp = SimCameraProperties();
-//            // Create the vision system simulation which handles cameras and targets on the field.
-//            visionSim = VisionSystemSim("main");
-//            // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
-//            visionSim.addAprilTags(AprilTagFields.kDefaultField);
-//            // Create simulated camera properties. These can be set to mimic your actual camera.
-//            // TODO: Configure the camera!
-//            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
-//            cameraProp.setCalibError(0.35, 0.10);
-//            cameraProp.setFPS(Constants.SimulationConstants.camFps);
-//            cameraProp.setAvgLatencyMs(50);
-//            cameraProp.setLatencyStdDevMs(15);
-//            // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
-//            // targets.
-//            var cameraSim = PhotonCameraSim(camera, cameraProp);
-//            // Add the simulated camera to view the targets on this simulated field.
-//            visionSim.addCamera(cameraSim, robotToCam);
-//
-//            // Enable wireframe mode, this should be configureable
-//            cameraSim.enableDrawWireframe(Constants.SimulationConstants.useWireframe);
-//        }
-        
+        if (Constants.mode == Constants.States.SIM) {
+            val cameraProp = SimCameraProperties();
+            // Create the vision system simulation which handles cameras and targets on the field.
+            visionSim = VisionSystemSim("main");
+            // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
+            visionSim?.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
+            // Create simulated camera properties. These can be set to mimic your actual camera.
+            // TODO: Configure the camera!
+            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90.0));
+            cameraProp.setCalibError(0.35, 0.10);
+            cameraProp.setFPS(Constants.SimulationConstants.camFps);
+            cameraProp.setAvgLatencyMs(Constants.SimulationConstants.avgLatency);
+            cameraProp.setLatencyStdDevMs(Constants.SimulationConstants.latencyStdDevMs);
+            // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
+            // targets.
+            var cameraSim = PhotonCameraSim(limelight, cameraProp);
+            // Add the simulated camera to view the targets on this simulated field.
+            visionSim?.addCamera(cameraSim, robotToCam);
+
+            // Enable wireframe mode, this should be configureable
+            cameraSim.enableDrawWireframe(Constants.SimulationConstants.useWireframe);
+        }
     }
     //call periodically
     //does this work?? consult documentation
@@ -81,7 +87,7 @@ class Camera(name: String) {
     // called periodically in a simulation
     fun simPeriodic() {
         // Update with the simulated drivetrain pose. This should be called every loop in simulation.
-        // visionSim.update(robotPoseMeters);
+        visionSim?.update(poseEstimator?.referencePose);
     }
 
 
