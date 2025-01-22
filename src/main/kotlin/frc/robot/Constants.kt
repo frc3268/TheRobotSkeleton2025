@@ -16,10 +16,20 @@ object Constants {
     }
 
     object SimulationConstants {
-        const val camFps = 15.0;
-        const val avgLatency = 50.0;
-        const val latencyStdDevMs = 15.0;
-        const val useWireframe = true;
+        const val CAMERA_FPS = 15.0;
+        const val AVERAGE_LATENCY = 50.0;
+        const val LATENCY_STD_DEV_MS = 15.0;
+        const val USE_WIREFRAME = true;
+        const val ENABLE_RAW_STREAM = true;
+        const val ENABLE_PROCESSED_STREAM = true;
+    }
+
+    object SimulationCalibration {
+        const val RES_WIDTH = 960
+        const val RES_HEIGHT = 720
+        const val FOV_DIAG = 90.0
+        const val AVG_ERROR_PX = 0.35;
+        const val ERROR_STD_DEV_PX = 0.10;
     }
 
     const val TROUBLESHOOTING_TAB = "Troubleshooting"

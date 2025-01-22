@@ -61,19 +61,31 @@ class Camera(name: String) {
             visionSim?.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
             // Create simulated camera properties. These can be set to mimic your actual camera.
             // TODO: Configure the camera!
-            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90.0));
-            cameraProp.setCalibError(0.35, 0.10);
-            cameraProp.setFPS(Constants.SimulationConstants.camFps);
-            cameraProp.setAvgLatencyMs(Constants.SimulationConstants.avgLatency);
-            cameraProp.setLatencyStdDevMs(Constants.SimulationConstants.latencyStdDevMs);
+            cameraProp.setCalibration(
+                Constants.SimulationCalibration.RES_WIDTH,
+                Constants.SimulationCalibration.RES_HEIGHT,
+                Rotation2d.fromDegrees(Constants.SimulationCalibration.FOV_DIAG)
+            );
+            cameraProp.setCalibError(
+                Constants.SimulationCalibration.AVG_ERROR_PX,
+                Constants.SimulationCalibration.ERROR_STD_DEV_PX
+            );
+
+            cameraProp.setFPS(Constants.SimulationConstants.CAMERA_FPS);
+            cameraProp.setAvgLatencyMs(Constants.SimulationConstants.AVERAGE_LATENCY);
+            cameraProp.setLatencyStdDevMs(Constants.SimulationConstants.LATENCY_STD_DEV_MS);
             // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
             // targets.
             var cameraSim = PhotonCameraSim(limelight, cameraProp);
             // Add the simulated camera to view the targets on this simulated field.
             visionSim?.addCamera(cameraSim, robotToCam);
 
-            // Enable wireframe mode, this should be configureable
-            cameraSim.enableDrawWireframe(Constants.SimulationConstants.useWireframe);
+            // Enable the raw and processed streams. These are enabled by default.
+            cameraSim.enableRawStream(Constants.SimulationConstants.ENABLE_RAW_STREAM);
+            cameraSim.enableProcessedStream(Constants.SimulationConstants.ENABLE_PROCESSED_STREAM);
+
+            // Enable wireframe mode.
+            cameraSim.enableDrawWireframe(Constants.SimulationConstants.USE_WIREFRAME);
         }
     }
     //call periodically
