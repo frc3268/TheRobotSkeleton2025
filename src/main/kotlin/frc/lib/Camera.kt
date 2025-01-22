@@ -53,7 +53,6 @@ class Camera(name: String) {
             // !add some way to lock down apriltage features after this
         }
 
-        // FIXME: This will never be run  
         if (Constants.mode == Constants.States.SIM) {
             val cameraProp = SimCameraProperties();
             // Create the vision system simulation which handles cameras and targets on the field.
