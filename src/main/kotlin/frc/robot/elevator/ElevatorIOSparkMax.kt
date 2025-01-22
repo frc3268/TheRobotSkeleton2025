@@ -1,33 +1,38 @@
 package frc.robot.elevator
 
-import com.revrobotics.CANSparkLowLevel
-import com.revrobotics.CANSparkMax
+import com.revrobotics.spark.SparkBase
+import com.revrobotics.spark.SparkLowLevel
+import com.revrobotics.spark.SparkMax
+import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
 import frc.lib.swerve.ElevatorIO
 
-class ElevatorIOSparkMax(override val pidController: PIDController) :ElevatorIO {
-    val leftMotor = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
-    val rightMotor = CANSparkMax(0, CANSparkLowLevel.MotorType.kBrushless)
 
-    val leftEncoder = leftMotor.encoder
-    val rightEncoder = rightMotor.encoder
+class ElevatorIOSparkMax(override val pidController: PIDController) :ElevatorIO {
+    val leftMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    val rightMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+
+    var leftConfig = SparkMaxConfig()
+    var rightConfig = SparkMaxConfig()
 
     init{
-        leftEncoder.positionConversionFactor = 0.0
-        rightEncoder.positionConversionFactor = 0.0
+        leftConfig.encoder.positionConversionFactor(0.0)
+        rightConfig.encoder.positionConversionFactor(0.0)
 
+        leftMotor.configure(leftConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+        rightMotor.configure(rightConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
     }
     override fun updateInputs(inputs: ElevatorIO.Inputs) {
         //this forumla may need to me changed to reflect the reality
-        inputs.elevatorPositionMeters = (leftEncoder.position + rightEncoder.position) / 2
-        inputs.rightMotorPositionMeters = rightEncoder.position
-        inputs.leftMotorPositionMeters = leftEncoder.position
+        inputs.elevatorPositionMeters = (leftMotor.encoder.position + rightMotor.encoder.position) / 2
+        inputs.rightMotorPositionMeters = rightMotor.encoder.position
+        inputs.leftMotorPositionMeters = leftMotor.encoder.position
         inputs.rightMotorCurrentAmps = doubleArrayOf(rightMotor.outputCurrent)
         inputs.leftMotorCurrentAmps = doubleArrayOf(leftMotor.outputCurrent)
         inputs.rightMotorAppliedVolts = rightMotor.busVoltage * rightMotor.appliedOutput
         inputs.leftMotorAppliedVolts = leftMotor.busVoltage * leftMotor.appliedOutput
-        inputs.rightMotorVelocityMetersPerSec = rightEncoder.velocity
-        inputs.leftMotorVelocityMetersPerSec = leftEncoder.velocity
+        inputs.rightMotorVelocityMetersPerSec = rightMotor.encoder.velocity
+        inputs.leftMotorVelocityMetersPerSec = leftMotor.encoder.velocity
     }
 
     override fun setBothVolts(volts: Double) {
@@ -36,8 +41,8 @@ class ElevatorIOSparkMax(override val pidController: PIDController) :ElevatorIO 
     }
 
     override fun reset() {
-        rightEncoder.position = 0.0
-        leftEncoder.position = 0.0
+        rightMotor.encoder.position = 0.0
+        leftMotor.encoder.position = 0.0
     }
 
     override fun stop() {
