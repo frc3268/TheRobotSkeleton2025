@@ -56,6 +56,10 @@ class RobotContainer {
         "goToProcessor" to { goto(FieldPositions.processor) }
     )
 
+
+    val grid = Json.decodeFromStream<gridFile>(
+        File(Filesystem.getDeployDirectory().toString() + "/pathplanner/navgrid.json").inputStream()).grid
+
     fun goto(goal: FieldLocation): Command {
         val color = DriverStation.getAlliance()
         val to =
@@ -65,7 +69,8 @@ class RobotContainer {
                 goal.blue
         return SwerveAutoDrive(
             {to},
-            driveSubsystem
+            driveSubsystem,
+            grid
         )
     }
 
