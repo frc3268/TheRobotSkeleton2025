@@ -25,6 +25,5 @@ object Constants {
 
     enum class States{REAL, SIM, REPLAY}
 
-    //any way to make this not hardocded?
-    val mode = States.REAL
+    var mode = States.REAL
 }

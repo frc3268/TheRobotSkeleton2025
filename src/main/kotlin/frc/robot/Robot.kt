@@ -35,13 +35,16 @@ class Robot: LoggedRobot() {
         Logger.recordMetadata("ProjectName", "MyProject") // Set a metadata value
 
         if (isReal()) {
+            Constants.mode = Constants.States.REAL
             // Logger.addDataReceiver(WPILOGWriter()) // Log to a USB stick ("/U/logs")
             Logger.addDataReceiver(NT4Publisher()) // Publish data to NetworkTables
             PowerDistribution(1, PowerDistribution.ModuleType.kRev) // Enables power distribution logging
         }else if (isSimulation()){
+            Constants.mode = Constants.States.SIM
             // Running a physics simulator, log to NT
             Logger.addDataReceiver(NT4Publisher())
-        } else if (Constants.mode == Constants.States.REPLAY){
+        } else {
+            Constants.mode = Constants.States.REPLAY
             setUseTiming(false) // Run as fast as possible
             val logPath = LogFileUtil.findReplayLog() // Pull the replay log from AdvantageScope (or prompt the user)
             Logger.setReplaySource(WPILOGReader(logPath)) // Read replay log
