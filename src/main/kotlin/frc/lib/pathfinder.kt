@@ -10,23 +10,6 @@ import kotlin.math.pow
 
 data class Point ( val loc:Pair<Int,Int>, val from: Point?)
 
-fun get_g(loc: Pair<Int, Int>, from: Point?, g: Double): Double {
-    var currentG = g
-    var currentFrom = from
-
-    while (currentFrom?.from != null) {
-        currentG++
-        currentFrom = currentFrom.from
-    }
-
-    if (currentFrom != null) {
-        currentG++
-    }
-
-    return currentG
-}
-
-
 fun get_f(loc: Pair<Int, Int>, dest: Pair<Int, Int>) = pow(pow(loc.first.toDouble() - dest.first.toDouble(), 2.0) + pow(loc.second.toDouble() - dest.second.toDouble(), 2.0), 0.5)
 
 fun construct_path(closed:MutableList<Point>) : MutableList<Pose2d>{
