@@ -56,7 +56,7 @@ class Camera(name: String) {
         if (Constants.mode == Constants.States.SIM) {
             val cameraProp = SimCameraProperties();
             // Create the vision system simulation which handles cameras and targets on the field.
-            visionSim = VisionSystemSim("main");
+            visionSim = VisionSystemSim(name);
             // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
             visionSim?.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
             // Create simulated camera properties. These can be set to mimic your actual camera.
