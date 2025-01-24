@@ -114,8 +114,9 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
                 180.0, -180.0
         )
-        
-        if(Constants.mode == Constants.States.REAL){
+
+        // This might still work in REPLAY mode
+        if(Constants.mode != Constants.States.REPLAY){
             camera = Camera("hawkeye")
         }
 
