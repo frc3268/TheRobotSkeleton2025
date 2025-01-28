@@ -10,7 +10,7 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
         io.updateInputs(inputs)
     }
 
-    fun setVoltage(voltage: Double): Command = runOnce { io.setVoltage(voltage) }
+    fun setWheelVoltage(voltage: Double): Command = runOnce { io.setWheelVoltage(voltage) }
 
     fun stop(): Command = runOnce{ io.stop() }
 }

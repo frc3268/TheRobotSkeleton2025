@@ -23,7 +23,7 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
         inputs.currentAmps = doubleArrayOf(motor.outputCurrent)
     }
 
-    override fun setVoltage(voltage: Double) {
+    override fun setWheelVoltage(voltage: Double) {
         motor.setVoltage(voltage)
     }
 
