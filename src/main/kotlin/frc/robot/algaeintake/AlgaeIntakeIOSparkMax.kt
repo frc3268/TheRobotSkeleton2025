@@ -76,6 +76,4 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     override fun stopRight() {
         rightMotor.stopMotor()
     }
-
-
 }
