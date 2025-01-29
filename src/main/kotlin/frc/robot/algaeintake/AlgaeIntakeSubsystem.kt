@@ -1,6 +1,6 @@
 package frc.robot.algaeintake
 
-import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
 class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
@@ -19,7 +19,7 @@ class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
 
     }
 
-    fun riseFromBool(shouldRaise: Boolean): Command = runOnce {
+    fun raiseFromBool(shouldRaise: Boolean): Command = runOnce {
         if (shouldRaise) {
             raise()
         }

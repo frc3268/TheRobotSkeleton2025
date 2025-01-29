@@ -4,26 +4,33 @@ import frc.robot.coralintake.CoralIntakeIO
 import org.littletonrobotics.junction.AutoLog
 import org.littletonrobotics.junction.LogTable
 import org.littletonrobotics.junction.inputs.LoggableInputs
+import edu.wpi.first.math.controller.PIDController
 
 interface AlgaeIntakeIO {
     @AutoLog
     open class Inputs {
-        var appliedVolts: Double = 0.0
-        var velocityMetersPerSec: Double = 0.0
-        var currentAmps: DoubleArray = doubleArrayOf()
+        var jointAppliedVolts: Double = 0.0
+        var jointVelocityMetersPerSec: Double = 0.0
+        var jointCurrentAmps: DoubleArray = doubleArrayOf()
+
+        var rightAppliedVolts: Double = 0.0
+        var rightVelocityMetersPerSec: Double = 0.0
+        var rightCurrentAmps: DoubleArray = doubleArrayOf()
     }
+
+    val pidController: PIDController
 
     class LoggedInputs : Inputs(), LoggableInputs {
         override fun toLog(table: LogTable) {
-            table.put("appliedVolts", appliedVolts)
-            table.put("velocityMetersPerSec", velocityMetersPerSec)
-            table.put("currentAmps", currentAmps)
+            table.put("jointAppliedVolts", jointAppliedVolts)
+            table.put("jointVelocityMetersPerSec", jointVelocityMetersPerSec)
+            table.put("jointCurrentAmps", jointCurrentAmps)
         }
 
         override fun fromLog(table: LogTable) {
-            table.get("appliedVolts", appliedVolts)
-            table.get("velocityMetersPerSec", velocityMetersPerSec)
-            table.get("currentAmps", currentAmps)
+            table.get("jointAppliedVolts", jointAppliedVolts)
+            table.get("jointVelocityMetersPerSec", jointVelocityMetersPerSec)
+            table.get("jointCurrentAmps", jointCurrentAmps)
         }
     }
 
@@ -33,7 +40,7 @@ interface AlgaeIntakeIO {
 
     fun toggle()
     // Raise if shouldRaise is true
-    fun riseFromBool(shouldRaise: Boolean)
+    fun raiseFromBool(shouldRaise: Boolean)
     fun raise()
     fun lower()
 

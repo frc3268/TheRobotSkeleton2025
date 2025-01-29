@@ -3,31 +3,40 @@ package frc.robot.algaeintake
 import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.config.SparkMaxConfig
+import edu.wpi.first.math.controller.PIDController
 
 
 class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
-    val motor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
-    var config = SparkMaxConfig()
+    val rightMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    var rightConfig = SparkMaxConfig()
+
+    val leftMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    var leftConfig = SparkMaxConfig()
+
+    val jointMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    var jointConfig = SparkMaxConfig()
+
+    override val pidController = PIDController(0.0, 0.0, 0.0)
 
     init {
-        config.encoder.positionConversionFactor(0.0)
+        jointConfig.encoder.positionConversionFactor(0.0)
     }
 
     override fun updateInputs(inputs: AlgaeIntakeIO.Inputs) {
-        inputs.velocityMetersPerSec = motor.getEncoder().velocity
-        inputs.appliedVolts = motor.busVoltage
-        inputs.currentAmps = doubleArrayOf(motor.outputCurrent)
+        inputs.jointVelocityMetersPerSec = jointMotor.getEncoder().velocity
+        inputs.jointAppliedVolts = jointMotor.busVoltage
+        inputs.jointCurrentAmps = doubleArrayOf(jointMotor.outputCurrent)
     }
 
     override fun setVoltage(voltage: Double) {
-        motor.setVoltage(voltage)
+        jointMotor.setVoltage(voltage)
     }
 
     override fun toggle() {
 
     }
 
-    override fun riseFromBool(shouldRaise: Boolean) {
+    override fun raiseFromBool(shouldRaise: Boolean) {
         if (shouldRaise) {
             raise()
         }
@@ -36,10 +45,15 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
         }
     }
 
-    override fun raise() {}
+    override fun raise() {
+        //join.set(pidcontroller.calculuate(encoder measurmenet, 0.0)
+        // or something idfk
+    }
     override fun lower() {}
 
     override fun stop() {
-        motor.stopMotor()
+        jointMotor.stopMotor()
+        leftMotor.stopMotor()
+        rightMotor.stopMotor()
     }
 }
