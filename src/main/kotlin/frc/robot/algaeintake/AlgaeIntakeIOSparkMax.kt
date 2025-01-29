@@ -9,11 +9,11 @@ import frc.lib.rotation2dFromDeg
 
 
 class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
-    val rightMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
-    var rightConfig = SparkMaxConfig()
+    val mainMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    var mainConfig = SparkMaxConfig()
 
-    val leftMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
-    var leftConfig = SparkMaxConfig()
+    val revMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    var revConfig = SparkMaxConfig()
 
     val jointMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
     var jointConfig = SparkMaxConfig()
@@ -22,11 +22,11 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
 
     init {
         jointConfig.encoder.positionConversionFactor(0.0)
-        leftConfig.encoder.positionConversionFactor(0.0)
-        rightConfig.encoder.positionConversionFactor(0.0)
+        revConfig.encoder.positionConversionFactor(0.0)
+        mainConfig.encoder.positionConversionFactor(0.0)
 
-        leftMotor.configure(leftConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
-        rightMotor.configure(rightConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+        revMotor.configure(revConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+        mainMotor.configure(mainConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
         jointMotor.configure(jointConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
     }
 
@@ -36,44 +36,44 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
         inputs.jointAppliedVolts = jointMotor.busVoltage
         inputs.jointCurrentAmps = doubleArrayOf(jointMotor.outputCurrent)
 
-        inputs.leftVelocityMetersPerSec = leftMotor.getEncoder().velocity
-        inputs.leftAppliedVolts = leftMotor.busVoltage
-        inputs.leftCurrentAmps = doubleArrayOf(leftMotor.outputCurrent)
+        inputs.revVelocityMetersPerSec = revMotor.getEncoder().velocity
+        inputs.revAppliedVolts = revMotor.busVoltage
+        inputs.revCurrentAmps = doubleArrayOf(revMotor.outputCurrent)
 
-        inputs.rightVelocityMetersPerSec = rightMotor.getEncoder().velocity
-        inputs.rightAppliedVolts = rightMotor.busVoltage
-        inputs.rightCurrentAmps = doubleArrayOf(rightMotor.outputCurrent)
+        inputs.mainVelocityMetersPerSec = mainMotor.getEncoder().velocity
+        inputs.mainAppliedVolts = mainMotor.busVoltage
+        inputs.mainCurrentAmps = doubleArrayOf(mainMotor.outputCurrent)
     }
 
     override fun setJointVoltage(voltage: Double) {
         jointMotor.setVoltage(voltage)
     }
-    override fun setLeftAndRightVoltage(voltage: Double) {
-        setLeftVoltage(voltage)
-        setRightVoltage(-voltage)
+    override fun setMainAndRevVoltage(voltage: Double) {
+        setRevVolate(voltage)
+        setMainVoltage(-voltage)
     }
-    override fun setLeftVoltage(voltage: Double) {
-        leftMotor.setVoltage(voltage)
+    override fun setRevVolate(voltage: Double) {
+        revMotor.setVoltage(voltage)
     }
-    override fun setRightVoltage(voltage: Double) {
-        rightMotor.setVoltage(voltage)
+    override fun setMainVoltage(voltage: Double) {
+        mainMotor.setVoltage(voltage)
     }
 
     override fun stop() {
         stopJoint()
-        stopLeft()
-        stopRight()
+        stopRev()
+        stopMain()
     }
 
     override fun stopJoint() {
         jointMotor.stopMotor()
     }
 
-    override fun stopLeft() {
-        leftMotor.stopMotor()
+    override fun stopRev() {
+        revMotor.stopMotor()
     }
 
-    override fun stopRight() {
-        rightMotor.stopMotor()
+    override fun stopMain() {
+        mainMotor.stopMotor()
     }
 }

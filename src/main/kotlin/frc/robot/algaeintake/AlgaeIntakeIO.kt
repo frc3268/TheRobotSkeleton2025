@@ -2,12 +2,9 @@ package frc.robot.algaeintake
 
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
-import frc.robot.coralintake.CoralIntakeIO
 import org.littletonrobotics.junction.AutoLog
 import org.littletonrobotics.junction.LogTable
 import org.littletonrobotics.junction.inputs.LoggableInputs
-import edu.wpi.first.math.controller.PIDController
-import edu.wpi.first.math.geometry.Rotation2d
 
 interface AlgaeIntakeIO {
     @AutoLog
@@ -17,13 +14,13 @@ interface AlgaeIntakeIO {
         var jointVelocityMetersPerSec: Double = 0.0
         var jointCurrentAmps: DoubleArray = doubleArrayOf()
 
-        var rightAppliedVolts: Double = 0.0
-        var rightVelocityMetersPerSec: Double = 0.0
-        var rightCurrentAmps: DoubleArray = doubleArrayOf()
+        var mainAppliedVolts: Double = 0.0
+        var mainVelocityMetersPerSec: Double = 0.0
+        var mainCurrentAmps: DoubleArray = doubleArrayOf()
 
-        var leftAppliedVolts: Double = 0.0
-        var leftVelocityMetersPerSec: Double = 0.0
-        var leftCurrentAmps: DoubleArray = doubleArrayOf()
+        var revAppliedVolts: Double = 0.0
+        var revVelocityMetersPerSec: Double = 0.0
+        var revCurrentAmps: DoubleArray = doubleArrayOf()
     }
 
     val pidController: PIDController
@@ -35,13 +32,13 @@ interface AlgaeIntakeIO {
             table.put("jointVelocityMetersPerSec", jointVelocityMetersPerSec)
             table.put("jointCurrentAmps", jointCurrentAmps)
 
-            table.put("rightAppliedVolts", rightAppliedVolts)
-            table.put("rightVelocityMetersPerSec", rightVelocityMetersPerSec)
-            table.put("rightCurrentAmps", rightCurrentAmps)
+            table.put("rightAppliedVolts", mainAppliedVolts)
+            table.put("rightVelocityMetersPerSec", mainVelocityMetersPerSec)
+            table.put("rightCurrentAmps", mainCurrentAmps)
 
-            table.put("leftAppliedVolts", leftAppliedVolts)
-            table.put("leftVelocityMetersPerSec", leftVelocityMetersPerSec)
-            table.put("leftCurrentAmps", leftCurrentAmps)
+            table.put("leftAppliedVolts", revAppliedVolts)
+            table.put("leftVelocityMetersPerSec", revVelocityMetersPerSec)
+            table.put("leftCurrentAmps", revCurrentAmps)
         }
 
         override fun fromLog(table: LogTable) {
@@ -50,23 +47,23 @@ interface AlgaeIntakeIO {
             table.get("jointVelocityMetersPerSec", jointVelocityMetersPerSec)
             table.get("jointCurrentAmps", jointCurrentAmps)
 
-            table.get("rightAppliedVolts", rightAppliedVolts)
-            table.get("rightVelocityMetersPerSec", rightVelocityMetersPerSec)
-            table.get("rightCurrentAmps", rightCurrentAmps)
+            table.get("rightAppliedVolts", mainAppliedVolts)
+            table.get("rightVelocityMetersPerSec", mainVelocityMetersPerSec)
+            table.get("rightCurrentAmps", mainCurrentAmps)
 
-            table.get("leftAppliedVolts", leftAppliedVolts)
-            table.get("leftVelocityMetersPerSec", leftVelocityMetersPerSec)
-            table.get("leftCurrentAmps", leftCurrentAmps)
+            table.get("leftAppliedVolts", revAppliedVolts)
+            table.get("leftVelocityMetersPerSec", revVelocityMetersPerSec)
+            table.get("leftCurrentAmps", revCurrentAmps)
         }
     }
 
     fun updateInputs(inputs: Inputs)
     fun setJointVoltage(voltage: Double)
-    fun setLeftAndRightVoltage(voltage: Double)
-    fun setLeftVoltage(voltage: Double)
-    fun setRightVoltage(voltage: Double)
+    fun setMainAndRevVoltage(voltage: Double)
+    fun setRevVolate(voltage: Double)
+    fun setMainVoltage(voltage: Double)
     fun stop()
-    fun stopRight()
-    fun stopLeft()
+    fun stopMain()
+    fun stopRev()
     fun stopJoint()
 }
