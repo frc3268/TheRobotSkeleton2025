@@ -31,5 +31,11 @@ interface AlgaeIntakeIO {
 
     fun setVoltage(voltage: Double)
 
+    fun toggle()
+    // Raise if shouldRaise is true
+    fun riseFromBool(shouldRaise: Boolean)
+    fun raise()
+    fun lower()
+
     fun stop()
 }

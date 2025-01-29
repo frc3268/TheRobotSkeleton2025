@@ -13,4 +13,21 @@ class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
     fun setVoltage(voltage: Double): Command = runOnce { io.setVoltage(voltage) }
 
     fun stop(): Command = runOnce{ io.stop() }
+
+
+    fun toggle(): Command = runOnce {
+
+    }
+
+    fun riseFromBool(shouldRaise: Boolean): Command = runOnce {
+        if (shouldRaise) {
+            raise()
+        }
+        else {
+            lower()
+        }
+    }
+
+    fun raise(): Command = runOnce {}
+    fun lower(): Command = runOnce {}
 }
