@@ -12,6 +12,10 @@ class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
 
     fun setVoltage(voltage: Double): Command = runOnce { io.setJointVoltage(voltage) }
 
+    fun setLeftAndRightVoltage(voltage: Double) { io.setLeftAndRightVoltage(voltage) }
+    fun setLeftVoltage(voltage: Double) { io.setLeftVoltage(voltage) }
+    fun setRightVoltage(voltage: Double) { io.setRightVoltage(voltage) }
+
     fun stopAll(): Command = runOnce{ io.stopAll() }
     fun stopJoint(): Command = runOnce{ io.stopJoint() }
     fun stopLeftAndRight(): Command = runOnce{ io.stopLeftAndRight() }

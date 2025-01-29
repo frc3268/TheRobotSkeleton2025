@@ -57,6 +57,9 @@ interface AlgaeIntakeIO {
     fun updateInputs(inputs: Inputs)
 
     fun setJointVoltage(voltage: Double)
+    fun setLeftAndRightVoltage(voltage: Double)
+    fun setLeftVoltage(voltage: Double)
+    fun setRightVoltage(voltage: Double)
 
     fun toggle()
     // Raise if shouldRaise is true
