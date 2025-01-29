@@ -17,9 +17,20 @@ class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
     fun stopAll(): Command = runOnce{ io.stop() }
     fun stopJoint(): Command = runOnce{ io.stopJoint() }
     fun stopLeftAndRight(): Command = runOnce{ io.stopRight() }.alongWith(runOnce { io.stopLeft()})
-    fun toggle(): Command = if (inputs.jointAngle.degrees > 0.0) { raise()} else if (inputs.jointAngle.degrees < 0.0) {lower()} else {runOnce{}}
+    fun toggle(): Command = if (inputs.jointAngle.degrees > 0.0) {
+        raise()
+    } else if (inputs.jointAngle.degrees < 0.0) {
+        lower()
+    } else {
+        runOnce{}
+    }
 
 
-    fun raise(): Command = runOnce { io.setJointVoltage(io.pidController.calculate(0.0, 0.0)) }.until({inputs.jointAngle.degrees > 0.0})
-    fun lower(): Command = runOnce { io.setJointVoltage(io.pidController.calculate(0.0, 0.0)) }.until({inputs.jointAngle.degrees < 0.0})
+    fun raise(): Command = runOnce {
+        io.setJointVoltage(io.pidController.calculate(0.0, 0.0))
+    }.until { inputs.jointAngle.degrees > 0.0 }
+
+    fun lower(): Command = runOnce {
+        io.setJointVoltage(io.pidController.calculate(0.0, 0.0))
+    }.until { inputs.jointAngle.degrees < 0.0 }
 }
