@@ -59,4 +59,10 @@ interface AlgaeIntakeIO {
     fun setJointVoltage(voltage: Double)
 
     fun stop()
+
+    fun stopRight()
+
+    fun stopLeft()
+
+    fun stopJoint()
 }

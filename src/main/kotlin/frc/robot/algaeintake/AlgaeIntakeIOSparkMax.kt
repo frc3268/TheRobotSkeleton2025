@@ -53,33 +53,17 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
         jointMotor.stopMotor()
     }
 
-
-    override fun raiseFromBool(shouldRaise: Boolean) {
-        if (shouldRaise) {
-            raise()
-        }
-        else {
-            lower()
-        }
-    }
-
-    override fun raise() {
-        //join.set(pidcontroller.calculuate(encoder measurmenet, 0.0)
-        // or something idfk
-    }
-    override fun lower() {}
-
-    override fun stopAll() {
-        stopJoint()
-        stopLeftAndRight()        
-    }
-
     override fun stopJoint() {
         jointMotor.stopMotor()
     }
 
-    override fun stopLeftAndRight() {
+    override fun stopLeft() {
         leftMotor.stopMotor()
+    }
+
+    override fun stopRight() {
         rightMotor.stopMotor()
     }
+
+
 }
