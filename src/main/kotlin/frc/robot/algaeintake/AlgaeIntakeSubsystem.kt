@@ -10,19 +10,16 @@ class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
         io.updateInputs(inputs)
     }
 
-    fun setVoltage(voltage: Double): Command = runOnce { io.setJointVoltage(voltage) }
+    fun intake():Command = run { io.setLeftAndRightVoltage(0.3 * 12.0) }.withTimeout(1.5)
 
-    fun setLeftAndRightVoltage(voltage: Double) { io.setLeftAndRightVoltage(voltage) }
-    fun setLeftVoltage(voltage: Double) { io.setLeftVoltage(voltage) }
-    fun setRightVoltage(voltage: Double) { io.setRightVoltage(voltage) }
+    fun outtake():Command = run { io.setLeftAndRightVoltage(-0.3 * 12.0) }.withTimeout(1.5)
 
-    fun stopAll(): Command = runOnce{ io.stopAll() }
+    fun stopAll(): Command = runOnce{ io.stop() }
     fun stopJoint(): Command = runOnce{ io.stopJoint() }
-    fun stopLeftAndRight(): Command = runOnce{ io.stopLeftAndRight() }
-    fun toggle(): Command = runOnce { io.toggle() }
+    fun stopLeftAndRight(): Command = runOnce{ io.stopRight() }.alongWith(runOnce { io.stopLeft()})
+    fun toggle(): Command = if (inputs.jointAngle.degrees > 0.0) { raise()} else if (inputs.jointAngle.degrees < 0.0) {lower()} else {runOnce{}}
 
-    fun raiseFromBool(shouldRaise: Boolean): Command = runOnce { io.raiseFromBool(shouldRaise) }
 
-    fun raise(): Command = runOnce { io.raise() }
-    fun lower(): Command = runOnce { io.lower() }
+    fun raise(): Command = runOnce { io.setJointVoltage(io.pidController.calculate(0.0, 0.0)) }.until({inputs.jointAngle.degrees > 0.0})
+    fun lower(): Command = runOnce { io.setJointVoltage(io.pidController.calculate(0.0, 0.0)) }.until({inputs.jointAngle.degrees < 0.0})
 }

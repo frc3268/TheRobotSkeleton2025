@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
+import frc.lib.rotation2dFromDeg
 
 
 class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
@@ -30,6 +31,7 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     }
 
     override fun updateInputs(inputs: AlgaeIntakeIO.Inputs) {
+        inputs.jointAngle = jointMotor.encoder.position.rotation2dFromDeg()
         inputs.jointVelocityMetersPerSec = jointMotor.getEncoder().velocity
         inputs.jointAppliedVolts = jointMotor.busVoltage
         inputs.jointCurrentAmps = doubleArrayOf(jointMotor.outputCurrent)
@@ -48,7 +50,7 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     }
     override fun setLeftAndRightVoltage(voltage: Double) {
         setLeftVoltage(voltage)
-        setRightVoltage(voltage)
+        setRightVoltage(-voltage)
     }
     override fun setLeftVoltage(voltage: Double) {
         leftMotor.setVoltage(voltage)
@@ -57,8 +59,10 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
         rightMotor.setVoltage(voltage)
     }
 
-    override fun toggle() {
-
+    override fun stop() {
+        rightMotor.stopMotor()
+        leftMotor.stopMotor()
+        jointMotor.stopMotor()
     }
 
     override fun stopJoint() {
