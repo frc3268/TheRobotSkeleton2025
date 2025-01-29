@@ -10,7 +10,7 @@ class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
         io.updateInputs(inputs)
     }
 
-    fun setVoltage(voltage: Double): Command = runOnce { io.setVoltage(voltage) }
+    fun setVoltage(voltage: Double): Command = runOnce { io.setWheelVoltage(voltage) }
 
     fun stop(): Command = runOnce{ io.stop() }
 }
