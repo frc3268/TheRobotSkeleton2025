@@ -19,6 +19,6 @@ class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
 
     fun raiseFromBool(shouldRaise: Boolean): Command = runOnce { io.raiseFromBool(shouldRaise) }
 
-    fun raise(): Command = runOnce {}
-    fun lower(): Command = runOnce {}
+    fun raise(): Command = runOnce { io.raise() }
+    fun lower(): Command = runOnce { io.lower() }
 }
