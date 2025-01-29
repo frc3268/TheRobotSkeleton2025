@@ -16,6 +16,10 @@ interface AlgaeIntakeIO {
         var rightAppliedVolts: Double = 0.0
         var rightVelocityMetersPerSec: Double = 0.0
         var rightCurrentAmps: DoubleArray = doubleArrayOf()
+
+        var leftAppliedVolts: Double = 0.0
+        var leftVelocityMetersPerSec: Double = 0.0
+        var leftCurrentAmps: DoubleArray = doubleArrayOf()
     }
 
     val pidController: PIDController
@@ -25,12 +29,28 @@ interface AlgaeIntakeIO {
             table.put("jointAppliedVolts", jointAppliedVolts)
             table.put("jointVelocityMetersPerSec", jointVelocityMetersPerSec)
             table.put("jointCurrentAmps", jointCurrentAmps)
+
+            table.put("rightAppliedVolts", rightAppliedVolts)
+            table.put("rightVelocityMetersPerSec", rightVelocityMetersPerSec)
+            table.put("rightCurrentAmps", rightCurrentAmps)
+
+            table.put("leftAppliedVolts", leftAppliedVolts)
+            table.put("leftVelocityMetersPerSec", leftVelocityMetersPerSec)
+            table.put("leftCurrentAmps", leftCurrentAmps)
         }
 
         override fun fromLog(table: LogTable) {
             table.get("jointAppliedVolts", jointAppliedVolts)
             table.get("jointVelocityMetersPerSec", jointVelocityMetersPerSec)
             table.get("jointCurrentAmps", jointCurrentAmps)
+
+            table.get("rightAppliedVolts", rightAppliedVolts)
+            table.get("rightVelocityMetersPerSec", rightVelocityMetersPerSec)
+            table.get("rightCurrentAmps", rightCurrentAmps)
+
+            table.get("leftAppliedVolts", leftAppliedVolts)
+            table.get("leftVelocityMetersPerSec", leftVelocityMetersPerSec)
+            table.get("leftCurrentAmps", leftCurrentAmps)
         }
     }
 
@@ -45,4 +65,6 @@ interface AlgaeIntakeIO {
     fun lower()
 
     fun stopAll()
+    fun stopJoint()
+    fun stopLeftAndRight()
 }
