@@ -46,7 +46,6 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     override fun setJointVoltage(voltage: Double) {
         jointMotor.setVoltage(voltage)
     }
-
     override fun setLeftAndRightVoltage(voltage: Double) {
         setLeftVoltage(voltage)
         setRightVoltage(voltage)
@@ -61,6 +60,7 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     override fun toggle() {
 
     }
+
 
     override fun raiseFromBool(shouldRaise: Boolean) {
         if (shouldRaise) {
