@@ -44,5 +44,5 @@ interface AlgaeIntakeIO {
     fun raise()
     fun lower()
 
-    fun stop()
+    fun stopAll()
 }
