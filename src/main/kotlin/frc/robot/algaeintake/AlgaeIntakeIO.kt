@@ -58,13 +58,5 @@ interface AlgaeIntakeIO {
 
     fun setJointVoltage(voltage: Double)
 
-    fun toggle()
-    // Raise if shouldRaise is true
-    fun raiseFromBool(shouldRaise: Boolean)
-    fun raise()
-    fun lower()
-
-    fun stopAll()
-    fun stopJoint()
-    fun stopLeftAndRight()
+    fun stop()
 }
