@@ -1,5 +1,7 @@
 package frc.robot.algaeintake
 
+import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.math.geometry.Rotation2d
 import frc.robot.coralintake.CoralIntakeIO
 import org.littletonrobotics.junction.AutoLog
 import org.littletonrobotics.junction.LogTable
