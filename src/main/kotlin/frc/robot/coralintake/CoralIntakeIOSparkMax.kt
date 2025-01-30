@@ -52,5 +52,4 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
         inputs.jointAppliedVolts = jointMotor.busVoltage
         inputs.jointCurrentAmps = doubleArrayOf(jointMotor.outputCurrent)
     }
-    }
 }
