@@ -48,13 +48,13 @@ interface CoralIntakeIO {
 
     fun updateInputs(inputs: Inputs)
 
-    fun setWheelVoltage(voltage: Double)
+    fun setIntakeVoltage(voltage: Double)
 
     fun setJointVoltage(volatge: Double)
 
     fun stopJoint()
 
-    fun stopWheel()
+    fun stopIntake()
 
     fun stop()
 }

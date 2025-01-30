@@ -1,6 +1,5 @@
 package frc.robot.coralintake
 
-import edu.wpi.first.math.geometry.Rotation2d
 import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
@@ -11,27 +10,21 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
     val jointMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
     val jointConfig = SparkMaxConfig()
 
-    val wheelMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
-    val wheelConfig = SparkMaxConfig()
+    val intakeMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    val intakeConfig = SparkMaxConfig()
 
     override val pidController: PIDController = PIDController(0.0,0.0,0.0)
 
     init {
         jointConfig.encoder.positionConversionFactor(0.0)
         jointMotor.configure(jointConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
-        wheelConfig.encoder.positionConversionFactor(0.0)
-        wheelMotor.configure(intakeConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
-        jointMotor.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+        intakeConfig.encoder.positionConversionFactor(0.0)
+        intakeMotor.configure(intakeConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+        jointMotor.configure(jointConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
     }
 
-    override fun updateInputs(inputs: CoralIntakeIO.Inputs) {
-        inputs.velocityMetersPerSec = jointMotor.getEncoder().velocity
-        inputs.appliedVolts = jointMotor.busVoltage
-        inputs.currentAmps = doubleArrayOf(jointMotor.outputCurrent)
-    }
-
-    override fun setWheelVoltage(voltage: Double) {
-        wheelMotor.setVoltage(voltage)
+    override fun setIntakeVoltage(voltage: Double) {
+        intakeMotor.setVoltage(voltage)
     }
 
     override fun setJointVoltage(volatge: Double) {
@@ -42,19 +35,19 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
         jointMotor.stopMotor()
     }
 
-    override fun stopWheel() {
-         wheelMotor.stopMotor()
+    override fun stopIntake() {
+         intakeMotor.stopMotor()
     }
 
     override fun stop() {
-        stopWheel()
+        stopIntake()
         stopJoint()
     }
 
     override fun updateInputs(inputs: CoralIntakeIO.Inputs) {
-        inputs.intakeVelocityRPM = wheelMotor.getEncoder().velocity
-        inputs.intakeAppliedVolts = WheelMotor.busVoltage
-        inputs.intakeCurrentAmps = doubleArrayOf(wheelMotor.outputCurrent)
+        inputs.intakeVelocityRPM = intakeMotor.getEncoder().velocity
+        inputs.intakeAppliedVolts = intakeMotor.busVoltage
+        inputs.intakeCurrentAmps = doubleArrayOf(intakeMotor.outputCurrent)
         inputs.jointVelocityRPM = jointMotor.getEncoder().velocity
         inputs.jointAppliedVolts = jointMotor.busVoltage
         inputs.jointCurrentAmps = doubleArrayOf(jointMotor.outputCurrent)
