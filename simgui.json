@@ -7,10 +7,24 @@
       "/Shuffleboard/Drivetrain/Zero Heading": "Command",
       "/Shuffleboard/General/Autonomous Mode": "String Chooser",
       "/Shuffleboard/General/LB Command": "String Chooser",
-      "/Shuffleboard/General/soething": "Command"
+      "/Shuffleboard/General/soething": "Command",
+      "/SmartDashboard/VisionSystemSim-hawkeye/Sim Field": "Field2d",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },
     "windows": {
       "/Shuffleboard/Drivetrain/Field": {
+        "bottom": 1638,
+        "builtin": "2025 Reefscape",
+        "height": 8.051901817321777,
+        "left": 534,
+        "right": 3466,
+        "top": 291,
+        "width": 17.54825210571289,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/VisionSystemSim-hawkeye/Sim Field": {
         "bottom": 1638,
         "builtin": "2025 Reefscape",
         "height": 8.051901817321777,
@@ -28,6 +42,8 @@
     "Retained Values": {
       "open": false
     },
+    "createNonCanonical": true,
+    "special": true,
     "transitory": {
       "AdvantageKit": {
         "Drive": {
@@ -69,6 +85,33 @@
           "open": true
         },
         "Swerve Module4": {
+          "open": true
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "VisionSystemSim-hawkeye": {
+          "Sim Field": {
+            "open": true
+          },
+          "open": true
+        },
+        "VisionSystemSim-main": {
+          "Sim Field": {
+            "double[]##v_/SmartDashboard/VisionSystemSim-main/Sim Field/Robot": {
+              "open": true
+            },
+            "double[]##v_/SmartDashboard/VisionSystemSim-main/Sim Field/apriltag": {
+              "open": true
+            },
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
+      "photonvision": {
+        "hawkeye": {
           "open": true
         },
         "open": true

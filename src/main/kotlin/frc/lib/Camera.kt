@@ -56,9 +56,9 @@ class Camera(name: String) {
         if (Constants.mode == Constants.States.SIM) {
             val cameraProp = SimCameraProperties();
             // Create the vision system simulation which handles cameras and targets on the field.
-            visionSim = VisionSystemSim("main");
+            visionSim = VisionSystemSim(name);
             // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
-            visionSim?.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
+            visionSim!!.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
             // Create simulated camera properties. These can be set to mimic your actual camera.
             // TODO: Configure the camera!
             cameraProp.setCalibration(
@@ -76,9 +76,7 @@ class Camera(name: String) {
             cameraProp.setLatencyStdDevMs(Constants.SimulationConstants.LATENCY_STD_DEV_MS);
             // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
             // targets.
-            var cameraSim = PhotonCameraSim(limelight, cameraProp);
-            // Add the simulated camera to view the targets on this simulated field.
-            visionSim?.addCamera(cameraSim, robotToCam);
+            val cameraSim = PhotonCameraSim(limelight, cameraProp);
 
             // Enable the raw and processed streams. These are enabled by default.
             cameraSim.enableRawStream(Constants.SimulationConstants.ENABLE_RAW_STREAM);
@@ -86,6 +84,11 @@ class Camera(name: String) {
 
             // Enable wireframe mode.
             cameraSim.enableDrawWireframe(Constants.SimulationConstants.USE_WIREFRAME);
+
+            // Add the simulated camera to view the targets on this simulated field.
+            visionSim!!.addCamera(cameraSim, robotToCam);
+
+
         }
     }
     //call periodically
