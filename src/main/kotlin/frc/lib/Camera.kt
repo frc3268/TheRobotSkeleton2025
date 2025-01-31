@@ -3,6 +3,7 @@ package frc.lib
 import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
 import edu.wpi.first.math.*
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.*
 import frc.robot.Constants
 import edu.wpi.first.math.numbers.*
@@ -94,14 +95,19 @@ class Camera(name: String) {
     //call periodically
     //does this work?? consult documentation
     fun captureFrame(){
-        frame = limelight.allUnreadResults.first()
+        if (Constants.mode == Constants.States.REAL) {
+            frame = limelight.allUnreadResults.first()
+        }
     }
 
 
     // called periodically in a simulation
-    fun simPeriodic() {
+    fun simPeriodic(driveTrain: SwerveDrivePoseEstimator) {
+
         // Update with the simulated drivetrain pose. This should be called every loop in simulation.
-        visionSim?.update(poseEstimator?.referencePose);
+        visionSim?.update(driveTrain.estimatedPosition);
+        val field = visionSim?.debugField
+        // field?.getObject()
     }
 
 
