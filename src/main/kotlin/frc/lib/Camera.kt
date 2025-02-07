@@ -3,6 +3,7 @@ package frc.lib
 import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
 import edu.wpi.first.math.*
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.*
 import frc.robot.Constants
 import edu.wpi.first.math.numbers.*
@@ -58,7 +59,7 @@ class Camera(name: String) {
             // Create the vision system simulation which handles cameras and targets on the field.
             visionSim = VisionSystemSim(name);
             // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
-            visionSim?.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
+            visionSim!!.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
             // Create simulated camera properties. These can be set to mimic your actual camera.
             // TODO: Configure the camera!
             cameraProp.setCalibration(
@@ -76,9 +77,7 @@ class Camera(name: String) {
             cameraProp.setLatencyStdDevMs(Constants.SimulationConstants.LATENCY_STD_DEV_MS);
             // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
             // targets.
-            var cameraSim = PhotonCameraSim(limelight, cameraProp);
-            // Add the simulated camera to view the targets on this simulated field.
-            visionSim?.addCamera(cameraSim, robotToCam);
+            val cameraSim = PhotonCameraSim(limelight, cameraProp);
 
             // Enable the raw and processed streams. These are enabled by default.
             cameraSim.enableRawStream(Constants.SimulationConstants.ENABLE_RAW_STREAM);
@@ -86,19 +85,29 @@ class Camera(name: String) {
 
             // Enable wireframe mode.
             cameraSim.enableDrawWireframe(Constants.SimulationConstants.USE_WIREFRAME);
+
+            // Add the simulated camera to view the targets on this simulated field.
+            visionSim!!.addCamera(cameraSim, robotToCam);
+
+
         }
     }
     //call periodically
     //does this work?? consult documentation
     fun captureFrame(){
-        frame = limelight.allUnreadResults.first()
+        if (Constants.mode == Constants.States.REAL) {
+            frame = limelight.allUnreadResults.first()
+        }
     }
 
 
     // called periodically in a simulation
-    fun simPeriodic() {
+    fun simPeriodic(driveTrain: SwerveDrivePoseEstimator) {
+
         // Update with the simulated drivetrain pose. This should be called every loop in simulation.
-        visionSim?.update(poseEstimator?.referencePose);
+        visionSim?.update(driveTrain.estimatedPosition);
+        val field = visionSim?.debugField
+        // field?.getObject()
     }
 
 
