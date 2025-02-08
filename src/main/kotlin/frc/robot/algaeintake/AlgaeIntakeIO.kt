@@ -32,13 +32,13 @@ interface AlgaeIntakeIO {
             table.put("jointVelocityMetersPerSec", jointVelocityMetersPerSec)
             table.put("jointCurrentAmps", jointCurrentAmps)
 
-            table.put("rightAppliedVolts", mainAppliedVolts)
-            table.put("rightVelocityMetersPerSec", mainVelocityMetersPerSec)
-            table.put("rightCurrentAmps", mainCurrentAmps)
+            table.put("mainAppliedVolts", mainAppliedVolts)
+            table.put("mainVelocityMetersPerSec", mainVelocityMetersPerSec)
+            table.put("mainCurrentAmps", mainCurrentAmps)
 
-            table.put("leftAppliedVolts", revAppliedVolts)
-            table.put("leftVelocityMetersPerSec", revVelocityMetersPerSec)
-            table.put("leftCurrentAmps", revCurrentAmps)
+            table.put("revAppliedVolts", revAppliedVolts)
+            table.put("revVelocityMetersPerSec", revVelocityMetersPerSec)
+            table.put("revCurrentAmps", revCurrentAmps)
         }
 
         override fun fromLog(table: LogTable) {
@@ -47,13 +47,13 @@ interface AlgaeIntakeIO {
             table.get("jointVelocityMetersPerSec", jointVelocityMetersPerSec)
             table.get("jointCurrentAmps", jointCurrentAmps)
 
-            table.get("rightAppliedVolts", mainAppliedVolts)
-            table.get("rightVelocityMetersPerSec", mainVelocityMetersPerSec)
-            table.get("rightCurrentAmps", mainCurrentAmps)
+            table.get("mainAppliedVolts", mainAppliedVolts)
+            table.get("mainVelocityMetersPerSec", mainVelocityMetersPerSec)
+            table.get("mainCurrentAmps", mainCurrentAmps)
 
-            table.get("leftAppliedVolts", revAppliedVolts)
-            table.get("leftVelocityMetersPerSec", revVelocityMetersPerSec)
-            table.get("leftCurrentAmps", revCurrentAmps)
+            table.get("revAppliedVolts", revAppliedVolts)
+            table.get("revVelocityMetersPerSec", revVelocityMetersPerSec)
+            table.get("revCurrentAmps", revCurrentAmps)
         }
     }
 

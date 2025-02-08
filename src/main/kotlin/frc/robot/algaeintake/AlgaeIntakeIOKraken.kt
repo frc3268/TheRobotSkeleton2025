@@ -21,7 +21,18 @@ class AlgaeIntakeIOKraken(override val pidController: PIDController) : AlgaeInta
     }
 
     override fun updateInputs(inputs: AlgaeIntakeIO.Inputs) {
-        TODO("Not yet implemented")
+        inputs.mainAppliedVolts = mainMotor.motorVoltage.valueAsDouble
+        inputs.jointAppliedVolts = jointMotor.motorVoltage.valueAsDouble
+        inputs.revAppliedVolts = revMotor.motorVoltage.valueAsDouble
+
+        inputs.mainVelocityMetersPerSec = mainMotor.velocity.valueAsDouble
+        inputs.jointVelocityMetersPerSec = jointMotor.velocity.valueAsDouble
+        inputs.revVelocityMetersPerSec = revMotor.velocity.valueAsDouble
+
+        inputs.mainCurrentAmps = doubleArrayOf(mainMotor.statorCurrent.valueAsDouble)
+        inputs.jointCurrentAmps = doubleArrayOf(jointMotor.statorCurrent.valueAsDouble)
+        inputs.revCurrentAmps = doubleArrayOf(revMotor.statorCurrent.valueAsDouble)
+
     }
 
     override fun setJointVoltage(voltage: Double) {
