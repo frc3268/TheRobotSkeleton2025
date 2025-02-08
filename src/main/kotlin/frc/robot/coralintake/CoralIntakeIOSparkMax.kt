@@ -17,6 +17,7 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
 
     init {
         jointConfig.encoder.positionConversionFactor(0.0)
+        // Why are we configuring the motor twice?
         jointMotor.configure(jointConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
         intakeConfig.encoder.positionConversionFactor(0.0)
         intakeMotor.configure(intakeConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
