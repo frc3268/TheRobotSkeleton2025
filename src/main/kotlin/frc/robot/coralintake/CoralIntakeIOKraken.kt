@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.DriverStation
 
 class CoralIntakeIOKraken(override val pidController: PIDController) : CoralIntakeIO {
@@ -32,6 +33,10 @@ class CoralIntakeIOKraken(override val pidController: PIDController) : CoralInta
 
         inputs.intakeVelocityRPM = intakeMotor.velocity.valueAsDouble
         inputs.jointVelocityRPM = jointMotor.velocity.valueAsDouble
+
+        inputs.intakeCurrentAmps = doubleArrayOf(intakeMotor.statorCurrent.valueAsDouble)
+        inputs.jointCurrentAmps = doubleArrayOf(jointMotor.statorCurrent.valueAsDouble)
+
     }
 
     override fun setIntakeVoltage(voltage: Double) {
