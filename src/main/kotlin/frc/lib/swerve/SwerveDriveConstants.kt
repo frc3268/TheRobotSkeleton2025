@@ -65,7 +65,7 @@ object SwerveDriveConstants {
         val yPIDController = ProfiledPIDController(1.5, 0.0, 0.0, TrapezoidProfile.Constraints(
             MAX_SPEED_METERS_PER_SECOND, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED
         ))
-        val thetaPIDController = ProfiledPIDController(0.02, 0.0, 0.0, TrapezoidProfile.Constraints(
+        val thetaPIDController = ProfiledPIDController(0.01, 0.0, 0.0, TrapezoidProfile.Constraints(
             MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND, MAX_ANGULAR_ACCELERATION_DEGREES_PER_SECOND_SQUARED))
 
         //in the order they appear in modules list

@@ -58,11 +58,11 @@ class SwerveAutoDrive(
     override fun execute() {
         /*collect speeds based on which controls are used*/
         val speeds = Pose2d(
-            SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(
+            -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(
                 drive.getPose().x,
                 TrapezoidProfile.State(next.x, 0.0)
             ) * MAX_SPEED_METERS_PER_SECOND,
-            SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(
+            -SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(
                 drive.getPose().y,
                 TrapezoidProfile.State(next.y, 0.0)
             ) * MAX_SPEED_METERS_PER_SECOND,

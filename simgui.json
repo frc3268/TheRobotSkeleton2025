@@ -38,12 +38,15 @@
         "left": 534,
         "right": 3466,
         "top": 291,
-        "width": 17.54825210571289
+        "width": 17.54825210571289,
+        "window": {
+          "visible": true
+        }
       }
     }
   },
   "NetworkTables": {
-    "Retained Values": {
+    "Persistent Values": {
       "open": false
     },
     "transitory": {
@@ -55,12 +58,24 @@
         },
         "DriverStation": {
           "open": true
+        }
+      },
+      "CameraPublisher": {
+        "hawkeye-processed": {
+          "string[]##v_/CameraPublisher/hawkeye-processed/modes": {
+            "open": true
+          }
         },
-        "open": true
+        "hawkeye-raw": {
+          "open": true
+        }
       },
       "Shuffleboard": {
         "Drivetrain": {
           "Robot Heading": {
+            "open": true
+          },
+          "Zero Heading": {
             "open": true
           },
           "open": true
@@ -88,15 +103,11 @@
         },
         "Swerve Module4": {
           "open": true
-        },
-        "open": true
+        }
       },
       "SmartDashboard": {
         "VisionSystemSim-hawkeye": {
           "Sim Field": {
-            "double[]##v_/SmartDashboard/VisionSystemSim-hawkeye/Sim Field/Robot": {
-              "open": true
-            },
             "open": true
           },
           "open": true
@@ -106,8 +117,7 @@
       "photonvision": {
         "hawkeye": {
           "open": true
-        },
-        "open": true
+        }
       }
     }
   },
@@ -124,7 +134,12 @@
       },
       "Subscribers": {
         "open": true
-      }
-    }
+      },
+      "open": true
+    },
+    "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
