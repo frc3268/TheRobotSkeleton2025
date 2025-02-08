@@ -98,27 +98,27 @@ class Camera(name: String) {
             val tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.kDefaultField.m_resourceFile)
             visionSim!!.addAprilTags(tagLayout)
 
-
         }
     }
     //call periodically
     //does this work?? consult documentation
     fun captureFrame(){
-        //frame = limelight.allUnreadResults.first()
+        if (Constants.mode == Constants.States.REAL) {
+            frame = limelight.allUnreadResults.first()
+        }
     }
 
 
     // called periodically in a simulation
     fun simPeriodic() {
         val debugField = visionSim?.getDebugField();
-        updateEstimatedPose()
+        //updateEstimatedPose()
         val est = visionEst
 
         if (est != null) {
             visionSim!!.update(est.estimatedPose)
         }
 
-    }
 
     // Safe to run twice
     fun updateEstimatedPose() {
@@ -160,4 +160,4 @@ class Camera(name: String) {
         poseEstimator ?: return
         poseEstimator?.setReferencePose(pose)
     }
-}
+}}

@@ -136,13 +136,11 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
 
     override fun periodic() {
-        if(Constants.mode == Constants.States.REAL){
-            camera!!.captureFrame()
-        }
+        camera!!.captureFrame()
         //estimate robot pose based on what the encoders say
         poseEstimator.update(getYaw(), getModulePositions())
         //estimate robot pose based on what the camera sees
-        if(gyroInputs.yawVelocityRadPerSec < Math.PI && Constants.mode != Constants.States.SIM) {
+        if(gyroInputs.yawVelocityRadPerSec < Math.PI) {
                 seesAprilTag.setBoolean(camera!!.frame.hasTargets())
                 camera!!.updateEstimatedPose()
                 val est = camera!!.visionEst
@@ -180,7 +178,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         for ((x, state) in constructModuleStatesFromChassisSpeeds(0.0, 0.0, 0.1, true).withIndex()) {
             modules[x].setPointEntry.setDouble(state.angle.degrees)
         }
-        camera?.simPeriodic()
+        camera?.simPeriodic(poseEstimator)
     }
 
     private fun zeroYaw() {

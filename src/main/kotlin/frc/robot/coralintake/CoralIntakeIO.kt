@@ -1,10 +1,11 @@
 package frc.robot.coralintake
 
 import edu.wpi.first.math.controller.PIDController
-import edu.wpi.first.math.geometry.Rotation2d
 import org.littletonrobotics.junction.AutoLog
 import org.littletonrobotics.junction.LogTable
 import org.littletonrobotics.junction.inputs.LoggableInputs
+import edu.wpi.first.math.geometry.Rotation2d
+
 
 interface CoralIntakeIO {
     @AutoLog
@@ -47,9 +48,13 @@ interface CoralIntakeIO {
 
     fun updateInputs(inputs: Inputs)
 
-    fun setWheelVoltage(voltage: Double)
+    fun setIntakeVoltage(voltage: Double)
 
-    fun setAngle(angle: Rotation2d)
+    fun setJointVoltage(volatge: Double)
+
+    fun stopJoint()
+
+    fun stopIntake()
 
     fun stop()
 }

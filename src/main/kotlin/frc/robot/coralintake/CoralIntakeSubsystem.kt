@@ -10,7 +10,23 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
         io.updateInputs(inputs)
     }
 
-    fun setWheelVoltage(voltage: Double): Command = runOnce { io.setWheelVoltage(voltage) }
+    fun intake(): Command = run{io.setIntakeVoltage(0.3 * 12.0)}.withTimeout(1.5)
+
+    fun outtake(): Command = run{io.setIntakeVoltage(-0.3 * 12.0)}.withTimeout(1.5)
+
+    fun raiseToScore(): Command = runOnce {
+        io.setJointVoltage(io.pidController.calculate(0.0, 0.0))
+    }.until { inputs.jointAngle.degrees > 0.0 }
+
+    fun raiseToIntake(): Command = runOnce {
+        io.setJointVoltage(io.pidController.calculate(0.0, 0.0))
+    }.until { inputs.jointAngle.degrees > 0.0 }
+
+    fun lower(): Command = runOnce {
+        io.setJointVoltage(io.pidController.calculate(0.0, 0.0))
+    }.until { inputs.jointAngle.degrees < 0.0 }
 
     fun stop(): Command = runOnce{ io.stop() }
+    fun stopJoint(): Command = runOnce{ io.stopJoint() }
+    fun stopIntake(): Command = runOnce{ io.stopIntake() }
 }
