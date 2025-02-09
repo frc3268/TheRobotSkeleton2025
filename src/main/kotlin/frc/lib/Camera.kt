@@ -120,7 +120,13 @@ class Camera(name: String) {
         }
 
 
-    // Safe to run twice
+
+    fun resetPose(pose: Pose2d) {
+        poseEstimator ?: return
+        poseEstimator?.setReferencePose(pose)
+    }
+}
+
     fun updateEstimatedPose() {
         var est = poseEstimator?.update(frame)
         est?.ifPresent { poseEstimation ->
@@ -128,8 +134,7 @@ class Camera(name: String) {
         }
     }
 
-    //stolen from  photonvision(blatantly)
-    fun getEstimationStdDevs(estimatedPose: Pose2d): Matrix<N3, N1> {
+    fun getEstimationStdDevs(estimatedPose:Pose2d): Matrix<N3, N1>? {
         //todo: expiriment with vecbuilder values(somehow)
         var estStdDevs = VecBuilder.fill(.7, .7, .9999999)
         val targets = frame.getTargets()
@@ -141,7 +146,7 @@ class Camera(name: String) {
             if (tagPose.isEmpty) continue
             numTags++
             avgDist +=
-                    tagPose.get().toPose2d().translation.getDistance(estimatedPose.translation)
+                tagPose.get().toPose2d().translation.getDistance(estimatedPose.translation)
         }
         if (numTags == 0) return estStdDevs
         avgDist /= numTags
@@ -154,10 +159,4 @@ class Camera(name: String) {
 
         return estStdDevs
     }
-
-
-    fun resetPose(pose: Pose2d) {
-        poseEstimator ?: return
-        poseEstimator?.setReferencePose(pose)
-    }
-}}
+}
