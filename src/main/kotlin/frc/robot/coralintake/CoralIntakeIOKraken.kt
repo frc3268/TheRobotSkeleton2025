@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.DriverStation
+import frc.lib.rotation2dFromDeg
 
 class CoralIntakeIOKraken(override val pidController: PIDController) : CoralIntakeIO {
     val jointMotor = TalonFX(0, "rio")
@@ -18,9 +19,7 @@ class CoralIntakeIOKraken(override val pidController: PIDController) : CoralInta
         val jointConfig = TalonFXConfiguration()
         val intakeConfig = TalonFXConfiguration()
 
-        // idfk what this does
         jointConfig.Feedback.SensorToMechanismRatio = 0.0
-        intakeConfig.Feedback.SensorToMechanismRatio = 0.0
 
         jointMotor.configurator.apply(jointConfig)
         intakeMotor.configurator.apply(intakeConfig)
@@ -36,6 +35,8 @@ class CoralIntakeIOKraken(override val pidController: PIDController) : CoralInta
 
         inputs.intakeCurrentAmps = doubleArrayOf(intakeMotor.statorCurrent.valueAsDouble)
         inputs.jointCurrentAmps = doubleArrayOf(jointMotor.statorCurrent.valueAsDouble)
+
+        inputs.jointAngle = jointMotor.position.valueAsDouble.rotation2dFromDeg()
 
     }
 

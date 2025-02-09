@@ -3,6 +3,7 @@ package frc.robot.algaeintake
 import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.hardware.TalonFX
 import edu.wpi.first.math.controller.PIDController
+import frc.lib.rotation2dFromDeg
 
 class AlgaeIntakeIOKraken(override val pidController: PIDController) : AlgaeIntakeIO {
 
@@ -14,6 +15,8 @@ class AlgaeIntakeIOKraken(override val pidController: PIDController) : AlgaeInta
         val mainConfig = TalonFXConfiguration()
         val revConfig = TalonFXConfiguration()
         val jointConfig = TalonFXConfiguration()
+
+        jointConfig.Feedback.SensorToMechanismRatio = 0.0
 
         mainMotor.configurator.apply(mainConfig)
         revMotor.configurator.apply(revConfig)
@@ -32,6 +35,8 @@ class AlgaeIntakeIOKraken(override val pidController: PIDController) : AlgaeInta
         inputs.mainCurrentAmps = doubleArrayOf(mainMotor.statorCurrent.valueAsDouble)
         inputs.jointCurrentAmps = doubleArrayOf(jointMotor.statorCurrent.valueAsDouble)
         inputs.revCurrentAmps = doubleArrayOf(revMotor.statorCurrent.valueAsDouble)
+
+        inputs.jointAngle = jointMotor.position.valueAsDouble.rotation2dFromDeg()
 
     }
 
