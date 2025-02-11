@@ -5,11 +5,13 @@ import com.ctre.phoenix6.hardware.TalonFX
 import edu.wpi.first.math.controller.PIDController
 import frc.lib.rotation2dFromDeg
 
-class AlgaeIntakeIOKraken(override val pidController: PIDController) : AlgaeIntakeIO {
+class AlgaeIntakeIOKraken : AlgaeIntakeIO {
 
     val mainMotor = TalonFX(0, "rio")
     val revMotor = TalonFX(0, "rio")
     val jointMotor = TalonFX(0, "rio")
+
+    override val pidController = PIDController(0.0, 0.0, 0.0)
 
     init{
         val mainConfig = TalonFXConfiguration()

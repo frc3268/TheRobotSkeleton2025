@@ -7,9 +7,11 @@ import edu.wpi.first.units.*
 import edu.wpi.first.units.measure.*
 import frc.lib.swerve.ElevatorIO
 
-class ElevatorIOKraken(override val pidController: PIDController) : ElevatorIO{
+class ElevatorIOKraken : ElevatorIO{
     val leftMotor = TalonFX(0, "rio")
     val rightMotor = TalonFX(0, "rio")
+
+    override val pidController: PIDController = PIDController(0.0,0.0,0.0)
 
     init{
         val leftConfig = TalonFXConfiguration()

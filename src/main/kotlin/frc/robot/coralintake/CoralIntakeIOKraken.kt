@@ -11,9 +11,11 @@ import edu.wpi.first.math.util.Units
 import edu.wpi.first.wpilibj.DriverStation
 import frc.lib.rotation2dFromDeg
 
-class CoralIntakeIOKraken(override val pidController: PIDController) : CoralIntakeIO {
+class CoralIntakeIOKraken : CoralIntakeIO {
     val jointMotor = TalonFX(0, "rio")
     val intakeMotor = TalonFX(0, "rio")
+
+    override val pidController: PIDController = PIDController(0.0,0.0,0.0)
 
     init{
         val jointConfig = TalonFXConfiguration()
