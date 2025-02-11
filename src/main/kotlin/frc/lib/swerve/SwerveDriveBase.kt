@@ -141,18 +141,16 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         poseEstimator.update(getYaw(), getModulePositions())
         //estimate robot pose based on what the camera sees
         if(gyroInputs.yawVelocityRadPerSec < Math.PI) {
-                seesAprilTag.setBoolean(camera!!.frame.hasTargets())
-                camera!!.updateEstimatedPose()
-                val est = camera!!.visionEst
-                if (est != null) {
-                    poseEstimator.addVisionMeasurement(
-                        est.estimatedPose.toPose2d(),
-                        est.timestampSeconds,
-                        camera!!.getEstimationStdDevs(est.estimatedPose.toPose2d())
-                    )
-                }
-
+            seesAprilTag.setBoolean(camera!!.frame.hasTargets())
+            val visionEst: Optional<EstimatedRobotPose>? = camera!!.getEstimatedPose()
+            visionEst?.ifPresent { est ->
+                poseEstimator.addVisionMeasurement(
+                    est.estimatedPose.toPose2d(),
+                    est.timestampSeconds,
+                    camera!!.getEstimationStdDevs(est.estimatedPose.toPose2d())
+                )
             }
+        }
         //update module tabs on shuffleboard
         for (mod in modules) {
             mod.update()

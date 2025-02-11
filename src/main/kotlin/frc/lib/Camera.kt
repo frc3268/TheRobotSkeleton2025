@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
 import edu.wpi.first.math.Matrix
 import edu.wpi.first.math.VecBuilder
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.math.numbers.N1
 import edu.wpi.first.math.numbers.N3
@@ -24,7 +25,6 @@ class Camera(name: String) {
     private val limelight = PhotonCamera(name)
     var frame = PhotonPipelineResult()
     private var poseEstimator: PhotonPoseEstimator? = null
-    var visionEst: EstimatedRobotPose? = null
 
     private var visionSim: VisionSystemSim? = null;
 
@@ -110,29 +110,20 @@ class Camera(name: String) {
 
 
     // called periodically in a simulation
-    fun simPeriodic() {
+    fun simPeriodic(driveTrain: SwerveDrivePoseEstimator) {
         val debugField = visionSim?.getDebugField();
-        //updateEstimatedPose()
-        val est = visionEst
-
-        if (est != null) {
-            visionSim!!.update(est.estimatedPose)
-        }
-
+        visionSim?.update(driveTrain.estimatedPosition);
+        val field = visionSim?.debugField
+    }
 
 
     fun resetPose(pose: Pose2d) {
         poseEstimator ?: return
         poseEstimator?.setReferencePose(pose)
     }
-}
 
-    fun updateEstimatedPose() {
-        var est = poseEstimator?.update(frame)
-        est?.ifPresent { poseEstimation ->
-            visionEst = poseEstimation
-        }
-    }
+    fun getEstimatedPose(): Optional<EstimatedRobotPose>? =
+        poseEstimator?.update(frame)
 
     fun getEstimationStdDevs(estimatedPose:Pose2d): Matrix<N3, N1>? {
         //todo: expiriment with vecbuilder values(somehow)
