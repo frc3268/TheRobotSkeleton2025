@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 
 class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
     val inputs = AlgaeIntakeIO.LoggedInputs()
+
     val troubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
     val jointAngleEntry = troubleshootingTab.add("Joint Angle", 0.0).withPosition(2, 0).entry
     val jointVelocityMetersPerSecEntry = troubleshootingTab.add("Joint Velocity MPS", 0.0).withPosition(2, 1).entry
