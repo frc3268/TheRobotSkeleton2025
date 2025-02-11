@@ -136,6 +136,13 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
 
     override fun periodic() {
+        if(Constants.mode == Constants.States.REAL) {
+            gyro.updateInputs(gyroInputs)
+        } else{
+            val deltas = modules.map { it.delta }.toTypedArray()
+            val twist = kinematics.toTwist2d(*deltas);
+            gyroInputs.yawPosition = (gyroInputs.yawPosition.plus(twist.dtheta.rotation2dFromRad()))
+        }
         camera!!.captureFrame()
         //estimate robot pose based on what the encoders say
         poseEstimator.update(getYaw(), getModulePositions())
@@ -157,18 +164,10 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         for (mod in modules) {
             mod.update()
         }
-        if(gyroInputs.connected) {
-            gyro.updateInputs(gyroInputs)
-        } else{
-            val deltas = modules.map { it.delta }.toTypedArray()
-            val twist = kinematics.toTwist2d(*deltas);
-            gyroInputs.yawPosition = (gyroInputs.yawPosition.plus(twist.dtheta.rotation2dFromRad()))
-        }
         //update drivetrain tab on shuffleboard
         field.robotPose = getPose()
         poseXEntry.setDouble(getPose().x)
         poseYEntry.setDouble(getPose().y)
-        headingEntry.setDouble(gyroInputs.yawPosition.degrees)
         Logger.recordOutput("Robot/Pose", getPose())
 
 
