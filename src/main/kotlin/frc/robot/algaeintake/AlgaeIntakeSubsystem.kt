@@ -2,12 +2,26 @@ package frc.robot.algaeintake
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import frc.robot.Constants
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 
 class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
     val inputs = AlgaeIntakeIO.LoggedInputs()
 
+    val troubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
+    val jointAngleEntry = troubleshootingTab.add("Joint Angle", 0.0).withPosition(2, 0).entry
+    val jointVelocityMetersPerSecEntry = troubleshootingTab.add("Joint Velocity MPS", 0.0).withPosition(2, 1).entry
+    val mainVelocityMetersPerSecEntry = troubleshootingTab.add("Main Velocity MPS", 0.0).withPosition(2, 2).entry
+    val revVelocityMetersPerSecEntry = troubleshootingTab.add("Reverse Velocity MPS", 0.0).withPosition(2, 3).entry
+
     override fun periodic() {
         io.updateInputs(inputs)
+
+        // Debug stuff I guess
+        jointAngleEntry.setDouble(inputs.jointAngle.degrees)
+        jointVelocityMetersPerSecEntry.setDouble(inputs.jointVelocityMetersPerSec.toDouble())
+        mainVelocityMetersPerSecEntry.setDouble(inputs.mainVelocityMetersPerSec.toDouble())
+        revVelocityMetersPerSecEntry.setDouble(inputs.revVelocityMetersPerSec.toDouble())
     }
 
     fun intake():Command = run { io.setMainAndRevVoltage(0.3 * 12.0) }.withTimeout(1.5)
