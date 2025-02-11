@@ -1,5 +1,6 @@
 package frc.robot
 
+import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Pose2d
 
 import edu.wpi.first.wpilibj.DriverStation
@@ -12,7 +13,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import frc.lib.*
 import frc.lib.swerve.SwerveDriveBase
 import frc.lib.swerve.SwerveDriveConstants
+import frc.robot.algaeintake.AlgaeIntakeIOKraken
+import frc.robot.algaeintake.AlgaeIntakeSubsystem
 import frc.robot.commands.*
+import frc.robot.coralintake.CoralIntakeIO
+import frc.robot.coralintake.CoralIntakeIOKraken
+import frc.robot.coralintake.CoralIntakeSubsystem
+import frc.robot.elevator.ElevatorIOKraken
+import frc.robot.elevator.ElevatorSubsystem
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
@@ -35,6 +43,12 @@ class RobotContainer {
     val driveSubsystem = SwerveDriveBase(Pose2d())
 
     private val driverController = CommandPS4Controller(Constants.OperatorConstants.kDriverControllerPort)
+
+    // There must be a better way to do this
+    var coralIntakeSubsystem: CoralIntakeSubsystem? = null
+    var elevatorSubsystem: ElevatorSubsystem? = null
+    var algaeIntakeSubsystem: AlgaeIntakeSubsystem? = null
+
 
     val autochooser = SendableChooser<Command>()
     val leftBumperChooser = SendableChooser<Command>()
@@ -77,6 +91,15 @@ class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
+
+        if (Constants.mode == Constants.States.REAL) {
+            coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOKraken())
+            algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOKraken())
+            elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
+        }
+        else {
+            println("Simulated subsystems do not exist as no IOClass for them exists!")
+        }
         driveSubsystem.defaultCommand = teleopCommand
 
         GeneralTab

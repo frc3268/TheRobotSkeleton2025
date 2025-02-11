@@ -34,6 +34,10 @@ object Constants {
 
     const val TROUBLESHOOTING_TAB = "Troubleshooting"
 
+    const val ELE_POS_1 = 0;
+    const val ELE_POS_2 = 0;
+    const val ELE_POS_3 = 0;
+    const val ELE_POS_4 = 0;
 
     enum class States{REAL, SIM, REPLAY}
 

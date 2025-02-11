@@ -8,25 +8,28 @@ import kotlin.math.abs
 class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
     val inputs = ElevatorIO.LoggedInputs()
     val kg = 0.0
+
     init {
 
     }
+
     override fun periodic() {
         io.updateInputs(inputs)
     }
 
-    fun setToPosition(setPointMeters:Double): Command =
-        run{
-            io.setBothVolts(io.pidController.calculate(inputs.elevatorPositionMeters, setPointMeters) * 12.0) }
-        .until { abs(inputs.elevatorPositionMeters - setPointMeters) < 0.01 }
+    fun setToPosition(setPointMeters: Double): Command =
+        run {
+            io.setBothVolts(io.pidController.calculate(inputs.elevatorPositionMeters, setPointMeters) * 12.0)
+        }
+            .until { abs(inputs.elevatorPositionMeters - setPointMeters) < 0.01 }
             .andThen(
-        if(setPointMeters > 0){
-            run{io.setBothVolts(kg * 12.0)}
-        } else {
-            stop()
-        })
+                if (setPointMeters > 0) {
+                    run { io.setBothVolts(kg * 12.0) }
+                } else {
+                    stop()
+                })
 
-    fun stop(): Command = runOnce{io.stop()}
+    fun stop(): Command = runOnce { io.stop() }
 
-    fun zero():Command = runOnce{io.reset()}
+    fun zero(): Command = runOnce { io.reset() }
 }

@@ -8,12 +8,14 @@ import edu.wpi.first.math.controller.PIDController
 import frc.lib.swerve.ElevatorIO
 
 
-class ElevatorIOSparkMax(override val pidController: PIDController) : ElevatorIO {
+class ElevatorIOSparkMax : ElevatorIO {
     val leftMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
     val rightMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
 
     var leftConfig = SparkMaxConfig()
     var rightConfig = SparkMaxConfig()
+
+    override val pidController: PIDController = PIDController(0.0,0.0,0.0)
 
     init{
         leftConfig.encoder.positionConversionFactor(0.0)
