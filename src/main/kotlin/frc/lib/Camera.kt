@@ -104,7 +104,7 @@ class Camera(name: String) {
     //does this work?? consult documentation
     fun captureFrame(){
         if (Constants.mode == Constants.States.REAL) {
-            frame = limelight.allUnreadResults.first()
+            //frame = limelight.allUnreadResults.first()
         }
     }
 
