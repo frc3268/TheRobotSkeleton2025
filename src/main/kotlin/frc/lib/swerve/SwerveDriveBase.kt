@@ -170,12 +170,12 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
 
     }
-
+    // Go to http://localhost:1181/ to see preprocessed stream, http://localhost:1182/ to see processed stream.
     override fun simulationPeriodic() {
         for ((x, state) in constructModuleStatesFromChassisSpeeds(0.0, 0.0, 0.1, true).withIndex()) {
             modules[x].setPointEntry.setDouble(state.angle.degrees)
         }
-        //camera?.simPeriodic(poseEstimator)
+        camera?.simPeriodic(poseEstimator)
     }
 
     private fun zeroYaw() {
