@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
 import frc.lib.*
-import frc.lib.FieldPositions.obstacles
 import frc.lib.swerve.SwerveDriveBase
 import frc.lib.swerve.SwerveDriveConstants
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
