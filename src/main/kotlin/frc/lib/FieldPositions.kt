@@ -51,8 +51,9 @@ object FieldPositions {
     )
 
     val processor = FieldLocation(
-        Pose2d(5.987542, -0.00381, 90.0.rotation2dFromDeg()),
-        Pose2d(11.56081, 8.05561, 270.0.rotation2dFromDeg())
+        Pose2d(11.56081, 8.05561, 270.0.rotation2dFromDeg()),
+
+        Pose2d(5.987542, 0.762, 90.0.rotation2dFromDeg())
     )
     
     val reef = arrayOf(
@@ -81,18 +82,4 @@ object FieldPositions {
            Pose2d(4.904749809499619, 3.306324612649225, 300.0.rotation2dFromDeg())
       ),
     );
-
-    val obstacles:List<Obstacle> = listOf(
-        Obstacle(
-            Pose2d(
-            4.4895, 4.0259, 0.0.rotation2dFromDeg()
-        ), 1.2128
-        ),
-        Obstacle(
-            Pose2d(
-                13.0856, 4.0259, 0.0.rotation2dFromDeg()
-            ), 1.2128
-        )
-
-    )
 }

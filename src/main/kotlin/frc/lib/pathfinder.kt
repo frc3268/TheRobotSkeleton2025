@@ -34,6 +34,7 @@ val directions = listOf(
     Pair(1, 1)    // bottom-right diagonal
 )
 
+//"field_size":{"x":17.548,"y":8.052},"nodeSizeMeters":0.3,
 
 fun a_star(start:Pair<Int,Int>, end:Pair<Int,Int>, grid:Array<Array<Boolean>>): MutableList<Point>{
     val allPoints: MutableMap<Pair<Int, Int>, Double> = mutableMapOf(
@@ -47,7 +48,7 @@ fun a_star(start:Pair<Int,Int>, end:Pair<Int,Int>, grid:Array<Array<Boolean>>): 
         for (direction in directions){
             if(rootNow.loc.second + direction.second in 0..grid.size-1){
                 if(rootNow.loc.first + direction.first in 0.. grid[rootNow.loc.second + direction.second].size-1 && !grid[rootNow.loc.second + direction.second][rootNow.loc.first + direction.first] && !closed.map { it.loc }.contains(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second))){
-                    allPoints.set(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second), (get_f(start, end)))
+                    allPoints.set(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second), (get_f(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second), end)))
                     openqueue.add(Point(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second), rootNow))
                 }
             }

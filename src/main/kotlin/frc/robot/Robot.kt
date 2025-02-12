@@ -31,9 +31,6 @@ class Robot: LoggedRobot() {
     override fun robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
-        robotContainer = RobotContainer()
-        Logger.recordMetadata("ProjectName", "MyProject") // Set a metadata value
-
         if (isReal()) {
             Constants.mode = Constants.States.REAL
             // Logger.addDataReceiver(WPILOGWriter()) // Log to a USB stick ("/U/logs")
@@ -57,6 +54,10 @@ class Robot: LoggedRobot() {
                 )
             ) // Save outputs to a new log
         }
+        robotContainer = RobotContainer()
+        Logger.recordMetadata("ProjectName", "MyProject") // Set a metadata value
+
+
 // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
         Logger.start() // Start logging! No more data receivers, replay sources, or metadata values may be added.
 

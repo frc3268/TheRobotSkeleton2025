@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.*
 import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import frc.lib.*
-import frc.lib.FieldPositions.obstacles
 import frc.lib.swerve.SwerveDriveBase
 import frc.lib.swerve.SwerveDriveConstants
 import frc.robot.algaeintake.AlgaeIntakeIOKraken
