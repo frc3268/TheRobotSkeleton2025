@@ -108,7 +108,6 @@ class Camera(name: String) {
             if(results.isNotEmpty()) {
               frame = results.last()
             }
-            System.out.println("hello")
         }
     }
 

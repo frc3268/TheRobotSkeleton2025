@@ -125,7 +125,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         // wtf? weird issue
         Timer.delay(1.0)
         resetModulesToAbsolute()
-        shuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
+        shuffleboardTab.add("Zero Headinge", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
         poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1), VecBuilder.fill(0.5, 0.5, 0.5))
         field= Field2d()
         shuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)

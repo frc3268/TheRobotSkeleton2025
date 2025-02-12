@@ -31,8 +31,8 @@ class SwerveJoystickDrive(
     // Called every time the scheduler runs while the command is scheduled.
     override fun execute() { 
         /* Get Values, Deadband, Convert to speeds */
-        val xSpeed: Double = MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND)* SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
-        val ySpeed: Double = MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND) * SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
+        val xSpeed: Double = sigmoid(MathUtil.applyDeadband(translationX.asDouble, Constants.OperatorConstants.STICK_DEADBAND))
+        val ySpeed: Double = sigmoid(MathUtil.applyDeadband(translationY.asDouble, Constants.OperatorConstants.STICK_DEADBAND))
         val turnSpeed: Double = MathUtil.applyDeadband(rotation.asDouble, Constants.OperatorConstants.STICK_DEADBAND) * SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
 
         /* Drive */
@@ -47,6 +47,10 @@ class SwerveJoystickDrive(
     // Returns true when the command should end.
     override fun isFinished(): Boolean {
         return false
+    }
+
+    fun sigmoid(x:Double):Double{
+        return (10 * (1/(1 + Math.pow(Math.E, -5 * x)))) - 5
     }
 
 

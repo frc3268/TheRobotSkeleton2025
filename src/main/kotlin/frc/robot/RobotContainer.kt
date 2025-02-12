@@ -58,8 +58,8 @@ class RobotContainer {
 
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
-        { driverController.getRawAxis(1) },
-        { -driverController.getRawAxis(0) },
+        { -driverController.getRawAxis(1) },
+        { driverController.getRawAxis(0) },
         { -driverController.getRawAxis(2) },
         { true }
     )
@@ -94,9 +94,9 @@ class RobotContainer {
     init {
 
         if (Constants.mode == Constants.States.REAL) {
-            coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOKraken())
-            algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOKraken())
-            elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
+            //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOKraken())
+            //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOKraken())
+            //elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
         }
         else {
             // Unhandled exception: java.lang.IllegalStateException: A CANSparkMax instance has already been created with this device ID: 0
