@@ -24,10 +24,9 @@ import frc.robot.elevator.ElevatorSubsystem
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
-import java.util.concurrent.atomic.AtomicReference
-import java.util.function.Supplier
-import kotlin.math.pow
-import kotlin.math.sqrt
+import frc.robot.commands.HighLevelCommands
+import frc.robot.coralintake.CoralIntakeIOSparkMaxSim
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -42,9 +41,11 @@ class RobotContainer {
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
 
+
+
     private val driverController = CommandPS4Controller(Constants.OperatorConstants.kDriverControllerPort)
 
-    // There must be a better way to do this
+    // There must be a better way to do this! Oh well.
     var coralIntakeSubsystem: CoralIntakeSubsystem? = null
     var elevatorSubsystem: ElevatorSubsystem? = null
     var algaeIntakeSubsystem: AlgaeIntakeSubsystem? = null
@@ -98,8 +99,19 @@ class RobotContainer {
             elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
         }
         else {
-            println("Simulated subsystems do not exist as no IOClass for them exists!")
+            // Unhandled exception: java.lang.IllegalStateException: A CANSparkMax instance has already been created with this device ID: 0
+            // aka i dont want to fix this
+            // aka someone pls give the motors numbers but like properly
+            coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
+
+            println("Warning: Simulated subsystems do not exist as no IOClass for them exists!")
+            println("Abandon all hope ye who debug here")
         }
+
+        // Because we don't have SimIO Classes
+        elevatorSubsystem?.let { algaeIntakeSubsystem?.let { it1 -> initDashboard(it, it1) } }
+
+
         driveSubsystem.defaultCommand = teleopCommand
 
         GeneralTab

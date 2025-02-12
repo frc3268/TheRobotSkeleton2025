@@ -9,8 +9,12 @@ import frc.robot.elevator.ElevatorSubsystem
 
 // Setup shuffleboard
 fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem) {
-    // Edit this
+    // Edit this, none of these work right now
     SmartDashboard.putData("Take Alagae: l1", HighLevelCommands.takeAlgae(0.0, elevator, algaeIntake));
+    SmartDashboard.putData("Take Alagae: l2", HighLevelCommands.takeAlgae(0.0, elevator, algaeIntake));
+    SmartDashboard.putData("Take Alagae: l3", HighLevelCommands.takeAlgae(0.0, elevator, algaeIntake));
+    SmartDashboard.putData("Take Alagae: l4", HighLevelCommands.takeAlgae(0.0, elevator, algaeIntake));
+
 }
 object HighLevelCommands {
     fun takeAlgae(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(

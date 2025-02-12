@@ -121,7 +121,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }
 
         zeroYaw()
-        //https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
+        // https://github.com/Team364/BaseFalconSwerve/issues/8#issuecomment-1384799539
+        // wtf? weird issue
         Timer.delay(1.0)
         resetModulesToAbsolute()
         shuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)

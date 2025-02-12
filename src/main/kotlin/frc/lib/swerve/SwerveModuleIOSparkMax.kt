@@ -35,7 +35,6 @@ class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleCon
                 driveConfig.encoder.positionConversionFactor(SwerveDriveConstants.DriveMotor.POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION)
                 driveConfig.encoder.velocityConversionFactor(SwerveDriveConstants.AngleMotor.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION)
 
-                // TODO: Stop using deprecated properties
                 driveConfig.inverted(moduleConstants.DRIVE_MOTOR_REVERSED)
                 angleConfig.inverted(moduleConstants.ANGLE_MOTOR_REVERSED)
 
