@@ -104,7 +104,11 @@ class Camera(name: String) {
     //does this work?? consult documentation
     fun captureFrame(){
         if (Constants.mode == Constants.States.REAL) {
-            frame = limelight.allUnreadResults.first()
+            val results = limelight.allUnreadResults
+            if(results.isNotEmpty()) {
+              frame = results.last()
+            }
+            System.out.println("hello")
         }
     }
 
