@@ -1,6 +1,5 @@
 package frc.robot
 
-import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Pose2d
 
 import edu.wpi.first.wpilibj.DriverStation
@@ -8,23 +7,16 @@ import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.*
-import edu.wpi.first.wpilibj2.command.Commands.runOnce
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import frc.lib.*
 import frc.lib.swerve.SwerveDriveBase
-import frc.lib.swerve.SwerveDriveConstants
-import frc.robot.algaeintake.AlgaeIntakeIOKraken
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
 import frc.robot.commands.*
-import frc.robot.coralintake.CoralIntakeIO
-import frc.robot.coralintake.CoralIntakeIOKraken
 import frc.robot.coralintake.CoralIntakeSubsystem
-import frc.robot.elevator.ElevatorIOKraken
 import frc.robot.elevator.ElevatorSubsystem
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
-import frc.robot.commands.HighLevelCommands
 import frc.robot.coralintake.CoralIntakeIOSparkMaxSim
 
 
