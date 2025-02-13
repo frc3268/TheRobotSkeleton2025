@@ -14,12 +14,16 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
 
     val troubleshootingtab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
     val rightmotorposition = troubleshootingtab.add("Right Motor Position", 0.0).withPosition(1,0).entry
+    val leftmotorposition = troubleshootingtab.add("Left Motor Position", 0.0).withPosition(1,1).entry
+    val elevatorposition = troubleshootingtab.add("Elevator Position", 0.0).withPosition(1,2).entry
+    
     init {
 
     }
 
     override fun periodic() {
         io.updateInputs(inputs)
+        
     }
 
     fun setToPosition(setPointMeters: Double): Command =
