@@ -45,6 +45,8 @@ fun a_star(start:Pair<Int,Int>, end:Pair<Int,Int>, grid:Array<Array<Boolean>>): 
     val closed: MutableList<Point> = mutableListOf(Point(start, null))
     var rootNow = closed.last()
     while (rootNow.loc != end){
+        println(end.first)
+        println(rootNow.loc.first)
         for (direction in directions){
             if(rootNow.loc.second + direction.second in 0..grid.size-1){
                 if(rootNow.loc.first + direction.first in 0.. grid[rootNow.loc.second + direction.second].size-1 && !grid[rootNow.loc.second + direction.second][rootNow.loc.first + direction.first] && !closed.map { it.loc }.contains(Pair(rootNow.loc.first + direction.first, rootNow.loc.second + direction.second))){

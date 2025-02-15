@@ -12,6 +12,7 @@
       "/Shuffleboard/Drivetrain/Field": "Field2d",
       "/Shuffleboard/Drivetrain/Robot Heading": "Gyro",
       "/Shuffleboard/Drivetrain/Zero Heading": "Command",
+      "/Shuffleboard/Drivetrain/Zero Headinge": "Command",
       "/Shuffleboard/General/Autonomous Mode": "String Chooser",
       "/Shuffleboard/General/LB Command": "String Chooser",
       "/Shuffleboard/General/soething": "Command",

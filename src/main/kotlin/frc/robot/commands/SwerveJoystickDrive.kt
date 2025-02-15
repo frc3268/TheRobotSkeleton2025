@@ -49,8 +49,9 @@ class SwerveJoystickDrive(
         return false
     }
 
+    //sigmoid sigmoid on the wall...
     fun sigmoid(x:Double):Double{
-        return (10 * (1/(1 + Math.pow(Math.E, -5 * x)))) - 5
+        return (10 * (1/(1 + Math.pow(Math.E, -4 * x)))) - 5
     }
 
 

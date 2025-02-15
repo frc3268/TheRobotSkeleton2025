@@ -50,9 +50,9 @@ class RobotContainer {
 
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
-        { -driverController.getRawAxis(1) },
+        { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
-        { -driverController.getRawAxis(2) },
+        { driverController.getRawAxis(2) },
         { true }
     )
 
@@ -94,7 +94,7 @@ class RobotContainer {
             // Unhandled exception: java.lang.IllegalStateException: A CANSparkMax instance has already been created with this device ID: 0
             // aka i dont want to fix this
             // aka someone pls give the motors numbers but like properly
-            coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
+            //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
 
             println("Warning: Simulated subsystems do not exist as no IOClass for them exists!")
             println("Abandon all hope ye who debug here")

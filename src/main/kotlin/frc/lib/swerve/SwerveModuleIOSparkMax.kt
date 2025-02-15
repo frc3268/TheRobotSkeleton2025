@@ -59,7 +59,7 @@ class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleCon
         inputs.turnAbsolutePosition =
             ((absoluteEncoder.get() * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
         inputs.turnPosition =
-            ((-inputs.turnAbsolutePosition.degrees).IEEErem(360.0).rotation2dFromDeg())
+            (( -inputs.turnAbsolutePosition.degrees).IEEErem(360.0).rotation2dFromDeg())
         inputs.turnVelocityRadPerSec = (
                 Units.rotationsPerMinuteToRadiansPerSecond(angleMotor.encoder.velocity)
                         / TURN_GEAR_RATIO)
