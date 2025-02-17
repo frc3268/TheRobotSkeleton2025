@@ -1,24 +1,27 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
-
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Filesystem
-import edu.wpi.first.wpilibj.shuffleboard.*
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import edu.wpi.first.wpilibj2.command.*
+import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-import frc.lib.*
+import frc.lib.AutoSequence
+import frc.lib.FieldLocation
+import frc.lib.FieldPositions
 import frc.lib.swerve.SwerveDriveBase
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
-import frc.robot.commands.*
+import frc.robot.commands.SwerveAutoDrive
+import frc.robot.commands.SwerveJoystickDrive
+import frc.robot.commands.gridFile
+import frc.robot.commands.initDashboard
 import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorSubsystem
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
-import frc.robot.coralintake.CoralIntakeIOSparkMaxSim
 
 
 /**
@@ -99,7 +102,13 @@ class RobotContainer {
         }
 
         // Because we don't have SimIO Classes
-        elevatorSubsystem?.let { algaeIntakeSubsystem?.let { it1 -> initDashboard(it, it1) } }
+        // I was going to use chatgpt to write a paragraph on why this line of code sucks, but I had to log in
+        // So pretend there is a long essay on why it is horrible
+        elevatorSubsystem?.let { algaeIntakeSubsystem?.let { it1 -> coralIntakeSubsystem?.let { it2 ->
+            initDashboard(it, it1,
+                it2
+            )
+        } } }
 
 
         driveSubsystem.defaultCommand = teleopCommand
