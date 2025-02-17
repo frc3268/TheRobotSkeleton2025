@@ -1,9 +1,8 @@
-package frc.lib
+package frc.lib.gyro
 
 import com.kauailabs.navx.frc.AHRS
-import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.wpilibj.SPI
-import java.util.*
+import frc.lib.rotation2dFromDeg
 import kotlin.math.IEEErem
 
 

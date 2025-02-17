@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.*
 import frc.lib.*
+import frc.lib.gyro.GyroIO
+import frc.lib.gyro.GyroIOInputsAutoLogged
+import frc.lib.gyro.GyroIOKauai
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.kinematics
@@ -21,8 +24,6 @@ import frc.robot.Constants
 import org.littletonrobotics.junction.Logger
 import org.photonvision.EstimatedRobotPose
 import java.util.*
-import kotlin.math.IEEErem
-import kotlin.math.PI
 
 class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val shuffleboardTab = Shuffleboard.getTab("Drivetrain")

@@ -1,4 +1,4 @@
-package frc.lib
+package frc.lib.gyro
 
 import edu.wpi.first.math.geometry.Rotation2d
 import org.littletonrobotics.junction.AutoLog
