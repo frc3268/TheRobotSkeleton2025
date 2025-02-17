@@ -25,8 +25,6 @@ fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem
     SmartDashboard.putData("Coral OutIntake", coralIntake.outtake());
 
     SmartDashboard.putData("STOP ALL", Routines.stopAll(elevator, algaeIntake, coralIntake));
-
-
 }
 
 object Routines {

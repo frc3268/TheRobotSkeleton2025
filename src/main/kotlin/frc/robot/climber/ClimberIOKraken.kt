@@ -1,13 +1,12 @@
 package frc.robot.climber
 
-import com.ctre.phoenix6.hardware.*
-import com.ctre.phoenix6.configs.*
+import com.ctre.phoenix6.configs.TalonFXConfiguration
+import com.ctre.phoenix6.hardware.TalonFX
 import edu.wpi.first.math.controller.PIDController
-import edu.wpi.first.units.*
-import edu.wpi.first.units.measure.*
-import frc.lib.swerve.ElevatorIO
+import edu.wpi.first.units.Units
+import edu.wpi.first.units.measure.Angle
 
-class ClimberIOKraken : ElevatorIO{
+class ClimberIOKraken : ClimberIO{
     val leftMotor = TalonFX(0, "rio")
     val rightMotor = TalonFX(0, "rio")
 
@@ -23,17 +22,8 @@ class ClimberIOKraken : ElevatorIO{
         leftMotor.configurator.apply(leftConfig)
         rightMotor.configurator.apply(rightConfig)
     }
-    override fun updateInputs(inputs: ElevatorIO.Inputs) {
-        //this formula may need to me changed to reflect the reality
-        inputs.elevatorPositionMeters = (leftMotor.position.valueAsDouble + rightMotor.position.valueAsDouble) / 2
-        inputs.rightMotorPositionMeters = rightMotor.position.valueAsDouble
-        inputs.leftMotorPositionMeters = leftMotor.position.valueAsDouble
-        inputs.rightMotorCurrentAmps = doubleArrayOf(rightMotor.statorCurrent.valueAsDouble)
-        inputs.leftMotorCurrentAmps = doubleArrayOf(leftMotor.statorCurrent.valueAsDouble)
-        inputs.rightMotorAppliedVolts = rightMotor.motorVoltage.valueAsDouble
-        inputs.leftMotorAppliedVolts = leftMotor.motorVoltage.valueAsDouble
-        inputs.rightMotorVelocityMetersPerSec = rightMotor.velocity.valueAsDouble
-        inputs.leftMotorVelocityMetersPerSec = leftMotor.velocity.valueAsDouble
+    override fun updateInputs(inputs: ClimberIO.Inputs) {
+        // TODO: THIS
     }
 
     override fun setBothVolts(volts: Double) {

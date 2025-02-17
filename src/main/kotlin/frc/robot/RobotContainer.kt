@@ -13,6 +13,8 @@ import frc.lib.FieldLocation
 import frc.lib.FieldPositions
 import frc.lib.swerve.SwerveDriveBase
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
+import frc.robot.climber.ClimberIOKraken
+import frc.robot.climber.ClimberSubsystem
 import frc.robot.commands.SwerveAutoDrive
 import frc.robot.commands.SwerveJoystickDrive
 import frc.robot.commands.gridFile
@@ -45,6 +47,7 @@ class RobotContainer {
     var coralIntakeSubsystem: CoralIntakeSubsystem? = null
     var elevatorSubsystem: ElevatorSubsystem? = null
     var algaeIntakeSubsystem: AlgaeIntakeSubsystem? = null
+    var climberSubsystem: ClimberSubsystem? = null
 
 
     val autochooser = SendableChooser<Command>()
@@ -93,6 +96,7 @@ class RobotContainer {
             //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOKraken())
             //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOKraken())
             //elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
+            climberSubsystem = ClimberSubsystem(ClimberIOKraken())
         }
         else {
             // coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
