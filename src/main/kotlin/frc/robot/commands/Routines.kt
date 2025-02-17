@@ -18,22 +18,42 @@ fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem
     SmartDashboard.putData("Take Algae: l4", Routines.takeAlgae(0.0, elevator, algaeIntake));
 
     // TODO: Replace this with a higher-level command
-    SmartDashboard.putData("Coral Intake Raise to score", coralIntake.raiseToScore());
-    SmartDashboard.putData("Coral Intake Raise to intake", coralIntake.raiseToIntake());
-    SmartDashboard.putData("Lower Coral Intake", coralIntake.lower());
-    SmartDashboard.putData("Coral Intake", coralIntake.intake());
-    SmartDashboard.putData("Coral OutIntake", coralIntake.outtake());
+    SmartDashboard.putData("Take Coral", Routines.takeCoral(coralIntake));
+
+    SmartDashboard.putData("Place Coral: l1", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
+    SmartDashboard.putData("Place Coral: l2", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
+    SmartDashboard.putData("Place Coral: l3", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
+    SmartDashboard.putData("Place Coral: l4", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
 
     SmartDashboard.putData("STOP ALL", Routines.stopAll(elevator, algaeIntake, coralIntake));
 }
 
 object Routines {
+
+    // resetElevator should be called after this
     fun takeAlgae(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.setToPosition(level) },
         algaeIntake.runOnce {
             algaeIntake.raise()
             algaeIntake.intake()
         }
+    )
+
+    fun takeCoral(coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
+        coralIntake.runOnce { coralIntake.raiseToIntake() }.andThen(
+            coralIntake.intake()
+        )
+    )
+
+    // resetElevator should be called after this
+    fun placeCoralAtLevel(level: Double, elevator: ElevatorSubsystem, coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
+        elevator.runOnce { elevator.setToPosition(level) },
+        // TODO: This looks ugly, should be rewritten
+        coralIntake.runOnce { coralIntake.raiseToScore() }.andThen(
+            {coralIntake.outtake()}
+        ).andThen( {
+            coralIntake.lower()
+        } )
     )
 
     fun stopAll(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
