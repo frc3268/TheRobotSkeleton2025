@@ -52,7 +52,6 @@ object FieldPositions {
 
     val processor = FieldLocation(
         Pose2d(11.56081, 7.4, 270.0.rotation2dFromDeg()),
-
         Pose2d(5.987542, 0.762, 90.0.rotation2dFromDeg())
     )
     
