@@ -63,6 +63,4 @@ class SwerveModule(val io: SwerveModuleIO, val index:Int) {
         io.setDriveVoltage(0.0)
         io.setTurnVoltage(0.0)
     }
-
-
 }

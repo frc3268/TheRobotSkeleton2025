@@ -16,11 +16,11 @@ class CoralIntakeIOSparkMaxSim : CoralIntakeIO {
 
     var neoGearbox: DCMotor = DCMotor.getNeo550(1)
 
-    val jointMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    val jointMotor = SparkMax(9, SparkLowLevel.MotorType.kBrushless)
     var jointSim: SparkMaxSim = SparkMaxSim(jointMotor, neoGearbox)
     val jointConfig = SparkMaxConfig()
 
-    val intakeMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    val intakeMotor = SparkMax(10, SparkLowLevel.MotorType.kBrushless)
     var intakeSim: SparkMaxSim = SparkMaxSim(intakeMotor, neoGearbox)
     val intakeConfig = SparkMaxConfig()
 
