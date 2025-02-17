@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.*
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import frc.lib.*
@@ -91,10 +92,7 @@ class RobotContainer {
             //elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
         }
         else {
-            // Unhandled exception: java.lang.IllegalStateException: A CANSparkMax instance has already been created with this device ID: 0
-            // aka i dont want to fix this
-            // aka someone pls give the motors numbers but like properly
-            //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
+            // coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
 
             println("Warning: Simulated subsystems do not exist as no IOClass for them exists!")
             println("Abandon all hope ye who debug here")
