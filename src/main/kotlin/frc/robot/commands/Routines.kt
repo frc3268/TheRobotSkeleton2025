@@ -50,10 +50,8 @@ object Routines {
         elevator.runOnce { elevator.setToPosition(level) },
         // TODO: This looks ugly, should be rewritten
         coralIntake.runOnce { coralIntake.raiseToScore() }.andThen(
-            {coralIntake.outtake()}
-        ).andThen( {
-            coralIntake.lower()
-        } )
+            { coralIntake.outtake() }
+        ).andThen( { coralIntake.lower() } )
     )
 
     fun stopAll(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
