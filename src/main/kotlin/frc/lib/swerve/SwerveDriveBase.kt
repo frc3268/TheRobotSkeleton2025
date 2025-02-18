@@ -110,8 +110,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private var camera: Camera? = null
 
     init {
-
-
         SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
                 180.0, -180.0
         )

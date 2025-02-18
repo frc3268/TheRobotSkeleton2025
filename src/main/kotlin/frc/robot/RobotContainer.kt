@@ -160,6 +160,6 @@ class RobotContainer {
      */
     val autonomousCommand: Command
         get() {
-            return goto(FieldPositions.processor)
+            return autochooser.selected
         }
 }

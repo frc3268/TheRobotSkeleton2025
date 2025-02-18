@@ -59,12 +59,8 @@ object SwerveDriveConstants {
         const val MAX_ANGULAR_ACCELERATION_DEGREES_PER_SECOND_SQUARED = 100.0
         const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1.0
 
-        val xPIDController = ProfiledPIDController(1.5, 0.0, 0.0, TrapezoidProfile.Constraints(
-            MAX_SPEED_METERS_PER_SECOND, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED
-        ))
-        val yPIDController = ProfiledPIDController(1.5, 0.0, 0.0, TrapezoidProfile.Constraints(
-            MAX_SPEED_METERS_PER_SECOND, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED
-        ))
+        val xPIDController = PIDController(1.5, 0.0, 0.0)
+        val yPIDController = PIDController(1.5, 0.0, 0.0)
         val thetaPIDController = ProfiledPIDController(0.01, 0.0, 0.0, TrapezoidProfile.Constraints(
             MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND, MAX_ANGULAR_ACCELERATION_DEGREES_PER_SECOND_SQUARED))
 
