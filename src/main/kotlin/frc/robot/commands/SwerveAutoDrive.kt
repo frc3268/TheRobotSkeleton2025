@@ -49,10 +49,8 @@ class SwerveAutoDrive(
     override fun initialize() {
         index = 0
         points = pathfind(drive.getPose(),  to)
-        points.add(0, drive.getPose())
         drive.field.getObject("points").setPoses(points)
         next = points[0]
-        System.out.println("began")
     }
 
     override fun execute() {

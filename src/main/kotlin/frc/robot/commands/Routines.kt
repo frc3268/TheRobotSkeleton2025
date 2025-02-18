@@ -29,8 +29,12 @@ fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem
 }
 
 object Routines {
+<<<<<<< Updated upstream
 
     // resetElevator should be called after this
+=======
+    // Removes algae from the coral tree
+>>>>>>> Stashed changes
     fun takeAlgae(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.setToPosition(level) },
         algaeIntake.runOnce {

@@ -90,7 +90,6 @@ class Robot: LoggedRobot() {
     /** This autonomous runs the autonomous command selected by your [RobotContainer] class.  */
     override fun autonomousInit() {
         autonomousCommand = robotContainer?.autonomousCommand
-
         // Schedule the autonomous command (example)
         // Note the Kotlin safe-call(?.), this ensures autonomousCommand is not null before scheduling it
         autonomousCommand?.schedule()

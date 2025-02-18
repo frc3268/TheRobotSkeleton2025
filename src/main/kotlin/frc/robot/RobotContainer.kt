@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+import frc.lib.AutoCommand
 import frc.lib.AutoSequence
 import frc.lib.FieldLocation
 import frc.lib.FieldPositions
@@ -64,6 +65,7 @@ class RobotContainer {
     )
 
 
+
     //type is () -> Command because otherwise CommandScheduler complains that each one has already been scheduled
     val autos: MutableMap<String, () -> Command> = mutableMapOf(
         "goToProcessor" to { goto(FieldPositions.processor) }
@@ -87,8 +89,7 @@ class RobotContainer {
         )
     }
 
-
-
+    
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
 
@@ -159,6 +160,6 @@ class RobotContainer {
      */
     val autonomousCommand: Command
         get() {
-            return autochooser.selected
+            return goto(FieldPositions.processor)
         }
 }
