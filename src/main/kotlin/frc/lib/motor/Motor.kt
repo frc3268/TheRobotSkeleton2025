@@ -1,12 +1,11 @@
 package frc.lib.motor
 
 import edu.wpi.first.math.controller.PIDController
-import frc.robot.climber.ClimberIO
 
 interface Motor {
 
-
-    val pidController: PIDController
+    val positionPidController: PIDController
+    val velocityPidController: PIDController
     var inverse: Boolean
 
     /** Run the motor at the specified voltage.  */
@@ -14,19 +13,16 @@ interface Motor {
     fun setPosition(position: Double)
     fun setVelocity(velocity: Double)
 
-    fun getPositonMeasurement()
-    fun getVelocityRPMMeasurement()
+    fun getPositonMeasurement(): Double
+    fun getVelocityRPMMeasurement(): Double
     fun getVelocityMetersPerSecMeasurement(): Double
-    fun getAppliedVoltage()
-    fun getDegreeMeasurement()
-
+    fun getAppliedVoltage(): Double
+    fun getDegreeMeasurement(): Double
 
     /** Stop the motor **/
     fun stop()
-
     /** Close the motor and free up resources. This should not be called unless necessary **/
     fun close()
-
     /** Zero everything **/
     fun reset()
 }

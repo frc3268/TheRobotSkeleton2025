@@ -1,46 +1,73 @@
 package frc.lib.motor
 
 import com.revrobotics.spark.SparkBase
-import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.SparkLowLevel
+import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
-import edu.wpi.first.math.controller.ProfiledPIDController
-import edu.wpi.first.math.trajectory.TrapezoidProfile
 
 // We should use this class more fr fr
 // Also not use as much PiD Controllers
-class SparkMaxMotor(id: Int, val positionPidController:ProfiledPIDController = ProfiledPIDController(0.0,0.0,0.0, TrapezoidProfile.Constraints(0.0,0.0)), val velocityPIDController: PIDController = PIDController(0.0,0.0,0.0), rotationsPerUnit: Double = 1.0) {
-    val controller = SparkMax(id, SparkLowLevel.MotorType.kBrushless)
-    var config: SparkMaxConfig = SparkMaxConfig()
+class SparkMaxMotor(
+    id: Int,
+    override var inverse: Boolean = false,
+    override val positionPidController: PIDController = PIDController(0.0,0.0,0.0),
+    override val velocityPidController: PIDController = PIDController(0.0,0.0,0.0),
+) : Motor {
 
+    val motor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    var motorConfig = SparkMaxConfig()
 
     init{
-        config.encoder.positionConversionFactor(1/rotationsPerUnit)
-        controller.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+        motorConfig.inverted(inverse)
+        motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters)
     }
 
-    fun setPercentOutput(percentOutput: Double){
-        controller.set(percentOutput / 100)
-    }
-    fun setVoltage(voltage: Double){
-        controller.setVoltage(voltage)
-    }
-    fun setPosition(position: Double){
-        positionPidController.goal = TrapezoidProfile.State(position, 0.0)
-        controller.set(positionPidController.calculate(getPositonMeasurement()))
-    }
-    fun setVelocity(velocity: Double){
-        velocityPIDController.setpoint = velocity
-        controller.set(velocityPIDController.calculate(getVelocityMeasurement()))
-    }
-    fun stop(){
-        controller.stopMotor()
+    override fun setVoltage(voltage: Double) {
+        motor.setVoltage(voltage)
     }
 
-    fun isAtVelocityGoal() = velocityPIDController.atSetpoint()
-    fun isAtPositionGoal() = positionPidController.atGoal()
+    override fun setPosition(position: Double) {
+        TODO("Not yet implemented")
 
-    open fun getPositonMeasurement() = controller.getEncoder().position
-    open fun getVelocityMeasurement() = controller.getEncoder().velocity
+        // yeah idk if this works
+        // positionPidController.goal = TrapezoidProfile.State(position, 0.0)
+        // controller.set(positionPidController.calculate(getPositonMeasurement()))
+    }
+
+    override fun setVelocity(velocity: Double) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getPositonMeasurement(): Double {
+        TODO("Not yet implemented")
+    }
+
+    override fun getVelocityRPMMeasurement(): Double {
+        TODO("Not yet implemented")
+    }
+
+    override fun getVelocityMetersPerSecMeasurement(): Double {
+        return motor.getEncoder().velocity
+    }
+
+    override fun getAppliedVoltage(): Double {
+        return motor.busVoltage
+    }
+
+    override fun getDegreeMeasurement(): Double {
+        TODO("Not yet implemented")
+    }
+
+    override fun stop() {
+        motor.stopMotor()
+    }
+
+    override fun close() {
+        motor.close()
+    }
+
+    override fun reset() {
+        TODO("Not yet implemented")
+    }
 }
