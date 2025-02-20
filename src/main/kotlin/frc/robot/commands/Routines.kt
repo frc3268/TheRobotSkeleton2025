@@ -12,6 +12,7 @@ import frc.robot.elevator.ElevatorSubsystem
 fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem) {
     // Edit this, none of these work right now
     SmartDashboard.putData("Reset elevator position", Routines.resetElevator(elevator));
+
     SmartDashboard.putData("Take Algae: l1", Routines.takeAlgae(0.0, elevator, algaeIntake));
     SmartDashboard.putData("Take Algae: l2", Routines.takeAlgae(0.0, elevator, algaeIntake));
     SmartDashboard.putData("Take Algae: l3", Routines.takeAlgae(0.0, elevator, algaeIntake));
@@ -24,6 +25,7 @@ fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem
     SmartDashboard.putData("Place Coral: l2", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
     SmartDashboard.putData("Place Coral: l3", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
     SmartDashboard.putData("Place Coral: l4", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
+
 
     SmartDashboard.putData("STOP ALL", Routines.stopAll(elevator, algaeIntake, coralIntake));
 }

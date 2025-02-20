@@ -35,8 +35,8 @@ class ClimberIOSparkMax : ClimberIO {
         inputs.rightMotorCurrentAmps = doubleArrayOf(rightMotor.outputCurrent)
         inputs.leftMotorCurrentAmps = doubleArrayOf(leftMotor.outputCurrent)
         // I guess we're doing degrees now
-        inputs.rightMotorPositionDegrees = rightMotor.encoder.position / 180
-        inputs.leftMotorPositionDegrees = leftMotor.encoder.position / 180
+        inputs.rightMotorPositionDegrees = rightMotor.encoder.position / 360
+        inputs.leftMotorPositionDegrees = leftMotor.encoder.position / 360
     }
 
     override fun setBothVolts(volts: Double) {
