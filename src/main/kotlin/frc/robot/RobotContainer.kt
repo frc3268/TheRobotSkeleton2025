@@ -110,9 +110,11 @@ class RobotContainer {
         // I was going to use chatgpt to write a paragraph on why this line of code sucks, but I had to log in
         // So pretend there is a long essay on why it is horrible
         elevatorSubsystem?.let { algaeIntakeSubsystem?.let { it1 -> coralIntakeSubsystem?.let { it2 ->
-            initDashboard(it, it1,
-                it2
-            )
+            climberSubsystem?.let { it3 ->
+                initDashboard(it, it1,
+                    it2, it3
+                )
+            }
         } } }
 
 
