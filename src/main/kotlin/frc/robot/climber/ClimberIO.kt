@@ -32,7 +32,7 @@ interface ClimberIO {
             table.put("leftMotorAppliedVolts", leftMotorAppliedVolts)
             table.put("rightMotorCurrentAmps", rightMotorCurrentAmps)
             table.put("leftMotorCurrentAmps", leftMotorCurrentAmps)
-            table.put("elevatorPositionMeters", climberPositionDegrees)
+            table.put("climberPositionDegrees", climberPositionDegrees)
         }
 
         override fun fromLog(table: LogTable) {

@@ -5,13 +5,15 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.RunCommand
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
+import frc.robot.climber.ClimberSubsystem
 import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorSubsystem
 
 // Setup shuffleboard
-fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem) {
+fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem) {
     // Edit this, none of these work right now
     SmartDashboard.putData("Reset elevator position", Routines.resetElevator(elevator));
+
     SmartDashboard.putData("Take Algae: l1", Routines.takeAlgae(0.0, elevator, algaeIntake));
     SmartDashboard.putData("Take Algae: l2", Routines.takeAlgae(0.0, elevator, algaeIntake));
     SmartDashboard.putData("Take Algae: l3", Routines.takeAlgae(0.0, elevator, algaeIntake));
@@ -25,7 +27,7 @@ fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem
     SmartDashboard.putData("Place Coral: l3", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
     SmartDashboard.putData("Place Coral: l4", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
 
-    SmartDashboard.putData("STOP ALL", Routines.stopAll(elevator, algaeIntake, coralIntake));
+    SmartDashboard.putData("STOP ALL", Routines.stopAll(elevator, algaeIntake, coralIntake, climberSubsystem));
 }
 
 object Routines {
@@ -56,7 +58,7 @@ object Routines {
         ).andThen( { coralIntake.lower() } )
     )
 
-    fun stopAll(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
+    fun stopAll(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.stop() },
         algaeIntake.runOnce { algaeIntake.stopAll() },
         coralIntake.runOnce { coralIntake.stop() }

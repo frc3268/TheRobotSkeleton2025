@@ -5,10 +5,11 @@ import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
+import frc.lib.rotation2dFromRot
 import frc.lib.swerve.ElevatorIO
 
 
-class ClimberIOSparkMax : ElevatorIO {
+class ClimberIOSparkMax : ClimberIO {
     val leftMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
     val rightMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
 
@@ -24,17 +25,18 @@ class ClimberIOSparkMax : ElevatorIO {
         leftMotor.configure(leftConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
         rightMotor.configure(rightConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
     }
-    override fun updateInputs(inputs: ElevatorIO.Inputs) {
+    override fun updateInputs(inputs: ClimberIO.Inputs) {
         //this forumla may need to me changed to reflect the reality
-        inputs.elevatorPositionMeters = (leftMotor.encoder.position + rightMotor.encoder.position) / 2
-        inputs.rightMotorPositionMeters = rightMotor.encoder.position
-        inputs.leftMotorPositionMeters = leftMotor.encoder.position
+        inputs.climberPositionDegrees = (leftMotor.encoder.position + rightMotor.encoder.position) / 2
+        inputs.rightMotorVelocityDegreesPerSec = rightMotor.encoder.velocity * 6
+        inputs.leftMotorVelocityDegreesPerSec = leftMotor.encoder.velocity * 6
+        inputs.rightMotorAppliedVolts = rightMotor.busVoltage
+        inputs.leftMotorAppliedVolts = leftMotor.busVoltage
         inputs.rightMotorCurrentAmps = doubleArrayOf(rightMotor.outputCurrent)
         inputs.leftMotorCurrentAmps = doubleArrayOf(leftMotor.outputCurrent)
-        inputs.rightMotorAppliedVolts = rightMotor.busVoltage * rightMotor.appliedOutput
-        inputs.leftMotorAppliedVolts = leftMotor.busVoltage * leftMotor.appliedOutput
-        inputs.rightMotorVelocityMetersPerSec = rightMotor.encoder.velocity
-        inputs.leftMotorVelocityMetersPerSec = leftMotor.encoder.velocity
+        // I guess we're doing degrees now
+        inputs.rightMotorPositionDegrees = rightMotor.encoder.position / 360
+        inputs.leftMotorPositionDegrees = leftMotor.encoder.position / 360
     }
 
     override fun setBothVolts(volts: Double) {
