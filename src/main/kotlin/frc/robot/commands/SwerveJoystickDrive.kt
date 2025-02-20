@@ -8,6 +8,7 @@ import frc.lib.swerve.SwerveDriveConstants
 import java.util.function.*
 
 import frc.robot.Constants
+import kotlin.math.pow
 
 class SwerveJoystickDrive(
     private val drive: SwerveDriveBase,
@@ -51,7 +52,7 @@ class SwerveJoystickDrive(
 
     //sigmoid sigmoid on the wall...
     fun sigmoid(x:Double):Double{
-        return (10 * (1/(1 + Math.pow(Math.E, -4 * x)))) - 5
+        return (10 * (1/(1 + Math.E.pow(-4 * x)))) - 5
     }
 
 
