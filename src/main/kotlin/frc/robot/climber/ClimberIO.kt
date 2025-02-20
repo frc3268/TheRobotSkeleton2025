@@ -44,7 +44,7 @@ interface ClimberIO {
             table.get("leftMotorAppliedVolts", leftMotorAppliedVolts)
             table.get("rightMotorCurrentAmps", rightMotorCurrentAmps)
             table.get("leftMotorCurrentAmps", leftMotorCurrentAmps)
-            table.get("elevatorPositionMeters", climberPositionDegrees)
+            table.get("climberPositionMeters", climberPositionDegrees)
         }
     }
 

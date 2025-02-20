@@ -6,13 +6,13 @@ import com.ctre.phoenix6.signals.InvertedValue
 import edu.wpi.first.math.controller.PIDController
 
 class KrakenMotor(
-    id: Int,
+    override val ID: Int,
     override var inverse: Boolean = false,
     override val positionPidController: PIDController = PIDController(0.0,0.0,0.0),
     override val velocityPidController: PIDController = PIDController(0.0,0.0,0.0),
 ) : Motor {
 
-    val motor = TalonFX(id, "rio")
+    val motor = TalonFX(ID, "rio")
 
     init{
         val motorConfig = TalonFXConfiguration()
@@ -42,15 +42,7 @@ class KrakenMotor(
         TODO("Not yet implemented")
     }
 
-    override fun getPositonMeasurement(): Double {
-        TODO("Not yet implemented")
-    }
-
     override fun getVelocityRPMMeasurement(): Double {
-        TODO("Not yet implemented")
-    }
-
-    override fun getVelocityMetersPerSecMeasurement(): Double {
         return motor.velocity.valueAsDouble
     }
 
@@ -58,8 +50,12 @@ class KrakenMotor(
         return motor.motorVoltage.valueAsDouble
     }
 
-    override fun getDegreeMeasurement(): Double {
-        TODO("Not yet implemented")
+    override fun getPositionDegreeMeasurement(): Double {
+        return motor.position.valueAsDouble / 360
+    }
+
+    override fun getCurrentAmps(): DoubleArray {
+        return doubleArrayOf(motor.statorCurrent.valueAsDouble)
     }
 
     override fun stop() {

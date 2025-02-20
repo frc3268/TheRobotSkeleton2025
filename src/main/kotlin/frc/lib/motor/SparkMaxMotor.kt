@@ -9,13 +9,13 @@ import edu.wpi.first.math.controller.PIDController
 // We should use this class more fr fr
 // Also not use as much PiD Controllers
 class SparkMaxMotor(
-    id: Int,
+    override val ID: Int,
     override var inverse: Boolean = false,
     override val positionPidController: PIDController = PIDController(0.0,0.0,0.0),
     override val velocityPidController: PIDController = PIDController(0.0,0.0,0.0),
 ) : Motor {
 
-    val motor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    val motor = SparkMax(ID, SparkLowLevel.MotorType.kBrushless)
     var motorConfig = SparkMaxConfig()
 
     init{
@@ -39,15 +39,8 @@ class SparkMaxMotor(
         TODO("Not yet implemented")
     }
 
-    override fun getPositonMeasurement(): Double {
-        TODO("Not yet implemented")
-    }
 
     override fun getVelocityRPMMeasurement(): Double {
-        TODO("Not yet implemented")
-    }
-
-    override fun getVelocityMetersPerSecMeasurement(): Double {
         return motor.getEncoder().velocity
     }
 
@@ -55,7 +48,11 @@ class SparkMaxMotor(
         return motor.busVoltage
     }
 
-    override fun getDegreeMeasurement(): Double {
+    override fun getPositionDegreeMeasurement(): Double {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCurrentAmps(): DoubleArray {
         TODO("Not yet implemented")
     }
 
