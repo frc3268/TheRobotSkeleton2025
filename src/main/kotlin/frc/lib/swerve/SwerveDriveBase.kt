@@ -149,16 +149,18 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //estimate robot pose based on what the camera sees
         if(gyroInputs.yawVelocityRadPerSec < Math.PI) {
             seesAprilTag.setBoolean(camera!!.frame.hasTargets())
-            val visionEst: Optional<EstimatedRobotPose>? = camera!!.getEstimatedPose()
-            visionEst?.ifPresent { est ->
-                poseEstimator.addVisionMeasurement(
-                    est.estimatedPose.toPose2d(),
-                    est.timestampSeconds,
-                    camera!!.getEstimationStdDevs(est.estimatedPose.toPose2d())
-                )
+            if(camera!!.frame.hasTargets()){
+                val visionEst: Optional<EstimatedRobotPose>? = camera!!.getEstimatedPose()
+                visionEst?.ifPresent { est ->
+                    poseEstimator.addVisionMeasurement(
+                        Pose2d(est.estimatedPose.toPose2d().x, -est.estimatedPose.toPose2d().y, est.estimatedPose.toPose2d().rotation),
+                        est.timestampSeconds,
+                        camera!!.getEstimationStdDevs(est.estimatedPose.toPose2d())
+                    )
+                }
             }
         }
-        //update module tabs on shuffleboard
+        //update modules
         for (mod in modules) {
             mod.update()
         }
@@ -172,9 +174,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
     // Go to http://localhost:1181/ to see preprocessed stream, http://localhost:1182/ to see processed stream.
     override fun simulationPeriodic() {
-        for ((x, state) in constructModuleStatesFromChassisSpeeds(0.0, 0.0, 0.1, true).withIndex()) {
-            modules[x].setPointEntry.setDouble(state.angle.degrees)
-        }
         camera?.simPeriodic(poseEstimator)
     }
 
@@ -190,7 +189,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     fun setModuleStates(desiredStates: Array<SwerveModuleState>) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
-            SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
+            MAX_SPEED_METERS_PER_SECOND
         )
 
         for (mod in modules) {
@@ -243,7 +242,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     
     //getters
     private fun getYaw(): Rotation2d = gyroInputs.yawPosition
-    fun getPose(): Pose2d = Pose2d(poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
+    fun getPose(): Pose2d = Pose2d(poseEstimator.estimatedPosition.x, -poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
     private fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
 }

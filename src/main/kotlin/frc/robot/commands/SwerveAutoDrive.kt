@@ -73,7 +73,7 @@ class SwerveAutoDrive(
                         -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(
                             drive.getPose().x, next.x)
                          * MAX_SPEED_METERS_PER_SECOND,
-                        -SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(
+                        SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(
                             drive.getPose().y, next.y)* MAX_SPEED_METERS_PER_SECOND,
                         (SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(
                             drive.getPose().rotation.degrees,

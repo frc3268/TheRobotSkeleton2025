@@ -59,7 +59,7 @@ class RobotContainer {
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
         { driverController.getRawAxis(1) },
-        { driverController.getRawAxis(0) },
+        { -driverController.getRawAxis(0) },
         { driverController.getRawAxis(2) },
         { true }
     )
@@ -97,7 +97,7 @@ class RobotContainer {
             //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOKraken())
             //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOKraken())
             //elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
-            climberSubsystem = ClimberSubsystem(ClimberIOKraken())
+            //climberSubsystem = ClimberSubsystem(ClimberIOKraken())
         }
         else {
             // coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())

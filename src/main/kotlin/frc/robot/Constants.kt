@@ -41,5 +41,5 @@ object Constants {
 
     enum class States{REAL, SIM, REPLAY}
 
-    var mode = States.SIM
+    var mode = States.REAL
 }

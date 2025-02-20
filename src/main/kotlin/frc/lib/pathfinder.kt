@@ -65,12 +65,12 @@ fun a_star(start:Pair<Int,Int>, end:Pair<Int,Int>, grid:Array<Array<Boolean>>): 
 fun smoothPath(poses: MutableList<Pose2d>): MutableList<Pose2d>{
     val movingA:MutableList<Pose2d> = mutableListOf()
     var count = 0
-    for (i in 0..poses.size - 7){
+    for (i in 0..poses.size - 5){
         if(count % 5 == 0){
             movingA.add(
                 Pose2d(
-                    (poses[i].x + poses[i + 1].x + poses[i + 2].x + poses[i + 3].x + poses[i + 4].x + poses[i + 5].x + poses[i + 6].x) / 7,
-                    (poses[i].y + poses[i + 1].y + poses[i + 2].y + poses[i + 3].y + poses[i + 4].y + poses[i + 5].y + poses[i + 6].y) / 7,
+                    (poses[i].x + poses[i + 1].x + poses[i + 2].x + poses[i + 3].x + poses[i + 4].x) / 5,
+                    (poses[i].y + poses[i + 1].y + poses[i + 2].y + poses[i + 3].y + poses[i + 4].y) / 5,
                     0.0.rotation2dFromDeg()
                 )
             )

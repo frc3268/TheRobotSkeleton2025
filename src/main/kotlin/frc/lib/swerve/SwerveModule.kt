@@ -15,10 +15,6 @@ Set: Module state
 class SwerveModule(val io: SwerveModuleIO, val index:Int) {
     private val inputs = ModuleIOInputsAutoLogged()
     private val ShuffleboardTab = Shuffleboard.getTab("Swerve Module " + index)
-    val setPointEntry: GenericEntry = ShuffleboardTab.add("Setpoint", 0.0).withWidget(BuiltInWidgets.kGyro).entry
-
-    val angleEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder (Relative)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
-    val absoluteEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder (Absolute)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
 
     val turnController: PIDController = io.turnPIDController
 
@@ -32,8 +28,6 @@ class SwerveModule(val io: SwerveModuleIO, val index:Int) {
     fun update() {
         io.updateInputs(inputs)
         Logger.processInputs("Drive/module" + index.toString(), inputs)
-        angleEncoderEntry.setDouble(getState().angle.degrees)
-        absoluteEncoderEntry.setDouble(inputs.turnAbsolutePosition.degrees)
         delta = SwerveModulePosition(
             getPosition().distanceMeters
                     - lastPosition.distanceMeters,
@@ -54,7 +48,6 @@ class SwerveModule(val io: SwerveModuleIO, val index:Int) {
             return
         }
         val optimizedState = SwerveModuleState.optimize(desiredState, getState().angle)
-        setPointEntry.setDouble(optimizedState.angle.degrees)
         io.setDriveVoltage((optimizedState.speedMetersPerSecond / SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND) * 12.0)
         io.setTurnVoltage(turnController.calculate(getState().angle.degrees, optimizedState.angle.degrees) * 12.0)
     }
