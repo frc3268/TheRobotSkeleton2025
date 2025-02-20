@@ -1,4 +1,4 @@
-package frc.lib
+package frc.lib.motor
 
 import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkMax
@@ -8,7 +8,9 @@ import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.controller.ProfiledPIDController
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 
-class Motor(id: Int, val positionPidController:ProfiledPIDController = ProfiledPIDController(0.0,0.0,0.0, TrapezoidProfile.Constraints(0.0,0.0)), val velocityPIDController: PIDController = PIDController(0.0,0.0,0.0), rotationsPerUnit: Double = 1.0) {
+// We should use this class more fr fr
+// Also not use as much PiD Controllers
+class SparkMaxMotor(id: Int, val positionPidController:ProfiledPIDController = ProfiledPIDController(0.0,0.0,0.0, TrapezoidProfile.Constraints(0.0,0.0)), val velocityPIDController: PIDController = PIDController(0.0,0.0,0.0), rotationsPerUnit: Double = 1.0) {
     val controller = SparkMax(id, SparkLowLevel.MotorType.kBrushless)
     var config: SparkMaxConfig = SparkMaxConfig()
 

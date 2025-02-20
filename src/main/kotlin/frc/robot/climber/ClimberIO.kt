@@ -49,7 +49,7 @@ interface ClimberIO {
     }
 
 
-    val pidController:PIDController
+    val pidController: PIDController
 
     /** Updates the set of loggable inputs.  */
     fun updateInputs(inputs: Inputs)
