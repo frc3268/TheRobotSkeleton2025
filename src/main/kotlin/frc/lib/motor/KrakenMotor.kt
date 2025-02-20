@@ -4,6 +4,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.InvertedValue
 import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.units.Units
+import edu.wpi.first.units.measure.Angle
 
 class KrakenMotor(
     override val ID: Int,
@@ -67,6 +69,8 @@ class KrakenMotor(
     }
 
     override fun reset() {
-        TODO("Not yet implemented")
+        //not totally sure if this works as intended
+        //as intended means that it just changes the value reported by encoder
+        motor.setPosition(Angle.ofRelativeUnits(0.0, Units.Degree))
     }
 }

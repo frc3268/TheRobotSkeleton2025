@@ -65,6 +65,6 @@ class SparkMaxMotor(
     }
 
     override fun reset() {
-        TODO("Not yet implemented")
+        motor.encoder.position = 0.0
     }
 }
