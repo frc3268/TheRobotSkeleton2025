@@ -27,13 +27,6 @@ object Routines {
     // resetElevator should be called after this
 
     // Removes algae from the reef
-    fun takeAlgaeAtLevel(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
-        elevator.runOnce { elevator.setToPosition(level) },
-        algaeIntake.runOnce {
-            algaeIntake.raise()
-            algaeIntake.intake()
-        }
-    )
 
     fun takeCoral(coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
         coralIntake.runOnce { coralIntake.raiseToIntake() }.andThen(
@@ -44,12 +37,18 @@ object Routines {
     // resetElevator should be called after this
     fun placeCoralAtLevel(level: Double, elevator: ElevatorSubsystem, coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.setToPosition(level) },
-        // TODO: This looks ugly, should be rewritten
-        coralIntake.runOnce { coralIntake.raiseToScore() }.andThen(
-            { coralIntake.outtake() }
-        ).andThen( { coralIntake.lower() } )
+        coralIntake.runOnce { coralIntake.raiseToScore() }
+            .andThen({ coralIntake.outtake() })
+            .andThen({ coralIntake.lower() } ),
+        elevator.runOnce { elevator.setToPosition(Levels.LEVEL0.lvl) }
     )
 
+    fun takeAlgaeAtLevel(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
+        elevator.runOnce { elevator.setToPosition(level) },
+        algaeIntake.runOnce { algaeIntake.raise() }
+            .andThen({ algaeIntake.intake() }),
+        elevator.runOnce { elevator.setToPosition(Levels.LEVEL0.lvl) }
+    )
     fun stopAll(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.stop() },
         algaeIntake.runOnce { algaeIntake.stopAll() },

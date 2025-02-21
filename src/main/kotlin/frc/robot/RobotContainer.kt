@@ -96,7 +96,6 @@ class RobotContainer {
         levelChooser.addOption("Level 2", Levels.LEVEL2)
         levelChooser.addOption("Level 3", Levels.LEVEL3)
         levelChooser.addOption("Level 4", Levels.LEVEL4)
-        
 
         SmartDashboard.putData(levelChooser)
 
@@ -150,6 +149,7 @@ class RobotContainer {
                 )
             )
         }
+
 
         driveSubsystem.defaultCommand = teleopCommand
 
