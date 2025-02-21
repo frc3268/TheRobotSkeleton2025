@@ -44,12 +44,12 @@ interface ClimberIO {
             table.get("leftMotorAppliedVolts", leftMotorAppliedVolts)
             table.get("rightMotorCurrentAmps", rightMotorCurrentAmps)
             table.get("leftMotorCurrentAmps", leftMotorCurrentAmps)
-            table.get("elevatorPositionMeters", climberPositionDegrees)
+            table.get("climberPositionMeters", climberPositionDegrees)
         }
     }
 
 
-    val pidController:PIDController
+    val pidController: PIDController
 
     /** Updates the set of loggable inputs.  */
     fun updateInputs(inputs: Inputs)
