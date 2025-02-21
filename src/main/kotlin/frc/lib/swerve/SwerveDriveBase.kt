@@ -107,7 +107,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     var field:Field2d
 
     //should be an option for a sim camera
-    private var camera: Camera? = null
+    var camera: Camera? = null
 
     init {
         SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
@@ -225,21 +225,21 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
                     //fieldoriented is false for a similar reason
                     constructModuleStatesFromChassisSpeeds(
                         //may want to change setpoints
-                        xPIDController.calculate(-target.bestCameraToTarget.x, 0.0) * MAX_SPEED_METERS_PER_SECOND,
-                        yPIDController.calculate(-target.bestCameraToTarget.y, 0.0) * MAX_SPEED_METERS_PER_SECOND,
-                        thetaPIDController.calculate(-target.getYaw(), 0.0) * MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND,
+                        xPIDController.calculate(target.bestCameraToTarget.x, 0.3) * 0.5,
+                        yPIDController.calculate(target.bestCameraToTarget.y, 0.3) * 0.5,
+                        thetaPIDController.calculate(target.getYaw(), 0.0) * MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND,
                         false
                     )
                 )
                 //go only if we see april tags
-            }.onlyIf({camera!!.frame.hasTargets()})
+            }.onlyWhile({camera!!.frame.hasTargets()})
                 //tolerances
                 .until({camera!!.frame.bestTarget.yaw < 5.0 && camera!!.frame.bestTarget.bestCameraToTarget.translation.getDistance(Translation3d(0.0,0.0,0.0)) < 0.1})
         } else{
             //if in sim do nothing. this should be changed
             InstantCommand()
         }
-    
+
     //getters
     private fun getYaw(): Rotation2d = gyroInputs.yawPosition
     fun getPose(): Pose2d = Pose2d(poseEstimator.estimatedPosition.x, -poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)

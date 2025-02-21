@@ -16,10 +16,7 @@ import frc.lib.swerve.SwerveDriveBase
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
 import frc.robot.climber.ClimberIOKraken
 import frc.robot.climber.ClimberSubsystem
-import frc.robot.commands.SwerveAutoDrive
-import frc.robot.commands.SwerveJoystickDrive
-import frc.robot.commands.gridFile
-import frc.robot.commands.initDashboard
+import frc.robot.commands.*
 import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorSubsystem
 import kotlinx.serialization.json.Json
@@ -117,6 +114,8 @@ class RobotContainer {
             }
         } } }
 
+        driverController.L1().onTrue(AlignToAprilTagCommand(driveSubsystem))
+
 
         driveSubsystem.defaultCommand = teleopCommand
 
@@ -137,7 +136,6 @@ class RobotContainer {
                     file.inputStream()
                 ).toCommandGroup(autos))
 
-                Shuffleboard.getTab("General").addString("something35", {"test"})
             }
             else {
                 autochooser.addOption(
