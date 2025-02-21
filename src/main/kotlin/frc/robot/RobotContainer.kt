@@ -150,6 +150,14 @@ class RobotContainer {
             )
         }
 
+        if (coralIntakeSubsystem != null) {
+            driverController.square().onTrue(
+                Routines.takeCoral(
+                    coralIntakeSubsystem!!,
+                )
+            )
+        }
+
 
         driveSubsystem.defaultCommand = teleopCommand
 

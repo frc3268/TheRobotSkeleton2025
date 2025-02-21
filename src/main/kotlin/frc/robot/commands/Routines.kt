@@ -10,7 +10,7 @@ import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorSubsystem
 
 enum class Levels(val lvl: Double) {
-    LEVEL0(0.0), // Don't use this
+    LEVEL0(0.0),
     LEVEL1(0.0),
     LEVEL2(0.0),
     LEVEL3(0.0),
@@ -25,7 +25,6 @@ fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem
 object Routines {
 
     // resetElevator should be called after this
-
     // Removes algae from the reef
 
     fun takeCoral(coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
