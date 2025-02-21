@@ -91,11 +91,12 @@ class RobotContainer {
 
         val levelChooser = SendableChooser<Levels>()
 
-        levelChooser.addOption("Reset Level", Levels.LEVEL0)
+        // levelChooser.addOption("Reset Level", Levels.LEVEL0)
         levelChooser.addOption("Level 1", Levels.LEVEL1)
         levelChooser.addOption("Level 2", Levels.LEVEL2)
         levelChooser.addOption("Level 3", Levels.LEVEL3)
         levelChooser.addOption("Level 4", Levels.LEVEL4)
+        
 
         SmartDashboard.putData(levelChooser)
 
@@ -130,6 +131,25 @@ class RobotContainer {
 
         driverController.L1().onTrue(AlignToAprilTagCommand(driveSubsystem))
 
+        if (elevatorSubsystem != null && coralIntakeSubsystem != null) {
+            driverController.R1().onTrue(
+                Routines.placeCoralAtLevel(
+                    levelChooser.selected.lvl,
+                    elevatorSubsystem!!,
+                    coralIntakeSubsystem!!
+                )
+            )
+        }
+
+        if (elevatorSubsystem != null && algaeIntakeSubsystem != null) {
+            driverController.circle().onTrue(
+                Routines.takeAlgaeAtLevel(
+                    levelChooser.selected.lvl,
+                    elevatorSubsystem!!,
+                    algaeIntakeSubsystem!!
+                )
+            )
+        }
 
         driveSubsystem.defaultCommand = teleopCommand
 

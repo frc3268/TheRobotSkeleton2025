@@ -10,7 +10,7 @@ import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorSubsystem
 
 enum class Levels(val lvl: Double) {
-    LEVEL0(0.0),
+    LEVEL0(0.0), // Don't use this
     LEVEL1(0.0),
     LEVEL2(0.0),
     LEVEL3(0.0),
@@ -19,8 +19,6 @@ enum class Levels(val lvl: Double) {
 
 // Setup shuffleboard
 fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem) {
-    // Edit this, none of these work right now
-    SmartDashboard.putData("Reset elevator position", Routines.resetElevator(elevator));
     SmartDashboard.putData("STOP ALL", Routines.stopAll(elevator, algaeIntake, coralIntake, climberSubsystem));
 }
 
@@ -29,7 +27,7 @@ object Routines {
     // resetElevator should be called after this
 
     // Removes algae from the reef
-    fun takeAlgae(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
+    fun takeAlgaeAtLevel(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.setToPosition(level) },
         algaeIntake.runOnce {
             algaeIntake.raise()
