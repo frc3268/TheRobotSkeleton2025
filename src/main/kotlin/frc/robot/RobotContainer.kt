@@ -91,6 +91,7 @@ class RobotContainer {
 
         val levelChooser = SendableChooser<Levels>()
 
+        levelChooser.addOption("Reset Level", Levels.LEVEL0)
         levelChooser.addOption("Level 1", Levels.LEVEL1)
         levelChooser.addOption("Level 2", Levels.LEVEL2)
         levelChooser.addOption("Level 3", Levels.LEVEL3)

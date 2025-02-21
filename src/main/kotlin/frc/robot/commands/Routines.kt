@@ -9,11 +9,11 @@ import frc.robot.climber.ClimberSubsystem
 import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorSubsystem
 
-// These numbers don't mean anything please replace them with proper ones
 enum class Levels(val lvl: Double) {
-    LEVEL1(46291.6),
-    LEVEL2(513.124),
-    LEVEL3(11.4),
+    LEVEL0(0.0),
+    LEVEL1(0.0),
+    LEVEL2(0.0),
+    LEVEL3(0.0),
     LEVEL4(0.0)
 }
 
