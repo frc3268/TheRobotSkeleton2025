@@ -9,24 +9,18 @@ import frc.robot.climber.ClimberSubsystem
 import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorSubsystem
 
+// These numbers don't mean anything please replace them with proper ones
+enum class Levels(val lvl: Double) {
+    LEVEL1(46291.6),
+    LEVEL2(513.124),
+    LEVEL3(11.4),
+    LEVEL4(0.0)
+}
+
 // Setup shuffleboard
 fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem) {
     // Edit this, none of these work right now
     SmartDashboard.putData("Reset elevator position", Routines.resetElevator(elevator));
-
-    SmartDashboard.putData("Take Algae: l1", Routines.takeAlgae(0.0, elevator, algaeIntake));
-    SmartDashboard.putData("Take Algae: l2", Routines.takeAlgae(0.0, elevator, algaeIntake));
-    SmartDashboard.putData("Take Algae: l3", Routines.takeAlgae(0.0, elevator, algaeIntake));
-    SmartDashboard.putData("Take Algae: l4", Routines.takeAlgae(0.0, elevator, algaeIntake));
-
-    // TODO: Replace this with a higher-level command
-    SmartDashboard.putData("Take Coral", Routines.takeCoral(coralIntake));
-
-    SmartDashboard.putData("Place Coral: l1", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
-    SmartDashboard.putData("Place Coral: l2", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
-    SmartDashboard.putData("Place Coral: l3", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
-    SmartDashboard.putData("Place Coral: l4", Routines.placeCoralAtLevel(0.0, elevator, coralIntake));
-
     SmartDashboard.putData("STOP ALL", Routines.stopAll(elevator, algaeIntake, coralIntake, climberSubsystem));
 }
 
