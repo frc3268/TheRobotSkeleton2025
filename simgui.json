@@ -24,6 +24,7 @@
       "/Shuffleboard/General/LB Command": "String Chooser",
       "/Shuffleboard/General/soething": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/SendableChooser[3]": "String Chooser",
       "/SmartDashboard/VisionSystemSim-hawkeye/Sim Field": "Field2d",
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },

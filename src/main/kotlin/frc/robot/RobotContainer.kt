@@ -6,15 +6,14 @@ import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-import frc.lib.AutoCommand
 import frc.lib.AutoSequence
 import frc.lib.FieldLocation
 import frc.lib.FieldPositions
 import frc.lib.swerve.SwerveDriveBase
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
-import frc.robot.climber.ClimberIOKraken
 import frc.robot.climber.ClimberSubsystem
 import frc.robot.commands.*
 import frc.robot.coralintake.CoralIntakeSubsystem
@@ -90,6 +89,21 @@ class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
 
+        val levelChooser = SendableChooser<Levels>()
+
+        // levelChooser.addOption("Reset Level", Levels.LEVEL0)
+        levelChooser.addOption("Level 1", Levels.LEVEL1)
+        levelChooser.addOption("Level 2", Levels.LEVEL2)
+        levelChooser.addOption("Level 3", Levels.LEVEL3)
+        levelChooser.addOption("Level 4", Levels.LEVEL4)
+
+        SmartDashboard.putData(levelChooser)
+
+
+        // get selected level with levelChooser.selected
+
+
+
         if (Constants.mode == Constants.States.REAL) {
             //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOKraken())
             //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOKraken())
@@ -115,6 +129,34 @@ class RobotContainer {
         } } }
 
         driverController.L1().onTrue(AlignToAprilTagCommand(driveSubsystem))
+
+        if (elevatorSubsystem != null && coralIntakeSubsystem != null) {
+            driverController.R1().onTrue(
+                Routines.placeCoralAtLevel(
+                    levelChooser.selected.lvl,
+                    elevatorSubsystem!!,
+                    coralIntakeSubsystem!!
+                )
+            )
+        }
+
+        if (elevatorSubsystem != null && algaeIntakeSubsystem != null) {
+            driverController.R2().onTrue(
+                Routines.takeAlgaeAtLevel(
+                    levelChooser.selected.lvl,
+                    elevatorSubsystem!!,
+                    algaeIntakeSubsystem!!
+                )
+            )
+        }
+
+        if (coralIntakeSubsystem != null) {
+            driverController.L2().onTrue(
+                Routines.takeCoral(
+                    coralIntakeSubsystem!!,
+                )
+            )
+        }
 
 
         driveSubsystem.defaultCommand = teleopCommand

@@ -115,7 +115,7 @@ class Camera(name: String) {
     // called periodically in a simulation
     fun simPeriodic(driveTrain: SwerveDrivePoseEstimator) {
         visionSim?.update(driveTrain.estimatedPosition);
-        val debugField = visionSim?.debugField
+        // val debugField = visionSim?.debugField
     }
 
 
