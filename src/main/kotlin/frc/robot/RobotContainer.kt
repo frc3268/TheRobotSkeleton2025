@@ -57,7 +57,7 @@ class RobotContainer {
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { -driverController.getRawAxis(0) },
-        { driverController.getRawAxis(2) },
+        { -driverController.getRawAxis(2) },
         { true }
     )
 
