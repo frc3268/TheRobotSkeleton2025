@@ -51,7 +51,8 @@ object Routines {
     fun stopAll(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.stop() },
         algaeIntake.runOnce { algaeIntake.stopAll() },
-        coralIntake.runOnce { coralIntake.stop() }
+        coralIntake.runOnce { coralIntake.stop() },
+        climberSubsystem.run { climberSubsystem.stop() }
     )
 
     fun resetElevator(elevator: ElevatorSubsystem): Command = RunCommand(

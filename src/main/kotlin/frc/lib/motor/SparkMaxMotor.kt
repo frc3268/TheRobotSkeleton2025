@@ -34,6 +34,10 @@ class SparkMaxMotor(
         motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters)
     }
 
+    override fun configure() {
+        motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters)
+    }
+
     override fun setVoltage(voltage: Double) {
         motor.setVoltage(voltage)
     }

@@ -36,6 +36,10 @@ class SimMotor(
         TODO("Not yet implemented")
     }
 
+    override fun configure() {
+        TODO("Not yet implemented")
+    }
+
     override fun stop() {
         TODO("Not yet implemented")
     }

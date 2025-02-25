@@ -24,6 +24,9 @@ interface Motor {
     fun getPositionDegreeMeasurement(): Double
     fun getCurrentAmps(): DoubleArray
 
+    /** Configure the motor. It is best to refrain from calling this function */
+    fun configure()
+
     /** Stop the motor **/
     fun stop()
     /** Close the motor and free up resources. This should not be called unless necessary **/
