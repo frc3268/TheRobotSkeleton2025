@@ -4,13 +4,18 @@ import edu.wpi.first.math.controller.PIDController
 
 interface Motor {
 
+    /** ID of the motor. Should be unique for each motor */
     val ID: Int
+
+    /** Should the motor be reversed? */
     var inverse: Boolean
+
     var positionPIDController: PIDController
     var velocityPIDController: PIDController
 
-    /** Run the motor at the specified voltage.  */
+    /** Run the motor at the specified voltage */
     fun setVoltage(voltage: Double)
+    /** Move the motor to the specified position */
     fun setPosition(position: Double)
     fun setVelocity(velocity: Double)
 

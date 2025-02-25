@@ -56,11 +56,11 @@ class SparkMaxMotor(
     }
 
     override fun getPositionDegreeMeasurement(): Double {
-        TODO("Not yet implemented")
+        return getAppliedVoltage() / 360
     }
 
     override fun getCurrentAmps(): DoubleArray {
-        TODO("Not yet implemented")
+        return doubleArrayOf(motor.outputCurrent)
     }
 
     override fun stop() {

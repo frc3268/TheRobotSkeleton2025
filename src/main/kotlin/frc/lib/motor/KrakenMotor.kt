@@ -71,7 +71,7 @@ class KrakenMotor(
     }
 
     override fun getPositionDegreeMeasurement(): Double {
-        return motor.position.valueAsDouble / 360
+        return getAppliedVoltage() / 360
     }
 
     override fun getCurrentAmps(): DoubleArray {
