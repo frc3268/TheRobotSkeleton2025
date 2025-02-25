@@ -1,11 +1,15 @@
 package frc.lib.motor
 
+import com.ctre.phoenix6.configs.Slot0Configs
+import com.ctre.phoenix6.configs.Slot1Configs
 import com.ctre.phoenix6.configs.TalonFXConfiguration
+import com.ctre.phoenix6.controls.VelocityVoltage
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.InvertedValue
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Angle
+
 
 class KrakenMotor(
     override val ID: Int,
@@ -15,6 +19,9 @@ class KrakenMotor(
 ) : Motor {
 
     val motor = TalonFX(ID, "rio")
+    var positionSlot = Slot0Configs()
+    var velocitySlot = Slot1Configs()
+
 
     init{
         val motorConfig = TalonFXConfiguration()
@@ -26,9 +33,19 @@ class KrakenMotor(
             motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive
         }
 
+        positionSlot.kP = positionPIDController.p
+        positionSlot.kI = positionPIDController.i
+        positionSlot.kD = positionPIDController.d
+
+        velocitySlot.kP = velocityPIDController.p
+        velocitySlot.kI = velocityPIDController.i
+        velocitySlot.kD = velocityPIDController.d
+
         motorConfig.Feedback.SensorToMechanismRatio = 0.0
 
         motor.configurator.apply(motorConfig)
+        motor.configurator.apply(positionSlot)
+        motor.configurator.apply(velocitySlot)
     }
 
 
@@ -37,11 +54,12 @@ class KrakenMotor(
     }
 
     override fun setPosition(position: Double) {
-        TODO("Not yet implemented")
+        motor.setPosition(position)
     }
 
     override fun setVelocity(velocity: Double) {
-        TODO("Not yet implemented")
+        val request = VelocityVoltage(velocity).withSlot(1);
+        motor.setControl(request)
     }
 
     override fun getVelocityRPMMeasurement(): Double {
