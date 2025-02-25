@@ -6,8 +6,8 @@ interface Motor {
 
     val ID: Int
     var inverse: Boolean
-    val positionPidController: PIDController
-    val velocityPidController: PIDController
+    var positionPIDController: PIDController
+    var velocityPIDController: PIDController
 
     /** Run the motor at the specified voltage.  */
     fun setVoltage(voltage: Double)

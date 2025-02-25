@@ -10,8 +10,8 @@ import edu.wpi.first.units.measure.Angle
 class KrakenMotor(
     override val ID: Int,
     override var inverse: Boolean = false,
-    override val positionPidController: PIDController = PIDController(0.0,0.0,0.0),
-    override val velocityPidController: PIDController = PIDController(0.0,0.0,0.0),
+    override var positionPIDController: PIDController,
+    override var velocityPIDController: PIDController,
 ) : Motor {
 
     val motor = TalonFX(ID, "rio")

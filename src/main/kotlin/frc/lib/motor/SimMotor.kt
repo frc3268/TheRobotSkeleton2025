@@ -5,8 +5,8 @@ import edu.wpi.first.math.controller.PIDController
 class SimMotor(
     override val ID: Int,
     override var inverse: Boolean,
-    override val positionPidController: PIDController,
-    override val velocityPidController: PIDController,
+    override var positionPIDController: PIDController,
+    override var velocityPIDController: PIDController,
 ) : Motor {
     override fun setVoltage(voltage: Double) {
         TODO("Not yet implemented")
