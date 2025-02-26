@@ -101,9 +101,6 @@ class RobotContainer {
 
 
         // get selected level with levelChooser.selected
-
-
-
         if (Constants.mode == Constants.States.REAL) {
             //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOKraken())
             //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOKraken())

@@ -33,4 +33,7 @@ interface Motor {
     fun close()
     /** Zero everything **/
     fun reset()
+
+    /** Called periodically in simulation. Does nothing if motor is real */
+    fun simulationPeriodic() {}
 }

@@ -18,10 +18,6 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
     val leftMotorPositionMeters = troubleshootingtab.add("Left Motor Position", 0.0).withPosition(1,2).entry
     val leftMotorAppliedVolts = troubleshootingtab.add("Left Motor Applied Volts", 0.0).withPosition(1, 3).entry
     val elevatorPositionMeters = troubleshootingtab.add("Elevator Position", 0.0).withPosition(1,4).entry
-    
-    init {
-
-    }
 
     override fun periodic() {
         io.updateInputs(inputs)
