@@ -14,6 +14,7 @@ import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Angle
 import edu.wpi.first.wpilibj.RobotController
 import edu.wpi.first.wpilibj.simulation.DCMotorSim
+import frc.lib.rotation2dFromRad
 
 
 class KrakenSimMotor(
@@ -114,9 +115,17 @@ class KrakenSimMotor(
         motorSim.setSupplyVoltage(RobotController.getBatteryVoltage())
         var motorVoltage = motorSim.motorVoltage;
 
-        // use the motor voltage to calculate new position and velocity
-        // using WPILib's DCMotorSim class for physics simulation
+        // Use the motor voltage to calculate new position and velocity
+        // Using WPILib's DCMotorSim class for physics simulation
         motorDC.setInputVoltage(motorVoltage);
-        motorDC.update(0.020); // assume 20 ms loop time
+        motorDC.update(0.020); // Assume 20 ms loop time
+
+        // I don't know what these funny numbers mean. TODO: Can someone please fill these in?
+        motorSim.setRawRotorPosition(
+            1 * motorDC.angularPositionRotations
+        );
+        motorSim.setRotorVelocity(
+            1 * motorDC.angularVelocityRadPerSec
+        );
     }
 }
