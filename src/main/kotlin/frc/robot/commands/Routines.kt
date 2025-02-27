@@ -35,10 +35,12 @@ object Routines {
         elevator.runOnce { elevator.setToPosition(Constants.Levels.LEVEL0.lvl) }
     )
 
-    fun takeAlgaeAtLevel(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
+    fun takeAlgaeAtLevel(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.setToPosition(level) },
+        coralIntake.runOnce { coralIntake.raiseToIntake() },
         algaeIntake.runOnce { algaeIntake.raise() }
             .andThen({ algaeIntake.intake() }),
+        coralIntake.runOnce { coralIntake.lower() },
         elevator.runOnce { elevator.setToPosition(Constants.Levels.LEVEL0.lvl) }
     )
     fun stopAll(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem): Command = SequentialCommandGroup(

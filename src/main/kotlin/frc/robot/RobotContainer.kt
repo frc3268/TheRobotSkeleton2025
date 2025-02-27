@@ -146,12 +146,13 @@ class RobotContainer {
             )
         }
 
-        if (elevatorSubsystem != null && algaeIntakeSubsystem != null) {
+        if (elevatorSubsystem != null && algaeIntakeSubsystem != null && coralIntakeSubsystem != null) {
             driverController.R2().onTrue(
                 Routines.takeAlgaeAtLevel(
                     levelChooser.selected.lvl,
                     elevatorSubsystem!!,
-                    algaeIntakeSubsystem!!
+                    algaeIntakeSubsystem!!,
+                    coralIntakeSubsystem!!
                 )
             )
         }
