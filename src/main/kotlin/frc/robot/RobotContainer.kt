@@ -38,7 +38,7 @@ class RobotContainer {
 
 
 
-    private val driverController = CommandPS4Controller(Constants.OperatorConstants.kDriverControllerPort)
+    private val driverController = CommandPS4Controller(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT)
 
     // There must be a better way to do this! Oh well.
     var coralIntakeSubsystem: CoralIntakeSubsystem? = null
@@ -90,21 +90,18 @@ class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
 
-        val levelChooser = SendableChooser<Levels>()
+        val levelChooser = SendableChooser<Constants.Levels>()
 
         // levelChooser.addOption("Reset Level", Levels.LEVEL0)
-        levelChooser.addOption("Level 1", Levels.LEVEL1)
-        levelChooser.addOption("Level 2", Levels.LEVEL2)
-        levelChooser.addOption("Level 3", Levels.LEVEL3)
-        levelChooser.addOption("Level 4", Levels.LEVEL4)
+        levelChooser.addOption("Level 1", Constants.Levels.LEVEL1)
+        levelChooser.addOption("Level 2", Constants.Levels.LEVEL2)
+        levelChooser.addOption("Level 3", Constants.Levels.LEVEL3)
+        levelChooser.addOption("Level 4", Constants.Levels.LEVEL4)
 
         SmartDashboard.putData(levelChooser)
 
 
         // get selected level with levelChooser.selected
-
-
-
         if (Constants.mode == Constants.States.REAL) {
             //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOKraken())
             //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOKraken())
@@ -131,6 +128,14 @@ class RobotContainer {
 
         driverController.L1().onTrue(AlignToAprilTagCommand(driveSubsystem))
 
+        if (coralIntakeSubsystem != null) {
+            driverController.L2().onTrue(
+                Routines.takeCoral(
+                    coralIntakeSubsystem!!,
+                )
+            )
+        }
+
         if (elevatorSubsystem != null && coralIntakeSubsystem != null) {
             driverController.R1().onTrue(
                 Routines.placeCoralAtLevel(
@@ -150,15 +155,6 @@ class RobotContainer {
                 )
             )
         }
-
-        if (coralIntakeSubsystem != null) {
-            driverController.L2().onTrue(
-                Routines.takeCoral(
-                    coralIntakeSubsystem!!,
-                )
-            )
-        }
-
 
         driveSubsystem.defaultCommand = teleopCommand
 

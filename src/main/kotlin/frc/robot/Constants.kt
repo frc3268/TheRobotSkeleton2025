@@ -11,33 +11,36 @@ package frc.robot
  */
 object Constants {
     object OperatorConstants {
-        const val kDriverControllerPort = 0
+        const val DRIVER_CONTROLLER_PORT = 0
         const val STICK_DEADBAND = 0.1
     }
 
     object SimulationConstants {
-        const val CAMERA_FPS = 15.0;
-        const val AVERAGE_LATENCY = 50.0;
-        const val LATENCY_STD_DEV_MS = 15.0;
-        const val USE_WIREFRAME = true;
-        const val ENABLE_RAW_STREAM = true;
-        const val ENABLE_PROCESSED_STREAM = true;
+        const val CAMERA_FPS = 15.0
+        const val AVERAGE_LATENCY = 50.0
+        const val LATENCY_STD_DEV_MS = 15.0
+        const val USE_WIREFRAME = true
+        const val ENABLE_RAW_STREAM = true
+        const val ENABLE_PROCESSED_STREAM = true
     }
 
     object SimulationCalibration {
         const val RES_WIDTH = 960
         const val RES_HEIGHT = 720
-        const val FOV_DIAG = 90.0
-        const val AVG_ERROR_PX = 0.35;
-        const val ERROR_STD_DEV_PX = 0.10;
+        const val FOV_DIAG = 70.0
+        const val AVG_ERROR_PX = 0.35
+        const val ERROR_STD_DEV_PX = 0.10
     }
 
     const val TROUBLESHOOTING_TAB = "Troubleshooting"
 
-    const val ELE_POS_1 = 0;
-    const val ELE_POS_2 = 0;
-    const val ELE_POS_3 = 0;
-    const val ELE_POS_4 = 0;
+    enum class Levels(val lvl: Double) {
+        LEVEL0(0.0),
+        LEVEL1(0.0),
+        LEVEL2(0.0),
+        LEVEL3(0.0),
+        LEVEL4(0.0)
+    }
 
     enum class States{REAL, SIM, REPLAY}
 

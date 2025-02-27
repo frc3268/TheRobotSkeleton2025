@@ -1,6 +1,8 @@
 package frc.lib.motor
 
+import com.revrobotics.spark.ClosedLoopSlot
 import com.revrobotics.spark.SparkBase
+import com.revrobotics.spark.SparkBase.ControlType
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.SparkMaxConfig
@@ -11,15 +13,28 @@ import edu.wpi.first.math.controller.PIDController
 class SparkMaxMotor(
     override val ID: Int,
     override var inverse: Boolean = false,
-    override val positionPidController: PIDController = PIDController(0.0,0.0,0.0),
-    override val velocityPidController: PIDController = PIDController(0.0,0.0,0.0),
+    override var positionPIDController: PIDController,
+    override var velocityPIDController: PIDController,
 ) : Motor {
 
     val motor = SparkMax(ID, SparkLowLevel.MotorType.kBrushless)
+    var motorClosedLoop = motor.closedLoopController;
     var motorConfig = SparkMaxConfig()
 
     init{
         motorConfig.inverted(inverse)
+        motorConfig.closedLoop
+            .p(positionPIDController.p)
+            .i(positionPIDController.i)
+            .d(positionPIDController.d)
+            .p(velocityPIDController.p, ClosedLoopSlot.kSlot1)
+            .i(velocityPIDController.i, ClosedLoopSlot.kSlot1)
+            .d(velocityPIDController.d, ClosedLoopSlot.kSlot1)
+
+        motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters)
+    }
+
+    override fun configure() {
         motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters)
     }
 
@@ -28,15 +43,11 @@ class SparkMaxMotor(
     }
 
     override fun setPosition(position: Double) {
-        TODO("Not yet implemented")
-
-        // yeah idk if this works
-        // positionPidController.goal = TrapezoidProfile.State(position, 0.0)
-        // controller.set(positionPidController.calculate(getPositonMeasurement()))
+        motorClosedLoop.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0)
     }
 
     override fun setVelocity(velocity: Double) {
-        TODO("Not yet implemented")
+        motorClosedLoop.setReference(velocity, ControlType.kVelocity, ClosedLoopSlot.kSlot1)
     }
 
 
@@ -49,11 +60,11 @@ class SparkMaxMotor(
     }
 
     override fun getPositionDegreeMeasurement(): Double {
-        TODO("Not yet implemented")
+        return getAppliedVoltage() / 360
     }
 
     override fun getCurrentAmps(): DoubleArray {
-        TODO("Not yet implemented")
+        return doubleArrayOf(motor.outputCurrent)
     }
 
     override fun stop() {

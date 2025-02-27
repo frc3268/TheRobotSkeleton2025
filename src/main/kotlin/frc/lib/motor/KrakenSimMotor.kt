@@ -8,11 +8,16 @@ import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.InvertedValue
 import com.revrobotics.spark.SparkBase
 import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.math.system.plant.DCMotor
+import edu.wpi.first.math.system.plant.LinearSystemId
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Angle
+import edu.wpi.first.wpilibj.RobotController
+import edu.wpi.first.wpilibj.simulation.DCMotorSim
+import frc.lib.rotation2dFromRad
 
 
-class KrakenMotor(
+class KrakenSimMotor(
     override val ID: Int,
     override var inverse: Boolean = false,
     override var positionPIDController: PIDController,
@@ -24,6 +29,13 @@ class KrakenMotor(
 
     var positionSlot = Slot0Configs()
     var velocitySlot = Slot1Configs()
+    val motorDC = DCMotorSim(
+        LinearSystemId.createDCMotorSystem(
+            DCMotor.getKrakenX60(1),
+            0.005, // I don't know what these funny numbers mean. TODO: Can someone please fill these in?
+            1.0),
+        DCMotor.getNEO(1),
+    )
 
 
     init{
@@ -96,5 +108,24 @@ class KrakenMotor(
         //not totally sure if this works as intended
         //as intended means that it just changes the value reported by encoder
         motor.setPosition(Angle.ofRelativeUnits(0.0, Units.Degree))
+    }
+
+    override fun simulationPeriodic() {
+        var motorSim = motor.simState
+        motorSim.setSupplyVoltage(RobotController.getBatteryVoltage())
+        var motorVoltage = motorSim.motorVoltage;
+
+        // Use the motor voltage to calculate new position and velocity
+        // Using WPILib's DCMotorSim class for physics simulation
+        motorDC.setInputVoltage(motorVoltage);
+        motorDC.update(0.020); // Assume 20 ms loop time
+
+        // I don't know what these funny numbers mean. TODO: Can someone please fill these in?
+        motorSim.setRawRotorPosition(
+            1 * motorDC.angularPositionRotations
+        );
+        motorSim.setRotorVelocity(
+            1 * motorDC.angularVelocityRadPerSec
+        );
     }
 }
