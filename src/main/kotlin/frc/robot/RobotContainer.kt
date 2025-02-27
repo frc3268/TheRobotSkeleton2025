@@ -115,28 +115,16 @@ class RobotContainer {
             println("Abandon all hope ye who debug here")
         }
 
-        // Because we don't have SimIO Classes
-        // I was going to use chatgpt to write a paragraph on why this line of code sucks, but I had to log in
-        // So pretend there is a long essay on why it is horrible
-        elevatorSubsystem?.let { algaeIntakeSubsystem?.let { it1 -> coralIntakeSubsystem?.let { it2 ->
-            climberSubsystem?.let { it3 ->
-                initDashboard(it, it1,
-                    it2, it3
-                )
-            }
-        } } }
-
         driverController.L1().onTrue(AlignToAprilTagCommand(driveSubsystem))
 
-        if (coralIntakeSubsystem != null) {
+        if (elevatorSubsystem != null && algaeIntakeSubsystem != null && coralIntakeSubsystem != null && climberSubsystem != null) {
+
             driverController.L2().onTrue(
                 Routines.takeCoral(
                     coralIntakeSubsystem!!,
                 )
             )
-        }
 
-        if (elevatorSubsystem != null && coralIntakeSubsystem != null) {
             driverController.R1().onTrue(
                 Routines.placeCoralAtLevel(
                     levelChooser.selected.lvl,
@@ -144,9 +132,7 @@ class RobotContainer {
                     coralIntakeSubsystem!!
                 )
             )
-        }
 
-        if (elevatorSubsystem != null && algaeIntakeSubsystem != null && coralIntakeSubsystem != null) {
             driverController.R2().onTrue(
                 Routines.takeAlgaeAtLevel(
                     levelChooser.selected.lvl,
@@ -155,6 +141,14 @@ class RobotContainer {
                     coralIntakeSubsystem!!
                 )
             )
+
+            initDashboard(
+                elevatorSubsystem!!,
+                algaeIntakeSubsystem!!,
+                coralIntakeSubsystem!!,
+                climberSubsystem!!
+            )
+
         }
 
         driveSubsystem.defaultCommand = teleopCommand
