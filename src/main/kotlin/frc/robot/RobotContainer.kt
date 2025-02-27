@@ -55,8 +55,9 @@ class RobotContainer {
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
         { driverController.getRawAxis(1) },
-        { -driverController.getRawAxis(0) },
-        { -driverController.getRawAxis(2) },
+        { driverController.getRawAxis(0) },
+        { 0.0 },
+        //-driverController.getRawAxis(2)
         { true }
     )
 

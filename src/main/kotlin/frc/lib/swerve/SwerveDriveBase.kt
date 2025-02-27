@@ -6,6 +6,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.*
 import edu.wpi.first.math.kinematics.*
 import edu.wpi.first.networktables.GenericEntry
+import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.*
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
@@ -21,6 +22,8 @@ import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.thetaPIDController
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.xPIDController
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.yPIDController
 import frc.robot.Constants
+import frc.robot.Robot
+import frc.robot.RobotContainer
 import org.littletonrobotics.junction.Logger
 import org.photonvision.EstimatedRobotPose
 import java.util.*
@@ -105,6 +108,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private var headingEntry = shuffleboardTab.add("Robot Heading", gyroInputs.yawPosition.degrees).withWidget(BuiltInWidgets.kGyro).entry
     private var seesAprilTag = shuffleboardTab.add("Sees April Tag?", false).withWidget(BuiltInWidgets.kBooleanBox).entry
     var field:Field2d
+    var field2:Field2d
 
     //should be an option for a sim camera
     var camera: Camera? = null
@@ -127,7 +131,9 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         shuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
         poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1), VecBuilder.fill(0.5, 0.5, 0.5))
         field= Field2d()
+        field2 = Field2d()
         shuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
+        shuffleboardTab.add("field2", field2).withWidget(BuiltInWidgets.kField)
         field.getObject("obr").setPoses(Pose2d(
             13.0856, 4.0259, 0.0.rotation2dFromDeg()
         ), Pose2d(
@@ -150,13 +156,15 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         if(gyroInputs.yawVelocityRadPerSec < Math.PI) {
             seesAprilTag.setBoolean(camera!!.frame.hasTargets())
             if(camera!!.frame.hasTargets()){
+                // && !DriverStation.isEnabled()
                 val visionEst: Optional<EstimatedRobotPose>? = camera!!.getEstimatedPose()
                 visionEst?.ifPresent { est ->
-                    poseEstimator.addVisionMeasurement(
-                        Pose2d(est.estimatedPose.toPose2d().x, -est.estimatedPose.toPose2d().y, est.estimatedPose.toPose2d().rotation),
+                    field2.robotPose = Pose2d(est.estimatedPose.toPose2d().x, est.estimatedPose.toPose2d().y, est.estimatedPose.toPose2d().rotation)
+                        poseEstimator.addVisionMeasurement(
+                        Pose2d(est.estimatedPose.toPose2d().x, est.estimatedPose.toPose2d().y, est.estimatedPose.toPose2d().rotation),
                         est.timestampSeconds,
                         camera!!.getEstimationStdDevs(est.estimatedPose.toPose2d())
-                    )
+                        )
                 }
             }
         }
@@ -242,7 +250,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     //getters
     private fun getYaw(): Rotation2d = gyroInputs.yawPosition
-    fun getPose(): Pose2d = Pose2d(poseEstimator.estimatedPosition.x, -poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
+    fun getPose(): Pose2d = Pose2d(poseEstimator.estimatedPosition.x, poseEstimator.estimatedPosition.y, poseEstimator.estimatedPosition.rotation)
     fun getModuleStates(): Array<SwerveModuleState> = modules.map { it.getState() }.toTypedArray()
     private fun getModulePositions(): Array<SwerveModulePosition> = modules.map { it.getPosition() }.toTypedArray()
 }
