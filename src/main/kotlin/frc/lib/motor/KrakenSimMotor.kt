@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.controls.VelocityVoltage
 import com.ctre.phoenix6.hardware.TalonFX
 import com.ctre.phoenix6.signals.InvertedValue
-import com.revrobotics.spark.SparkBase
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.system.plant.LinearSystemId
@@ -14,17 +13,16 @@ import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Angle
 import edu.wpi.first.wpilibj.RobotController
 import edu.wpi.first.wpilibj.simulation.DCMotorSim
-import frc.lib.rotation2dFromRad
 
 
 class KrakenSimMotor(
-    override val ID: Int,
+    override val id: Int,
     override var inverse: Boolean = false,
-    override var positionPIDController: PIDController,
-    override var velocityPIDController: PIDController,
+    var positionPIDController: PIDController,
+    var velocityPIDController: PIDController,
 ) : Motor {
 
-    val motor = TalonFX(ID, "rio")
+    val motor = TalonFX(id, "rio")
     val motorConfig = TalonFXConfiguration()
 
     var positionSlot = Slot0Configs()
@@ -57,9 +55,7 @@ class KrakenSimMotor(
 
         motorConfig.Feedback.SensorToMechanismRatio = 0.0
 
-        motor.configurator.apply(motorConfig)
-        motor.configurator.apply(positionSlot)
-        motor.configurator.apply(velocitySlot)
+        configure()
     }
     override fun configure() {
         motor.configurator.apply(motorConfig)

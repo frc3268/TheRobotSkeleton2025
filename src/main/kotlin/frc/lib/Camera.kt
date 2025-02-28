@@ -25,39 +25,27 @@ class Camera(name: String) {
     private val limelight = PhotonCamera(name)
     var frame = PhotonPipelineResult()
     private var poseEstimator: PhotonPoseEstimator? = null
-
     private var visionSim: VisionSystemSim? = null;
-
     private var robotToCam = Transform3d(
         Translation3d(
             Units.inchesToMeters(0.0),
             Units.inchesToMeters(7.0),
             Units.inchesToMeters(11.0),
-        ),
-        Rotation3d(
-            0.0,
-            0.0,
-            0.0
+        ), Rotation3d(
+            0.0, 0.0, 0.0
         )
     )
 
-    //private var cameraProp: SimCameraProperties? = null
-    //private var visionSim: VisionSystemSim?: = null
-
     init {
         try {
-
-            poseEstimator =
-                    PhotonPoseEstimator(
-                        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
-                            PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                            robotToCam
-                    )
-
-
+            poseEstimator = PhotonPoseEstimator(
+                AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField),
+                PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+                robotToCam
+            )
         } catch (e: IOException) {
             DriverStation.reportError("AprilTag: Failed to Load", e.stackTrace)
-            // !add some way to lock down apriltage features after this
+            // TODO: add some way to lock down AprilTag features after this
         }
 
         if (Constants.mode == Constants.States.SIM) {
@@ -72,8 +60,7 @@ class Camera(name: String) {
                 Rotation2d.fromDegrees(Constants.SimulationCalibration.FOV_DIAG)
             );
             cameraProp.setCalibError(
-                Constants.SimulationCalibration.AVG_ERROR_PX,
-                Constants.SimulationCalibration.ERROR_STD_DEV_PX
+                Constants.SimulationCalibration.AVG_ERROR_PX, Constants.SimulationCalibration.ERROR_STD_DEV_PX
             );
 
             cameraProp.setFPS(Constants.SimulationConstants.CAMERA_FPS);
@@ -100,35 +87,33 @@ class Camera(name: String) {
 
         }
     }
+
     //call periodically
     //does this work?? consult documentation
-    fun captureFrame(){
+    fun captureFrame() {
         if (Constants.mode == Constants.States.REAL) {
             val results = limelight.allUnreadResults
-            if(results.isNotEmpty()) {
-              frame = results.last()
+            if (results.isNotEmpty()) {
+                frame = results.last()
             }
         }
     }
 
-
-    // called periodically in a simulation
+    // called periodically in simulation
     fun simPeriodic(driveTrain: SwerveDrivePoseEstimator) {
         visionSim?.update(driveTrain.estimatedPosition);
         // val debugField = visionSim?.debugField
     }
-
 
     fun resetPose(pose: Pose2d) {
         poseEstimator ?: return
         poseEstimator?.setReferencePose(pose)
     }
 
-    fun getEstimatedPose(): Optional<EstimatedRobotPose>? =
-        poseEstimator?.update(frame)
+    fun getEstimatedPose(): Optional<EstimatedRobotPose>? = poseEstimator?.update(frame)
 
-    fun getEstimationStdDevs(estimatedPose:Pose2d): Matrix<N3, N1>? {
-        //todo: expiriment with vecbuilder values(somehow)
+    fun getEstimationStdDevs(estimatedPose: Pose2d): Matrix<N3, N1>? {
+        //TODO: Experiment with vecbuilder values(somehow)
         var estStdDevs = VecBuilder.fill(.55, .55, .9)
         val targets = frame.getTargets()
         var numTags = 0
@@ -138,16 +123,15 @@ class Camera(name: String) {
             val tagPose = poseEstimator?.fieldTags?.getTagPose(tgt.fiducialId) ?: continue
             if (tagPose.isEmpty) continue
             numTags++
-            avgDist +=
-                tagPose.get().toPose2d().translation.getDistance(estimatedPose.translation)
+            avgDist += tagPose.get().toPose2d().translation.getDistance(estimatedPose.translation)
         }
         if (numTags == 0) return estStdDevs
         avgDist /= numTags
         // Decrease std devs if multiple targets are visible
         if (numTags > 1) estStdDevs = VecBuilder.fill(0.5, 0.5, 2.0)
         // Increase std devs based on (average) distance
-        if (numTags == 1 && avgDist > 4)
-            estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)
+        if (numTags == 1 && avgDist > 4) estStdDevs =
+            VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)
         else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30))
 
         return estStdDevs

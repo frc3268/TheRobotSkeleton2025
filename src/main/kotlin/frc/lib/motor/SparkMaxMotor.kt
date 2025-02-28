@@ -6,32 +6,22 @@ import com.revrobotics.spark.SparkBase.ControlType
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.SparkMaxConfig
-import edu.wpi.first.math.controller.PIDController
 
 // We should use this class more fr fr
 // Also not use as much PiD Controllers
 class SparkMaxMotor(
-    override val ID: Int,
+    override val id: Int,
     override var inverse: Boolean = false,
-    override var positionPIDController: PIDController,
-    override var velocityPIDController: PIDController,
+    var motorConfig: SparkMaxConfig = SparkMaxConfig()
 ) : Motor {
 
-    val motor = SparkMax(ID, SparkLowLevel.MotorType.kBrushless)
+    val motor = SparkMax(id, SparkLowLevel.MotorType.kBrushless)
     var motorClosedLoop = motor.closedLoopController;
-    var motorConfig = SparkMaxConfig()
 
     init{
         motorConfig.inverted(inverse)
-        motorConfig.closedLoop
-            .p(positionPIDController.p)
-            .i(positionPIDController.i)
-            .d(positionPIDController.d)
-            .p(velocityPIDController.p, ClosedLoopSlot.kSlot1)
-            .i(velocityPIDController.i, ClosedLoopSlot.kSlot1)
-            .d(velocityPIDController.d, ClosedLoopSlot.kSlot1)
 
-        motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters)
+        configure()
     }
 
     override fun configure() {
