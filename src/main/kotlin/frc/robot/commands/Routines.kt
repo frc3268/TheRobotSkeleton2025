@@ -10,15 +10,18 @@ import frc.robot.climber.ClimberSubsystem
 import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorSubsystem
 
-// Setup shuffleboard
+/** Setup shuffleboard buttons
+ *
+ * TODO: Put controller stuff in here */
 fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem) {
     SmartDashboard.putData("STOP ALL", Routines.stopAll(elevator, algaeIntake, coralIntake, climberSubsystem));
 }
 
+/** High level routines / commands consisting of lower level commands */
 object Routines {
 
     // resetElevator should be called after this
-    // Removes algae from the reef
+    /** Removes algae from the reef */
 
     fun takeCoral(coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
         coralIntake.runOnce { coralIntake.raiseToIntake() }.andThen(
