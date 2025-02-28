@@ -1,4 +1,4 @@
-package frc.lib
+package frc.lib.camera
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
@@ -21,6 +21,9 @@ import org.photonvision.targeting.PhotonPipelineResult
 import java.io.IOException
 import java.util.*
 
+/** Basic camera class with simulation
+ * @param[name] The name of the camera set in the PhotonVision UI
+ */
 class Camera(name: String) {
     private val limelight = PhotonCamera(name)
     var frame = PhotonPipelineResult()
@@ -55,17 +58,17 @@ class Camera(name: String) {
             // Create simulated camera properties. These can be set to mimic your actual camera.
             // TODO: Configure the camera!
             cameraProp.setCalibration(
-                Constants.SimulationCalibration.RES_WIDTH,
-                Constants.SimulationCalibration.RES_HEIGHT,
-                Rotation2d.fromDegrees(Constants.SimulationCalibration.FOV_DIAG)
+                Constants.CameraSimulationCalibration.RES_WIDTH,
+                Constants.CameraSimulationCalibration.RES_HEIGHT,
+                Rotation2d.fromDegrees(Constants.CameraSimulationCalibration.FOV_DIAGONAL)
             );
             cameraProp.setCalibError(
-                Constants.SimulationCalibration.AVG_ERROR_PX, Constants.SimulationCalibration.ERROR_STD_DEV_PX
+                Constants.CameraSimulationCalibration.AVG_ERROR_PX, Constants.CameraSimulationCalibration.ERROR_STD_DEV_PX
             );
 
-            cameraProp.setFPS(Constants.SimulationConstants.CAMERA_FPS);
-            cameraProp.setAvgLatencyMs(Constants.SimulationConstants.AVERAGE_LATENCY);
-            cameraProp.setLatencyStdDevMs(Constants.SimulationConstants.LATENCY_STD_DEV_MS);
+            cameraProp.setFPS(Constants.CameraSimulationConstants.CAMERA_FPS);
+            cameraProp.setAvgLatencyMs(Constants.CameraSimulationConstants.AVERAGE_LATENCY);
+            cameraProp.setLatencyStdDevMs(Constants.CameraSimulationConstants.LATENCY_STD_DEV_MS);
             // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
             // targets.
             var cameraSim = PhotonCameraSim(limelight, cameraProp);
@@ -75,11 +78,11 @@ class Camera(name: String) {
             visionSim!!.addCamera(cameraSim, poseEstimator!!.robotToCameraTransform);
 
             // Enable the raw and processed streams. These are enabled by default.
-            cameraSim.enableRawStream(Constants.SimulationConstants.ENABLE_RAW_STREAM);
-            cameraSim.enableProcessedStream(Constants.SimulationConstants.ENABLE_PROCESSED_STREAM);
+            cameraSim.enableRawStream(Constants.CameraSimulationConstants.ENABLE_RAW_STREAM);
+            cameraSim.enableProcessedStream(Constants.CameraSimulationConstants.ENABLE_PROCESSED_STREAM);
 
             // Enable wireframe mode.
-            cameraSim.enableDrawWireframe(Constants.SimulationConstants.USE_WIREFRAME);
+            cameraSim.enableDrawWireframe(Constants.CameraSimulationConstants.USE_WIREFRAME);
 
             // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
             val tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.kDefaultField.m_resourceFile)
@@ -99,8 +102,11 @@ class Camera(name: String) {
         }
     }
 
-    // called periodically in simulation
-    fun simPeriodic(driveTrain: SwerveDrivePoseEstimator) {
+    /** Called every 20ms in sim. Mainly used to simulate the field and camera
+     * @param[driveTrain] Camera offset used to update the vision sim
+     */
+
+    fun simulationPeriodic(driveTrain: SwerveDrivePoseEstimator) {
         visionSim?.update(driveTrain.estimatedPosition);
         // val debugField = visionSim?.debugField
     }

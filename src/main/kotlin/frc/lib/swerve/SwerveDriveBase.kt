@@ -3,18 +3,27 @@ package frc.lib.swerve
 import edu.wpi.first.math.VecBuilder
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
-import edu.wpi.first.math.geometry.*
-import edu.wpi.first.math.kinematics.*
+import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Translation3d
+import edu.wpi.first.math.kinematics.ChassisSpeeds
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics
+import edu.wpi.first.math.kinematics.SwerveModulePosition
+import edu.wpi.first.math.kinematics.SwerveModuleState
 import edu.wpi.first.networktables.GenericEntry
-import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
-import edu.wpi.first.wpilibj.shuffleboard.*
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
-import edu.wpi.first.wpilibj2.command.*
-import frc.lib.*
+import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.SubsystemBase
+import frc.lib.camera.Camera
 import frc.lib.gyro.GyroIO
 import frc.lib.gyro.GyroIOInputsAutoLogged
 import frc.lib.gyro.GyroIOKauai
+import frc.lib.rotation2dFromDeg
+import frc.lib.rotation2dFromRad
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.kinematics
@@ -22,8 +31,6 @@ import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.thetaPIDController
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.xPIDController
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.yPIDController
 import frc.robot.Constants
-import frc.robot.Robot
-import frc.robot.RobotContainer
 import org.littletonrobotics.junction.Logger
 import org.photonvision.EstimatedRobotPose
 import java.util.*
@@ -182,7 +189,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
     // Go to http://localhost:1181/ to see preprocessed stream, http://localhost:1182/ to see processed stream.
     override fun simulationPeriodic() {
-        camera?.simPeriodic(poseEstimator)
+        camera?.simulationPeriodic(poseEstimator)
     }
 
     private fun zeroYaw() {

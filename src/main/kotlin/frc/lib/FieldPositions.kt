@@ -1,7 +1,6 @@
 package frc.lib
 
 import edu.wpi.first.math.geometry.Pose2d
-import java.util.function.Supplier
 
 //for clarity, blue is the pose of the field element on the blue side, and red is the same but on the red side
 data class FieldLocation(val red: Pose2d, val blue: Pose2d)
@@ -37,6 +36,7 @@ data class Obstacle(val location: Pose2d, val radiusMeters: Double)
 // 21 209.49 158.50 12.13 0 0 Blue-Reef
 // 22 193.10 130.17 12.13 300 0 Blue-Reef
 
+/** Object used to store position of field elements */
 object FieldPositions {
 
     fun closest(startingPose: Pose2d, locations: List<FieldLocation>): FieldLocation {
