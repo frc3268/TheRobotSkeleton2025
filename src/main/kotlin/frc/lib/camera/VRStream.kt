@@ -1,8 +1,7 @@
-package frc.lib
+package frc.lib.camera
 
-import org.opencv.core.*
-import org.opencv.videoio.VideoCapture
 import edu.wpi.first.wpilibj.DriverStation
+import org.opencv.videoio.VideoCapture
 
 class VRStream {
 

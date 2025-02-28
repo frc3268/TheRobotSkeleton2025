@@ -10,15 +10,18 @@ import frc.robot.climber.ClimberSubsystem
 import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorSubsystem
 
-// Setup shuffleboard
+/** Setup shuffleboard buttons
+ *
+ * TODO: Put controller stuff in here */
 fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem) {
     SmartDashboard.putData("STOP ALL", Routines.stopAll(elevator, algaeIntake, coralIntake, climberSubsystem));
 }
 
+/** High level routines / commands consisting of lower level commands */
 object Routines {
 
     // resetElevator should be called after this
-    // Removes algae from the reef
+    /** Removes algae from the reef */
 
     fun takeCoral(coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
         coralIntake.runOnce { coralIntake.raiseToIntake() }.andThen(
@@ -35,10 +38,12 @@ object Routines {
         elevator.runOnce { elevator.setToPosition(Constants.Levels.LEVEL0.lvl) }
     )
 
-    fun takeAlgaeAtLevel(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
+    fun takeAlgaeAtLevel(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.setToPosition(level) },
+        coralIntake.runOnce { coralIntake.raiseToIntake() },
         algaeIntake.runOnce { algaeIntake.raise() }
             .andThen({ algaeIntake.intake() }),
+        coralIntake.runOnce { coralIntake.lower() },
         elevator.runOnce { elevator.setToPosition(Constants.Levels.LEVEL0.lvl) }
     )
     fun stopAll(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem): Command = SequentialCommandGroup(
