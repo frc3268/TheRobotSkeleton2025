@@ -129,7 +129,7 @@ class Camera(name: String) {
 
     fun getEstimationStdDevs(estimatedPose:Pose2d): Matrix<N3, N1>? {
         //todo: expiriment with vecbuilder values(somehow)
-        var estStdDevs = VecBuilder.fill(.55, .55, .9)
+        var estStdDevs = VecBuilder.fill(.7, .7, .9)
         val targets = frame.getTargets()
         var numTags = 0
         var avgDist = 0.0

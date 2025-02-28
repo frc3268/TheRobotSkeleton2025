@@ -68,10 +68,10 @@ object SwerveDriveConstants {
         //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
         val kinematics =
                 SwerveDriveKinematics(
-                        Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
-                        Translation2d(-WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
-                        Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
                         Translation2d(WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
+                        Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
+                        Translation2d(-WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
+                        Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
 
 
                         )
@@ -79,9 +79,9 @@ object SwerveDriveConstants {
 
 
     val modules = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-253.0), 1, 2, 0, false, false, PIDController(0.009, 0.003, 0.0003)),
-            ModuleConstants(2, Rotation2d.fromDegrees(-5.66), 3, 4, 1, false, false, PIDController(0.009, 0.003, 0.0003)),
-            ModuleConstants(3, Rotation2d.fromDegrees(-132.53), 5, 6, 2, true, false, PIDController(0.009, 0.003, 0.0003)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-116.76), 7, 8, 3, false, false, PIDController(0.009, 0.003, 0.0003))
+            ModuleConstants(1, Rotation2d.fromDegrees(-253.0), 1, 2, 0, false, true, PIDController(0.009, 0.003, 0.0003)),
+            ModuleConstants(2, Rotation2d.fromDegrees(-5.66), 3, 4, 1, false, true, PIDController(0.009, 0.003, 0.0003)),
+            ModuleConstants(3, Rotation2d.fromDegrees(-132.53), 5, 6, 2, true, true, PIDController(0.009, 0.003, 0.0003)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-116.76), 7, 8, 3, false, true, PIDController(0.009, 0.003, 0.0003))
     )
 }

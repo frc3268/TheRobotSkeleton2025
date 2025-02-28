@@ -49,6 +49,7 @@ class AlignToAprilTagCommand(val drive:SwerveDriveBase): Command() {
                         0.0
                     ) * MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND / 2,
                     true
+                    //sigma sigma on the wall who is the skibidiest of themq
                 )
 
             )
@@ -69,7 +70,7 @@ class AlignToAprilTagCommand(val drive:SwerveDriveBase): Command() {
         }
         else {
             //bestTarget.yaw < 5.0 &&
-            return (abs(targetDelta.x) < 0.5 && abs(targetDelta.y) < 0.5 && abs(targetDelta.rotation.degrees) < 1)
+            return (abs(targetDelta.x) < 0.2 && abs(targetDelta.y) < 0.2 && abs(targetDelta.rotation.degrees) < 1)
         }
     }
 }

@@ -15,6 +15,7 @@ Set: Module state
 class SwerveModule(val io: SwerveModuleIO, val index:Int) {
     private val inputs = ModuleIOInputsAutoLogged()
     private val ShuffleboardTab = Shuffleboard.getTab("Swerve Module " + index)
+    val headingE = ShuffleboardTab.add("heading", 0.0 ).getEntry()
 
     val turnController: PIDController = io.turnPIDController
 
@@ -33,6 +34,7 @@ class SwerveModule(val io: SwerveModuleIO, val index:Int) {
                     - lastPosition.distanceMeters,
             getPosition().angle);
         lastPosition = getPosition()
+        headingE.setDouble(inputs.turnPosition.degrees)
     }
 
     fun resetToAbsolute() {
