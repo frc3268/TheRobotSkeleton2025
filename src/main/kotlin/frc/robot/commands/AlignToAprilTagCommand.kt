@@ -38,7 +38,8 @@ class AlignToAprilTagCommand(val drive:SwerveDriveBase): Command() {
             val onright = bestTarget.bestCameraToTarget.y >= 0
             targetloc = field.getTagPose(fidID).get().toPose2d()
             //replace 0.5 with real target distance
-            targetloc = Pose2d(targetloc.x - targetloc.rotation.sin * (if (onright) -1 else 1) * 0.5,targetloc.y + targetloc.rotation.cos * (if (onright) -1 else 1) * 0.5, targetloc.rotation)
+            //also this is wrong
+            targetloc = Pose2d(targetloc.x + targetloc.rotation.sin * (if (onright) -1 else 1) * 0.5,targetloc.y - targetloc.rotation.cos * (if (onright) -1 else 1) * 0.5, targetloc.rotation)
         }
     }
 
