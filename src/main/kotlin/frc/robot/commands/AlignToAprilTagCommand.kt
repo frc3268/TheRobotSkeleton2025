@@ -15,6 +15,7 @@ import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.xPIDController
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.yPIDController
 import org.photonvision.targeting.PhotonTrackedTarget
 import kotlin.math.abs
+import kotlin.math.cos
 
 class AlignToAprilTagCommand(val drive:SwerveDriveBase): Command() {
     lateinit var bestTarget: PhotonTrackedTarget
@@ -22,6 +23,7 @@ class AlignToAprilTagCommand(val drive:SwerveDriveBase): Command() {
     var fidID = -1
     var targetDelta = Pose2d()
     val field = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField)
+    var targetloc = Pose2d()
 
     init {
         addRequirements(drive)
@@ -33,12 +35,15 @@ class AlignToAprilTagCommand(val drive:SwerveDriveBase): Command() {
         } else {
             bestTarget = drive.camera!!.frame.bestTarget
             fidID = bestTarget.fiducialId
+            val onright = bestTarget.bestCameraToTarget.y >= 0
+            targetloc = field.getTagPose(fidID).get().toPose2d()
+            //replace 0.5 with real target distance
+            targetloc = Pose2d(targetloc.x - targetloc.rotation.sin * (if (onright) -1 else 1) * 0.5,targetloc.y + targetloc.rotation.cos * (if (onright) -1 else 1) * 0.5, targetloc.rotation)
         }
     }
 
     override fun execute() {
         if (fidID != -1) {
-            val targetloc = field.getTagPose(fidID).get().toPose2d()
             targetDelta = Pose2d(targetloc.x - drive.getPose().x, targetloc.y - drive.getPose().y, (targetloc.rotation.degrees + 180 - drive.getPose().rotation.degrees).rotation2dFromDeg())
             println(targetDelta.x)
             drive.setModuleStates(
@@ -49,7 +54,6 @@ class AlignToAprilTagCommand(val drive:SwerveDriveBase): Command() {
                         0.0
                     ) * MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND / 2,
                     true
-                    //sigma sigma on the wall who is the skibidiest of themq
                 )
 
             )

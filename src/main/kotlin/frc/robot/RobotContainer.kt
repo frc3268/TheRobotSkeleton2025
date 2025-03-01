@@ -49,7 +49,6 @@ class RobotContainer {
 
     val autochooser = SendableChooser<Command>()
     val leftBumperChooser = SendableChooser<Command>()
-    val xButtonChooser = SendableChooser<Command>()
 
 
     val teleopCommand = SwerveJoystickDrive(
@@ -65,7 +64,53 @@ class RobotContainer {
 
     //type is () -> Command because otherwise CommandScheduler complains that each one has already been scheduled
     val autos: MutableMap<String, () -> Command> = mutableMapOf(
-        "goToProcessor" to { goto(FieldPositions.processor) }
+        "goToProcessor" to { goto(FieldPositions.processor) },
+        "pickUpCoral" to {Routines.takeCoral(coralIntakeSubsystem!!)},
+        "placeCoralL1" to {Routines.placeCoralAtLevel(
+            Constants.Levels.LEVEL1.lvl,
+            elevatorSubsystem!!,
+            coralIntakeSubsystem!!
+        )},
+        "placeCoralL2" to {Routines.placeCoralAtLevel(
+            Constants.Levels.LEVEL2.lvl,
+            elevatorSubsystem!!,
+            coralIntakeSubsystem!!
+        )},
+        "placeCoralL3" to {Routines.placeCoralAtLevel(
+            Constants.Levels.LEVEL3.lvl,
+            elevatorSubsystem!!,
+            coralIntakeSubsystem!!
+        )},
+        "placeCoralL4" to {Routines.placeCoralAtLevel(
+            Constants.Levels.LEVEL4.lvl,
+            elevatorSubsystem!!,
+            coralIntakeSubsystem!!
+        )},
+        "takeAlgaeL1" to {Routines.takeAlgaeAtLevel(
+            Constants.Levels.LEVEL1.lvl,
+            elevatorSubsystem!!,
+            algaeIntakeSubsystem!!,
+            coralIntakeSubsystem!!
+        )},
+        "takeAlgaeL2" to {Routines.takeAlgaeAtLevel(
+            Constants.Levels.LEVEL2.lvl,
+            elevatorSubsystem!!,
+            algaeIntakeSubsystem!!,
+            coralIntakeSubsystem!!
+        )},
+        "takeAlgaeL3" to {Routines.takeAlgaeAtLevel(
+            Constants.Levels.LEVEL3.lvl,
+            elevatorSubsystem!!,
+            algaeIntakeSubsystem!!,
+            coralIntakeSubsystem!!
+        )},
+        "takeAlgaeL4" to {Routines.takeAlgaeAtLevel(
+            Constants.Levels.LEVEL4.lvl,
+            elevatorSubsystem!!,
+            algaeIntakeSubsystem!!,
+            coralIntakeSubsystem!!
+        )},
+        "dropAlgae" to {algaeIntakeSubsystem!!.dropAlgae()}
     )
 
 
@@ -115,17 +160,16 @@ class RobotContainer {
             println("Abandon all hope ye who debug here")
         }
 
-        driverController.L1().onTrue(AlignToAprilTagCommand(driveSubsystem))
 
         if (elevatorSubsystem != null && algaeIntakeSubsystem != null && coralIntakeSubsystem != null && climberSubsystem != null) {
 
-            driverController.L2().onTrue(
+            driverController.L1().onTrue(
                 Routines.takeCoral(
                     coralIntakeSubsystem!!,
                 )
             )
 
-            driverController.R1().onTrue(
+            driverController.L2().onTrue(
                 Routines.placeCoralAtLevel(
                     levelChooser.selected.lvl,
                     elevatorSubsystem!!,
@@ -141,6 +185,9 @@ class RobotContainer {
                     coralIntakeSubsystem!!
                 )
             )
+
+
+            driverController.R2().onTrue(algaeIntakeSubsystem!!.dropAlgae())
 
             initDashboard(
                 elevatorSubsystem!!,
