@@ -55,10 +55,11 @@ class RobotContainer {
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
-        { 0.0 },
-        //-driverController.getRawAxis(2)
+        { -driverController.getRawAxis(2) },
         { true }
     )
+
+
 
 
 
@@ -135,6 +136,7 @@ class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
 
+
         val levelChooser = SendableChooser<Constants.Levels>()
 
         // levelChooser.addOption("Reset Level", Levels.LEVEL0)
@@ -144,6 +146,9 @@ class RobotContainer {
         levelChooser.addOption("Level 4", Constants.Levels.LEVEL4)
 
         SmartDashboard.putData(levelChooser)
+
+
+        GeneralTab.add("Zero Heading", AlignToAprilTagCommand(driveSubsystem)).withWidget(BuiltInWidgets.kCommand)
 
 
         // get selected level with levelChooser.selected

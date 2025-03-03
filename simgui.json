@@ -20,10 +20,13 @@
       "/Shuffleboard/Drivetrain/Robot Heading": "Gyro",
       "/Shuffleboard/Drivetrain/Zero Heading": "Command",
       "/Shuffleboard/Drivetrain/Zero Headinge": "Command",
+      "/Shuffleboard/Drivetrain/field2": "Field2d",
       "/Shuffleboard/General/Autonomous Mode": "String Chooser",
       "/Shuffleboard/General/LB Command": "String Chooser",
+      "/Shuffleboard/General/Zero Heading": "Command",
       "/Shuffleboard/General/soething": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/SendableChooser[2]": "String Chooser",
       "/SmartDashboard/SendableChooser[3]": "String Chooser",
       "/SmartDashboard/VisionSystemSim-hawkeye/Sim Field": "Field2d",
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
@@ -37,6 +40,11 @@
         "right": 3466,
         "top": 291,
         "width": 17.54825210571289,
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/General/Zero Heading": {
         "window": {
           "visible": true
         }
@@ -132,19 +140,10 @@
     }
   },
   "NetworkTables Info": {
-    "Clients": {
-      "open": true
-    },
     "Connections": {
       "open": true
     },
     "Server": {
-      "Publishers": {
-        "open": true
-      },
-      "Subscribers": {
-        "open": true
-      },
       "open": true
     },
     "visible": true
