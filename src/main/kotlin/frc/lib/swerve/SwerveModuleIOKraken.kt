@@ -17,7 +17,7 @@ import kotlin.math.IEEErem
 
 class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConstants) : SwerveModuleIO {
 
-    private val driveMotor = TalonFX(moduleConstants.ANGLE_MOTOR_ID, "rio")
+    private val driveMotor = TalonFX(moduleConstants.DRIVE_MOTOR_ID, "rio")
     private val angleMotor = TalonFX(moduleConstants.ANGLE_MOTOR_ID,"rio")
 
     override val turnPIDController: PIDController = moduleConstants.PID_CONTROLLER

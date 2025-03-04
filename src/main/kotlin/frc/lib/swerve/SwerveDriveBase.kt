@@ -42,7 +42,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val modules: List<SwerveModule> =
         when (Constants.mode){
             Constants.States.REAL -> {
-                SwerveDriveConstants.modules.mapIndexed { _, swerveMod -> SwerveModule(SwerveModuleIOSparkMax(swerveMod),swerveMod.MODULE_NUMBER) }
+                SwerveDriveConstants.modules.mapIndexed { _, swerveMod -> SwerveModule(SwerveModuleIOKraken(swerveMod),swerveMod.MODULE_NUMBER) }
             }
             Constants.States.REPLAY -> {
                 SwerveDriveConstants.modules.mapIndexed { _, swerveMod -> SwerveModule(object: SwerveModuleIO {
