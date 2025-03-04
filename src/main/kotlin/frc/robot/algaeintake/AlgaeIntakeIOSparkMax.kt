@@ -9,13 +9,15 @@ import frc.lib.rotation2dFromDeg
 
 
 class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
-    val mainMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    //right
+    val mainMotor = SparkMax(11, SparkLowLevel.MotorType.kBrushless)
     var mainConfig = SparkMaxConfig()
 
-    val revMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    //left
+    val revMotor = SparkMax(12, SparkLowLevel.MotorType.kBrushless)
     var revConfig = SparkMaxConfig()
 
-    val jointMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    val jointMotor = SparkMax(13, SparkLowLevel.MotorType.kBrushless)
     var jointConfig = SparkMaxConfig()
 
     override val pidController = PIDController(0.0, 0.0, 0.0)
