@@ -20,16 +20,16 @@ fun initDashboard(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem
 /** High level routines / commands consisting of lower level commands */
 object Routines {
 
-    // resetElevator should be called after this
-    /** Removes algae from the reef */
-
+    //intakes new coral from the source
+    //raises coral arm, intakes coral, does NOT lower
     fun takeCoral(coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
         coralIntake.runOnce { coralIntake.raiseToIntake() }.andThen(
             coralIntake.intake()
         )
     )
 
-    // resetElevator should be called after this
+    // scores coral on reef at level
+    //raise elevator, raise coral arm, run coral outake, lower coral arm, lower elevator
     fun placeCoralAtLevel(level: Double, elevator: ElevatorSubsystem, coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.setToPosition(level) },
         coralIntake.runOnce { coralIntake.raiseToScore() }
@@ -38,14 +38,18 @@ object Routines {
         elevator.runOnce { elevator.setToPosition(Constants.Levels.LEVEL0.lvl) }
     )
 
+    //takes algae from reef at level
+    //raise elevator, moves coral arm out of way, raises algae arm, runs algae flywheels, lowers elevator
     fun takeAlgaeAtLevel(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.setToPosition(level) },
         coralIntake.runOnce { coralIntake.raiseToIntake() },
         algaeIntake.runOnce { algaeIntake.raise() }
             .andThen({ algaeIntake.intake() }),
-        coralIntake.runOnce { coralIntake.lower() },
+        //coralIntake.runOnce { coralIntake.lower() }, //this would hit the algae
         elevator.runOnce { elevator.setToPosition(Constants.Levels.LEVEL0.lvl) }
     )
+
+    //stops everything, doesn't lower
     fun stopAll(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.stop() },
         algaeIntake.runOnce { algaeIntake.stopAll() },
@@ -53,7 +57,4 @@ object Routines {
         climberSubsystem.run { climberSubsystem.stop() }
     )
 
-    fun resetElevator(elevator: ElevatorSubsystem): Command = RunCommand(
-        { elevator.setToPosition(0.0) }
-    )
 }
