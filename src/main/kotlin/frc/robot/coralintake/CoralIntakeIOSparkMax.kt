@@ -46,10 +46,6 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
 
     override fun updateInputs(inputs: CoralIntakeIO.Inputs) {
         inputs.intakeVelocityRPM = intakeMotor.getEncoder().velocity
-        inputs.intakeAppliedVolts = intakeMotor.busVoltage
-        inputs.intakeCurrentAmps = doubleArrayOf(intakeMotor.outputCurrent)
         inputs.jointVelocityRPM = jointMotor.getEncoder().velocity
-        inputs.jointAppliedVolts = jointMotor.busVoltage
-        inputs.jointCurrentAmps = doubleArrayOf(jointMotor.outputCurrent)
     }
 }

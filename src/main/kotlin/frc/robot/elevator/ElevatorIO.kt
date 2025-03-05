@@ -12,12 +12,10 @@ interface ElevatorIO {
     open class Inputs {
         var rightMotorPositionMeters = 0.0
         var rightMotorVelocityMetersPerSec = 0.0
-        var rightMotorAppliedVolts = 0.0
         var rightMotorCurrentAmps = doubleArrayOf()
 
         var leftMotorPositionMeters = 0.0
         var leftMotorVelocityMetersPerSec = 0.0
-        var leftMotorAppliedVolts = 0.0
         var leftMotorCurrentAmps = doubleArrayOf()
 
         var elevatorPositionMeters = 0.0
@@ -29,8 +27,6 @@ interface ElevatorIO {
             table.put("leftMotorPositionMeters", leftMotorPositionMeters)
             table.put("rightMotorVelocityMetersPerSec", rightMotorVelocityMetersPerSec)
             table.put("leftMotorVelocityMetersPerSec", leftMotorVelocityMetersPerSec)
-            table.put("rightMotorAppliedVolts", rightMotorAppliedVolts)
-            table.put("leftMotorAppliedVolts", leftMotorAppliedVolts)
             table.put("rightMotorCurrentAmps", rightMotorCurrentAmps)
             table.put("leftMotorCurrentAmps", leftMotorCurrentAmps)
             table.put("elevatorPositionMeters", elevatorPositionMeters)
@@ -41,8 +37,6 @@ interface ElevatorIO {
             table.get("leftMotorPositionMeters", leftMotorPositionMeters)
             table.get("rightMotorVelocityMetersPerSec", rightMotorVelocityMetersPerSec)
             table.get("leftMotorVelocityMetersPerSec", leftMotorVelocityMetersPerSec)
-            table.get("rightMotorAppliedVolts", rightMotorAppliedVolts)
-            table.get("leftMotorAppliedVolts", leftMotorAppliedVolts)
             table.get("rightMotorCurrentAmps", rightMotorCurrentAmps)
             table.get("leftMotorCurrentAmps", leftMotorCurrentAmps)
             table.get("elevatorPositionMeters", elevatorPositionMeters)

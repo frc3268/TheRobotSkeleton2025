@@ -55,17 +55,10 @@ class AlignToAprilTagCommand(val drive:SwerveDriveBase): Command() {
                     ) * MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND / 2,
                     true
                 )
-
             )
-
-
 
             println(xPIDController.calculate(targetDelta.y, 0.0))
         }
-
-
-
-
     }
 
     override fun isFinished(): Boolean {

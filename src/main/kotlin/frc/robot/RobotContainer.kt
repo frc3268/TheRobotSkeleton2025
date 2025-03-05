@@ -220,7 +220,6 @@ class RobotContainer {
             .withPosition(0, 0)
             .withSize(2, 1)
 
-
         for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
             if(autochooser.selected == null){
                 autochooser.setDefaultOption(file.name,Json.decodeFromStream<AutoSequence>(
