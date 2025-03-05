@@ -28,6 +28,9 @@ class ClimberIOKraken : ClimberIO{
         inputs.rightMotorPositionDegrees = rightMotor.position.valueAsDouble / 360
         inputs.leftMotorPositionDegrees = leftMotor.position.valueAsDouble / 360
 
+        inputs.rightMotorCurrentAmps = doubleArrayOf(rightMotor.statorCurrent.valueAsDouble)
+        inputs.leftMotorCurrentAmps = doubleArrayOf(leftMotor.statorCurrent.valueAsDouble)
+
         inputs.rightMotorAppliedVolts = rightMotor.motorVoltage.valueAsDouble
         inputs.leftMotorAppliedVolts = leftMotor.motorVoltage.valueAsDouble
 

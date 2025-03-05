@@ -12,10 +12,12 @@ interface ClimberIO {
         var rightMotorPositionDegrees = 0.0
         var rightMotorVelocityDegreesPerSec = 0.0
         var rightMotorAppliedVolts = 0.0
+        var rightMotorCurrentAmps = doubleArrayOf()
 
         var leftMotorPositionDegrees = 0.0
         var leftMotorVelocityDegreesPerSec = 0.0
         var leftMotorAppliedVolts = 0.0
+        var leftMotorCurrentAmps = doubleArrayOf()
 
         var climberPositionDegrees = 0.0
     }
@@ -27,6 +29,9 @@ interface ClimberIO {
             table.put("rightMotorVelocityMetersPerSec", rightMotorVelocityDegreesPerSec)
             table.put("leftMotorVelocityMetersPerSec", leftMotorVelocityDegreesPerSec)
             table.put("rightMotorAppliedVolts", rightMotorAppliedVolts)
+            table.put("leftMotorAppliedVolts", leftMotorAppliedVolts)
+            table.put("rightMotorCurrentAmps", rightMotorCurrentAmps)
+            table.put("leftMotorCurrentAmps", leftMotorCurrentAmps)
             table.put("climberPositionDegrees", climberPositionDegrees)
         }
 
@@ -37,6 +42,8 @@ interface ClimberIO {
             table.get("leftMotorVelocityMetersPerSec", leftMotorVelocityDegreesPerSec)
             table.get("rightMotorAppliedVolts", rightMotorAppliedVolts)
             table.get("leftMotorAppliedVolts", leftMotorAppliedVolts)
+            table.get("rightMotorCurrentAmps", rightMotorCurrentAmps)
+            table.get("leftMotorCurrentAmps", leftMotorCurrentAmps)
             table.get("climberPositionMeters", climberPositionDegrees)
         }
     }

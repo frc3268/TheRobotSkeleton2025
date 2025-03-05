@@ -85,6 +85,10 @@ class CoralIntakeIOSparkMaxSim : CoralIntakeIO {
             0.02); // Time interval, in Seconds
 
         inputs.intakeVelocityRPM = intakeMotor.getEncoder().velocity
+        inputs.intakeAppliedVolts = intakeSim.busVoltage
+        inputs.intakeCurrentAmps = doubleArrayOf(intakeMotor.outputCurrent)
         inputs.jointVelocityRPM = jointMotor.getEncoder().velocity
+        inputs.jointAppliedVolts = intakeSim.busVoltage
+        inputs.jointCurrentAmps = doubleArrayOf(jointMotor.outputCurrent)
     }
 }

@@ -33,12 +33,16 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     override fun updateInputs(inputs: AlgaeIntakeIO.Inputs) {
         inputs.jointAngle = jointMotor.encoder.position.rotation2dFromDeg()
         inputs.jointVelocityMetersPerSec = jointMotor.getEncoder().velocity
+        inputs.jointAppliedVolts = jointMotor.busVoltage
+        inputs.jointCurrentAmps = doubleArrayOf(jointMotor.outputCurrent)
 
         inputs.revVelocityMetersPerSec = revMotor.getEncoder().velocity
         inputs.revAppliedVolts = revMotor.busVoltage
+        inputs.revCurrentAmps = doubleArrayOf(revMotor.outputCurrent)
 
         inputs.mainVelocityMetersPerSec = mainMotor.getEncoder().velocity
         inputs.mainAppliedVolts = mainMotor.busVoltage
+        inputs.mainCurrentAmps = doubleArrayOf(mainMotor.outputCurrent)
     }
 
     override fun setJointVoltage(voltage: Double) {

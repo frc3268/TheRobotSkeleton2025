@@ -29,8 +29,14 @@ class CoralIntakeIOKraken : CoralIntakeIO {
 
     // Not fully implemented
     override fun updateInputs(inputs: CoralIntakeIO.Inputs) {
+        inputs.intakeAppliedVolts = intakeMotor.motorVoltage.valueAsDouble
+        inputs.jointAppliedVolts = jointMotor.motorVoltage.valueAsDouble
+
         inputs.intakeVelocityRPM = intakeMotor.velocity.valueAsDouble
         inputs.jointVelocityRPM = jointMotor.velocity.valueAsDouble
+
+        inputs.intakeCurrentAmps = doubleArrayOf(intakeMotor.statorCurrent.valueAsDouble)
+        inputs.jointCurrentAmps = doubleArrayOf(jointMotor.statorCurrent.valueAsDouble)
 
         inputs.jointAngle = jointMotor.position.valueAsDouble.rotation2dFromDeg()
 
