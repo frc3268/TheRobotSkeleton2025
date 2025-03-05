@@ -28,7 +28,7 @@ object SwerveDriveConstants {
     )
 
     object DriveMotor {
-        const val GEAR_RATIO: Double = 8.14 / 1.0
+        const val GEAR_RATIO: Double = 6.2 / 1.0
         const val POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION: Double =
                 (WHEEL_DIAMETER_METERS * Math.PI) / GEAR_RATIO
         const val VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND = POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION / 60.0
@@ -36,7 +36,7 @@ object SwerveDriveConstants {
 
     object AngleMotor {
         //for some reason 10:1 delivers the most accurate results
-        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 16.8
+        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 6.2 / 1.0
 
     }
 
@@ -46,8 +46,8 @@ object SwerveDriveConstants {
     }
 
     object DrivetrainConsts {        /* Drivetrain Constants */
-        val TRACK_WIDTH_METERS = Units.inchesToMeters(24.0)
-        val WHEEL_BASE_METERS = Units.inchesToMeters(24.0)
+        val TRACK_WIDTH_METERS = Units.inchesToMeters(30.0)
+        val WHEEL_BASE_METERS = Units.inchesToMeters(30.0)
 
         const val WHEEL_DIAMETER_METERS = 0.1016
 
@@ -79,9 +79,9 @@ object SwerveDriveConstants {
 
 
     val modules = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-253.0), 1, 2, 0, false, true, PIDController(0.009, 0.003, 0.0003)),
-            ModuleConstants(2, Rotation2d.fromDegrees(-5.66), 3, 4, 1, false, true, PIDController(0.009, 0.003, 0.0003)),
-            ModuleConstants(3, Rotation2d.fromDegrees(-132.53), 5, 6, 2, true, true, PIDController(0.009, 0.003, 0.0003)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-116.76), 7, 8, 3, false, true, PIDController(0.009, 0.003, 0.0003))
+            ModuleConstants(1, Rotation2d.fromDegrees(145.1), 1, 2, 0, true, true, PIDController(0.000, 0.00, 0.00)),
+            ModuleConstants(2, Rotation2d.fromDegrees(9.1), 3, 4, 1, true, true, PIDController(0.0003, 0.000, 0.0000)),
+            ModuleConstants(3, Rotation2d.fromDegrees(140.0), 5, 6, 2, true, true, PIDController(0.000, 0.00, 0.000)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-90.0), 7, 8, 3, true, true, PIDController(0.000, 0.00, 0.000))
     )
 }

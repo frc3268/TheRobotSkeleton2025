@@ -27,7 +27,6 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
 
     // Gear ratios for SDS MK4i L2, adjust as necessary
     private val DRIVE_GEAR_RATIO: Double = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0)
-    private val TURN_GEAR_RATIO: Double = 150.0 / 7.0
 
 
     val dconfig = TalonFXConfiguration()
@@ -45,10 +44,15 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
                 dconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
                 tconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
 
-                driveMotor.position.setUpdateFrequency(5.0, 15.0)
+                driveMotor.position.setUpdateFrequency(50.0, 15.0)
                 //todo: fix? below
-                angleMotor.position.setUpdateFrequency(5.0, 15.0)
+                angleMotor.position.setUpdateFrequency(50.0, 15.0)
+
+                driveMotor.configurator.apply(dconfig)
+                angleMotor.configurator.apply(tconfig)
+
         //apply config
+        turnPIDController.enableContinuousInput(-180.0, 180.0)
     }
 
 
@@ -59,15 +63,13 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
             -driveMotor.velocity.valueAsDouble
         inputs.driveAppliedVolts = driveMotor.motorVoltage.valueAsDouble
         inputs.driveCurrentAmps = doubleArrayOf(driveMotor.statorCurrent.valueAsDouble)
-
         inputs.turnAbsolutePosition =
-            //update?
-            ((absoluteEncoder.get() * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
+            ((absoluteEncoder.get()  * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
         inputs.turnPosition =
-            ((-inputs.turnAbsolutePosition.degrees).IEEErem(360.0).rotation2dFromDeg())
+            (((inputs.turnPosition.degrees).IEEErem(360.0)).rotation2dFromDeg())
         inputs.turnVelocityRadPerSec = (
                 Units.rotationsPerMinuteToRadiansPerSecond(angleMotor.velocity.valueAsDouble)
-                        / TURN_GEAR_RATIO)
+                        )
         inputs.turnAppliedVolts = angleMotor.motorVoltage.valueAsDouble
         inputs.turnCurrentAmps = doubleArrayOf(angleMotor.statorCurrent.valueAsDouble)
 
