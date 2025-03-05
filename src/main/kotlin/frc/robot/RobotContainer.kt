@@ -31,7 +31,6 @@ import java.io.File
  */
 class RobotContainer {
     private val GeneralTab = Shuffleboard.getTab("General")
-    private val thingy = GeneralTab.add("Thing", 0.0).entry
     private val TroubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
@@ -48,8 +47,6 @@ class RobotContainer {
 
 
     val autochooser = SendableChooser<Command>()
-    val leftBumperChooser = SendableChooser<Command>()
-
 
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
@@ -206,15 +203,23 @@ class RobotContainer {
         driveSubsystem.defaultCommand = teleopCommand
 
         GeneralTab
+            .add("drop Algae", algaeIntakeSubsystem?.dropAlgae())
+            .withWidget(BuiltInWidgets.kCommand)
+            .withPosition(3,0)
+            .withSize(1,1)
+
+        GeneralTab
+            .add("Take algae from reef", Routines.takeAlgaeAtLevel(levelChooser.selected.lvl, elevatorSubsystem!!, algaeIntakeSubsystem!!, coralIntakeSubsystem!!))
+            .withWidget(BuiltInWidgets.kComboBoxChooser)
+            .withPosition(2,0)
+            .withSize(2,1)
+
+        GeneralTab
             .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
             .withSize(2, 1)
-        GeneralTab
-            .add("LB Command", leftBumperChooser)
-            .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withPosition(2, 0)
-            .withSize(2, 1)
+
 
         for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
             if(autochooser.selected == null){
