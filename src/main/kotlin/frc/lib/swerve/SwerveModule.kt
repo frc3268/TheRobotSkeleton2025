@@ -53,8 +53,14 @@ class SwerveModule(val io: SwerveModuleIO, val index:Int) {
         desiredState.optimize(getState().angle)
         desiredState.cosineScale(getState().angle)
         setpointE.setString("desired" + desiredState.angle.degrees + ",reported" + getState().angle.degrees + "output " + turnController.calculate(getState().angle.degrees, desiredState.angle.degrees + 180.0) * 12.0)
+        var error = desiredState.angle.degrees - getState().angle.degrees
+        if (error > 180) {
+            error -= 360;
+        } else if (error < -180) {
+            error += 360;
+        }
         io.setDriveVoltage((desiredState.speedMetersPerSecond / SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND) * 12.0)
-        io.setTurnVoltage(turnController.calculate(getState().angle.degrees, desiredState.angle.degrees) * 12.0)
+        io.setTurnVoltage(turnController.calculate(error) * 12.0)
     }
 
     fun stop() {
