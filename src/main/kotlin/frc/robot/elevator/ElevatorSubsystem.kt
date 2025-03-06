@@ -15,7 +15,7 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
     val inputs = ElevatorIO.LoggedInputs()
     val kg = -0.2
 
-    val cntrl = ProfiledPIDController(io.pidController.p, io.pidController.i, io.pidController.d, TrapezoidProfile.Constraints(30.0, 9.0))
+    val cntrl = ProfiledPIDController(io.pidController.p, io.pidController.i, io.pidController.d, TrapezoidProfile.Constraints(30.0, 15.0))
 
     val troubleshootingtab = Shuffleboard.getTab("Elevator")
     val rightMotorPositionMeters = troubleshootingtab.add("Right Motor Position", 0.0).withPosition(1,0).entry
@@ -60,11 +60,14 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
         }
             .until { abs(inputs.elevatorPositionMeters - setPointMeters) < 0.01}
             .andThen(
+                runOnce{
+                    cntrl.reset(inputs.elevatorPositionMeters.toDouble())
+                }.andThen(
                 if (setPointMeters < 0) {
                     run { io.setBothVolts(0.0) }
                 } else {
                     stop()
-                })
+                }))
 
     fun stop(): Command = runOnce { io.stop() }
 
