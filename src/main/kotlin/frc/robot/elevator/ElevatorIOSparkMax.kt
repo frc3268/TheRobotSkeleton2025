@@ -15,7 +15,7 @@ class ElevatorIOSparkMax : ElevatorIO {
     var leftConfig = SparkMaxConfig()
     var rightConfig = SparkMaxConfig()
 
-    override val pidController: PIDController = PIDController(0.0,0.0,0.0)
+    override val pidController: PIDController = PIDController(0.2,0.0,0.0)
 
     init{
         leftConfig.encoder.positionConversionFactor(0.0)

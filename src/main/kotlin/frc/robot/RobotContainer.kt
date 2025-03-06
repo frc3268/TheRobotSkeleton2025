@@ -153,9 +153,9 @@ class RobotContainer {
 
         // get selected level with levelChooser.selected
         if (Constants.mode == Constants.States.REAL) {
-            //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
+            coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
             //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
-            //elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
+            elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
             //climberSubsystem = ClimberSubsystem(ClimberIOKraken())
         }
         else {
@@ -205,17 +205,17 @@ class RobotContainer {
 
         driveSubsystem.defaultCommand = teleopCommand
 
-        GeneralTab
-            .add("drop Algae", algaeIntakeSubsystem?.dropAlgae())
-            .withWidget(BuiltInWidgets.kCommand)
-            .withPosition(3,0)
-            .withSize(1,1)
-
-        GeneralTab
-            .add("Take algae from reef", Routines.takeAlgaeAtLevel(levelChooser.selected.lvl, elevatorSubsystem!!, algaeIntakeSubsystem!!, coralIntakeSubsystem!!))
-            .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withPosition(2,0)
-            .withSize(2,1)
+//        GeneralTab
+//            .add("drop Algae", algaeIntakeSubsystem?.dropAlgae())
+//            .withWidget(BuiltInWidgets.kCommand)
+//            .withPosition(3,0)
+//            .withSize(1,1)
+//
+//        GeneralTab
+//            .add("Take algae from reef", Routines.takeAlgaeAtLevel(levelChooser.selected.lvl, elevatorSubsystem!!, algaeIntakeSubsystem!!, coralIntakeSubsystem!!))
+//            .withWidget(BuiltInWidgets.kComboBoxChooser)
+//            .withPosition(2,0)
+//            .withSize(2,1)
 
         GeneralTab
             .add("Autonomous Mode", autochooser)

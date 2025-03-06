@@ -5,22 +5,23 @@ import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
+import frc.lib.rotation2dFromDeg
 
 class CoralIntakeIOSparkMax : CoralIntakeIO {
-    val jointMotor = SparkMax(14, SparkLowLevel.MotorType.kBrushless)
-    val jointConfig = SparkMaxConfig()
+    val jointMotor = SparkMax(15, SparkLowLevel.MotorType.kBrushless)
 
-    val intakeMotor = SparkMax(15, SparkLowLevel.MotorType.kBrushless)
-    val intakeConfig = SparkMaxConfig()
+    val intakeMotor = SparkMax(14, SparkLowLevel.MotorType.kBrushless)
 
-    override val pidController: PIDController = PIDController(0.0,0.0,0.0)
+    override val pidController: PIDController = PIDController(0.03,0.001,0.0)
 
     init {
         //jointConfig.encoder.positionConversionFactor(0.01)
         //intakeConfig.encoder.positionConversionFactor(0.0)
 
-        intakeMotor.configure(intakeConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
-        jointMotor.configure(jointConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+        //intakeMotor.configure(intakeConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+        //jointMotor.configure(jointConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+
+
     }
 
     override fun setIntakeVoltage(voltage: Double) {
@@ -46,10 +47,7 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
 
     override fun updateInputs(inputs: CoralIntakeIO.Inputs) {
         inputs.intakeVelocityRPM = intakeMotor.getEncoder().velocity
-        inputs.intakeAppliedVolts = intakeMotor.busVoltage
-        inputs.intakeCurrentAmps = doubleArrayOf(intakeMotor.outputCurrent)
         inputs.jointVelocityRPM = jointMotor.getEncoder().velocity
-        inputs.jointAppliedVolts = jointMotor.busVoltage
-        inputs.jointCurrentAmps = doubleArrayOf(jointMotor.outputCurrent)
+        inputs.jointAngle = (jointMotor.encoder.position * 9.5).rotation2dFromDeg()
     }
 }

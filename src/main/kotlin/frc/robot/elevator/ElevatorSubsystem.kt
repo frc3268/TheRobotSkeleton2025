@@ -1,5 +1,7 @@
 package frc.robot.elevator
 
+import edu.wpi.first.math.controller.ProfiledPIDController
+import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
@@ -11,9 +13,11 @@ import frc.robot.Constants
 
 class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
     val inputs = ElevatorIO.LoggedInputs()
-    val kg = 0.0
+    val kg = -0.2
 
-    val troubleshootingtab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
+    val cntrl = ProfiledPIDController(io.pidController.p, io.pidController.i, io.pidController.d, TrapezoidProfile.Constraints(30.0, 9.0))
+
+    val troubleshootingtab = Shuffleboard.getTab("Elevator")
     val rightMotorPositionMeters = troubleshootingtab.add("Right Motor Position", 0.0).withPosition(1,0).entry
     val rightMotorAppliedVolts = troubleshootingtab.add("Right Motor Applied Volts", 0.0).withPosition(1, 1).entry
     val leftMotorPositionMeters = troubleshootingtab.add("Left Motor Position", 0.0).withPosition(1,2).entry
@@ -22,9 +26,13 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
 
     init{
 
-        troubleshootingtab.add("go positive",run{io.setBothVolts(0.1)}).withWidget(BuiltInWidgets.kCommand)
-        troubleshootingtab.add("go negative",run{io.setBothVolts(-0.1)}).withWidget(BuiltInWidgets.kCommand)
+        troubleshootingtab.add("go positive",run{io.setBothVolts(-0.5)}).withWidget(BuiltInWidgets.kCommand)
+        troubleshootingtab.add("go negative",run{io.setBothVolts(0.5)}).withWidget(BuiltInWidgets.kCommand)
         troubleshootingtab.add("stop",stop()).withWidget(BuiltInWidgets.kCommand)
+
+        troubleshootingtab.add("go to top",setToPosition(-50.0)).withWidget(BuiltInWidgets.kCommand)
+
+        troubleshootingtab.add("go to half",setToPosition(-24.0)).withWidget(BuiltInWidgets.kCommand)
 
 
 
@@ -39,17 +47,21 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
         leftMotorPositionMeters.setDouble(inputs.leftMotorPositionMeters)
         leftMotorAppliedVolts.setDouble(inputs.leftMotorAppliedVolts)
         elevatorPositionMeters.setDouble(inputs.elevatorPositionMeters)
+
+        if(inputs.elevatorPositionMeters.toDouble() < -49 || inputs.elevatorPositionMeters > -0.3 ){
+            //stop()
+        }
         
     }
 
     fun setToPosition(setPointMeters: Double): Command =
         run {
-            io.setBothVolts(io.pidController.calculate(inputs.elevatorPositionMeters, setPointMeters) * 12.0)
+            io.setBothVolts(cntrl.calculate(inputs.elevatorPositionMeters, setPointMeters))
         }
-            .until { abs(inputs.elevatorPositionMeters - setPointMeters) < 0.01 }
+            .until { abs(inputs.elevatorPositionMeters - setPointMeters) < 0.01}
             .andThen(
-                if (setPointMeters > 0) {
-                    run { io.setBothVolts(kg * 12.0) }
+                if (setPointMeters < 0) {
+                    run { io.setBothVolts(0.0) }
                 } else {
                     stop()
                 })
