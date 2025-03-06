@@ -24,6 +24,12 @@ class ElevatorIOKraken : ElevatorIO{
         leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake
         rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake
 
+        leftConfig.CurrentLimits.StatorCurrentLimit = 120.0
+        rightConfig.CurrentLimits.StatorCurrentLimit = 120.0
+
+        leftConfig.CurrentLimits.StatorCurrentLimitEnable = true
+        rightConfig.CurrentLimits.StatorCurrentLimitEnable = true
+        
         leftMotor.configurator.apply(leftConfig)
         rightMotor.configurator.apply(rightConfig)
     }

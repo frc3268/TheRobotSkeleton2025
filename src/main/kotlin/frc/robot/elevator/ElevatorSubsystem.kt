@@ -48,8 +48,8 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
         leftMotorAppliedVolts.setDouble(inputs.leftMotorAppliedVolts)
         elevatorPositionMeters.setDouble(inputs.elevatorPositionMeters)
 
-        if(inputs.elevatorPositionMeters.toDouble() < -49 || inputs.elevatorPositionMeters > -0.3 ){
-            //stop()
+        if(inputs.elevatorPositionMeters.toDouble() < -50 || inputs.elevatorPositionMeters > -1 ){
+            stop()
         }
         
     }
@@ -72,4 +72,6 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
     fun stop(): Command = runOnce { io.stop() }
 
     fun zero(): Command = runOnce { io.reset() }
+
+
 }
