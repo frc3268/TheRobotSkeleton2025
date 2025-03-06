@@ -16,8 +16,8 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
     override val pidController: PIDController = PIDController(0.0,0.0,0.0)
 
     init {
-        jointConfig.encoder.positionConversionFactor(0.0)
-        intakeConfig.encoder.positionConversionFactor(0.0)
+        //jointConfig.encoder.positionConversionFactor(0.01)
+        //intakeConfig.encoder.positionConversionFactor(0.0)
 
         intakeMotor.configure(intakeConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
         jointMotor.configure(jointConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)

@@ -2,6 +2,7 @@ package frc.lib.swerve
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.hardware.TalonFX
+import com.ctre.phoenix6.signals.InvertedValue
 import com.ctre.phoenix6.signals.NeutralModeValue
 import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkLowLevel
@@ -38,8 +39,8 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
                 tconfig.Feedback.SensorToMechanismRatio =
                     SwerveDriveConstants.AngleMotor.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
 
-                //driveMotor.inverted = moduleConstants.DRIVE_MOTOR_REVERSED
-                //angleMotor.inverted = moduleConstants.ANGLE_MOTOR_REVERSED
+                dconfig.MotorOutput.Inverted = if (moduleConstants.DRIVE_MOTOR_REVERSED) InvertedValue.Clockwise_Positive else InvertedValue.CounterClockwise_Positive
+                tconfig.MotorOutput.Inverted =  if (moduleConstants.DRIVE_MOTOR_REVERSED) InvertedValue.Clockwise_Positive else InvertedValue.CounterClockwise_Positive
 
                 dconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
                 tconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
@@ -66,7 +67,7 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
         inputs.turnAbsolutePosition =
             ((absoluteEncoder.get()  * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
         inputs.turnPosition =
-            (((inputs.turnPosition.degrees).IEEErem(360.0)).rotation2dFromDeg())
+            (((inputs.turnAbsolutePosition.degrees).IEEErem(360.0)).rotation2dFromDeg())
         inputs.turnVelocityRadPerSec = (
                 Units.rotationsPerMinuteToRadiansPerSecond(angleMotor.velocity.valueAsDouble)
                         )

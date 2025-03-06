@@ -13,10 +13,13 @@ import frc.lib.AutoSequence
 import frc.lib.FieldLocation
 import frc.lib.FieldPositions
 import frc.lib.swerve.SwerveDriveBase
+import frc.robot.algaeintake.AlgaeIntakeIOSparkMax
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
 import frc.robot.climber.ClimberSubsystem
 import frc.robot.commands.*
+import frc.robot.coralintake.CoralIntakeIOSparkMax
 import frc.robot.coralintake.CoralIntakeSubsystem
+import frc.robot.elevator.ElevatorIOKraken
 import frc.robot.elevator.ElevatorSubsystem
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -153,8 +156,8 @@ class RobotContainer {
 
         // get selected level with levelChooser.selected
         if (Constants.mode == Constants.States.REAL) {
-            //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOKraken())
-            //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOKraken())
+            //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
+            //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
             //elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
             //climberSubsystem = ClimberSubsystem(ClimberIOKraken())
         }

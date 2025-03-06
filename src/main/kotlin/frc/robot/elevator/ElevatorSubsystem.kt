@@ -1,5 +1,6 @@
 package frc.robot.elevator
 
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -18,6 +19,16 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
     val leftMotorPositionMeters = troubleshootingtab.add("Left Motor Position", 0.0).withPosition(1,2).entry
     val leftMotorAppliedVolts = troubleshootingtab.add("Left Motor Applied Volts", 0.0).withPosition(1, 3).entry
     val elevatorPositionMeters = troubleshootingtab.add("Elevator Position", 0.0).withPosition(1,4).entry
+
+    init{
+
+        troubleshootingtab.add("go positive",run{io.setBothVolts(0.1)}).withWidget(BuiltInWidgets.kCommand)
+        troubleshootingtab.add("go negative",run{io.setBothVolts(-0.1)}).withWidget(BuiltInWidgets.kCommand)
+        troubleshootingtab.add("stop",stop()).withWidget(BuiltInWidgets.kCommand)
+
+
+
+    }
 
     override fun periodic() {
         io.updateInputs(inputs)
