@@ -42,12 +42,16 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
                 dconfig.MotorOutput.Inverted = if (moduleConstants.DRIVE_MOTOR_REVERSED) InvertedValue.Clockwise_Positive else InvertedValue.CounterClockwise_Positive
                 tconfig.MotorOutput.Inverted =  if (moduleConstants.DRIVE_MOTOR_REVERSED) InvertedValue.Clockwise_Positive else InvertedValue.CounterClockwise_Positive
 
-                dconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
-                tconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
+                dconfig.MotorOutput.NeutralMode = NeutralModeValue.Brake
+                tconfig.MotorOutput.NeutralMode = NeutralModeValue.Brake
+//                dconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
+//                tconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
 
                 driveMotor.position.setUpdateFrequency(50.0, 15.0)
                 //todo: fix? below
                 angleMotor.position.setUpdateFrequency(50.0, 15.0)
+
+
 
                 driveMotor.configurator.apply(dconfig)
                 angleMotor.configurator.apply(tconfig)
@@ -62,8 +66,6 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
             -driveMotor.position.valueAsDouble
         inputs.driveVelocityMetersPerSec =
             -driveMotor.velocity.valueAsDouble
-        inputs.driveAppliedVolts = driveMotor.motorVoltage.valueAsDouble
-        inputs.driveCurrentAmps = doubleArrayOf(driveMotor.statorCurrent.valueAsDouble)
         inputs.turnAbsolutePosition =
             ((absoluteEncoder.get()  * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
         inputs.turnPosition =
@@ -71,8 +73,6 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
         inputs.turnVelocityRadPerSec = (
                 Units.rotationsPerMinuteToRadiansPerSecond(angleMotor.velocity.valueAsDouble)
                         )
-        inputs.turnAppliedVolts = angleMotor.motorVoltage.valueAsDouble
-        inputs.turnCurrentAmps = doubleArrayOf(angleMotor.statorCurrent.valueAsDouble)
 
     }
 

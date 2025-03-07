@@ -36,6 +36,8 @@ val directions = listOf(
 
 //"field_size":{"x":17.548,"y":8.052},"nodeSizeMeters":0.3,
 
+
+
 fun a_star(start:Pair<Int,Int>, end:Pair<Int,Int>, grid:Array<Array<Boolean>>): MutableList<Point>{
     val allPoints: MutableMap<Pair<Int, Int>, Double> = mutableMapOf(
         start to (get_f(start, end))

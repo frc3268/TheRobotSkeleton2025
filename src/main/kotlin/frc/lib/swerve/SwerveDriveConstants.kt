@@ -28,7 +28,7 @@ object SwerveDriveConstants {
     )
 
     object DriveMotor {
-        const val GEAR_RATIO: Double = 5.96 / 1.0
+        const val GEAR_RATIO: Double = 12.1 / 1.0
         const val POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION: Double = GEAR_RATIO
         const val VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND = POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION / 60.0
     }
@@ -78,9 +78,9 @@ object SwerveDriveConstants {
 
 
     val modules = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(145.1), 1, 2, 0, true, false, PIDController(0.003, 0.00, 0.00)),
-            ModuleConstants(2, Rotation2d.fromDegrees(9.1), 3, 4, 1, false, false, PIDController(0.003, 0.000, 0.0000)),
-            ModuleConstants(3, Rotation2d.fromDegrees(140.0), 5, 6, 2, false, false, PIDController(0.003, 0.00, 0.000)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-90.0), 7, 8, 3, true, false, PIDController(0.003, 0.00, 0.000))
+            ModuleConstants(1, Rotation2d.fromDegrees(145.1), 1, 2, 0, true, false, PIDController(0.009, 0.00, 0.00)),
+            ModuleConstants(2, Rotation2d.fromDegrees(9.1), 3, 4, 1, false, false, PIDController(0.009, 0.000, 0.0000)),
+            ModuleConstants(3, Rotation2d.fromDegrees(140.0), 5, 6, 2, false, false, PIDController(0.009, 0.00, 0.000)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-90.0), 7, 8, 3, true, false, PIDController(0.009, 0.00, 0.000))
     )
 }

@@ -40,11 +40,11 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
 
     fun raiseToIntake(): Command = runOnce {
         io.setJointVoltage(io.pidController.calculate(inputs.jointAngle.degrees, -40.0))
-    }.until { inputs.jointAngle.degrees > 0.0 }
+    }
 
     fun lower(): Command = runOnce {
         io.setJointVoltage(io.pidController.calculate(inputs.jointAngle.degrees, 0.0))
-    }.until { inputs.jointAngle.degrees < 0.0 }
+    }
 
     fun stop(): Command = runOnce{ io.stop() }
     fun stopJoint(): Command = runOnce{ io.stopJoint() }

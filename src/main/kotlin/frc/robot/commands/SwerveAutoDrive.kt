@@ -30,8 +30,7 @@ allows the user to take manual control of the joysticks to make adjustments whil
  */
 class SwerveAutoDrive(
     private val setpoint: Supplier<Pose2d>,
-    private val drive: SwerveDriveBase,
-    private val grid:Array<Array<Boolean>>
+    private val drive: SwerveDriveBase
 ): Command() {
     private var index = 0
     private var points = mutableListOf<Pose2d>()
@@ -39,6 +38,8 @@ class SwerveAutoDrive(
     var next = Pose2d()
     private var tolerance: Pose2d = Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg())
     val to = setpoint.get()
+    val grid = Json.decodeFromStream<gridFile>(
+        File(Filesystem.getDeployDirectory().toString() + "/pathplanner/navgrid.json").inputStream()).grid
 
     init {
         addRequirements(drive)

@@ -29,10 +29,6 @@ class ElevatorIOSparkMax : ElevatorIO {
         inputs.elevatorPositionMeters = (leftMotor.encoder.position + rightMotor.encoder.position) / 2
         inputs.rightMotorPositionMeters = rightMotor.encoder.position
         inputs.leftMotorPositionMeters = leftMotor.encoder.position
-        inputs.rightMotorCurrentAmps = doubleArrayOf(rightMotor.outputCurrent)
-        inputs.leftMotorCurrentAmps = doubleArrayOf(leftMotor.outputCurrent)
-        inputs.rightMotorAppliedVolts = rightMotor.busVoltage * rightMotor.appliedOutput
-        inputs.leftMotorAppliedVolts = leftMotor.busVoltage * leftMotor.appliedOutput
         inputs.rightMotorVelocityMetersPerSec = rightMotor.encoder.velocity
         inputs.leftMotorVelocityMetersPerSec = leftMotor.encoder.velocity
     }

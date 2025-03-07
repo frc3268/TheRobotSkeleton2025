@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import frc.lib.rotation2dFromDeg
 
 
@@ -20,31 +21,24 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     val jointMotor = SparkMax(13, SparkLowLevel.MotorType.kBrushless)
     var jointConfig = SparkMaxConfig()
 
-    override val pidController = PIDController(0.0, 0.0, 0.0)
-
+    override val pidController = PIDController(0.01, 0.0, 0.0)
     init {
         jointConfig.encoder.positionConversionFactor(0.0)
         revConfig.encoder.positionConversionFactor(0.0)
         mainConfig.encoder.positionConversionFactor(0.0)
-
-        revMotor.configure(revConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
-        mainMotor.configure(mainConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
-        jointMotor.configure(jointConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+//
+//        revMotor.configure(revConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+//        mainMotor.configure(mainConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
+//        jointMotor.configure(jointConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters)
     }
 
     override fun updateInputs(inputs: AlgaeIntakeIO.Inputs) {
-        inputs.jointAngle = jointMotor.encoder.position.rotation2dFromDeg()
+        inputs.jointAngle = (jointMotor.encoder.position * 18.75).rotation2dFromDeg()
         inputs.jointVelocityMetersPerSec = jointMotor.getEncoder().velocity
-        inputs.jointAppliedVolts = jointMotor.busVoltage
-        inputs.jointCurrentAmps = doubleArrayOf(jointMotor.outputCurrent)
 
         inputs.revVelocityMetersPerSec = revMotor.getEncoder().velocity
-        inputs.revAppliedVolts = revMotor.busVoltage
-        inputs.revCurrentAmps = doubleArrayOf(revMotor.outputCurrent)
 
         inputs.mainVelocityMetersPerSec = mainMotor.getEncoder().velocity
-        inputs.mainAppliedVolts = mainMotor.busVoltage
-        inputs.mainCurrentAmps = doubleArrayOf(mainMotor.outputCurrent)
     }
 
     override fun setJointVoltage(voltage: Double) {

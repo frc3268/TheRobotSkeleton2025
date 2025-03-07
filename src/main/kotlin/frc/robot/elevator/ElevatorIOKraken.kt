@@ -29,7 +29,7 @@ class ElevatorIOKraken : ElevatorIO{
 
         leftConfig.CurrentLimits.StatorCurrentLimitEnable = true
         rightConfig.CurrentLimits.StatorCurrentLimitEnable = true
-        
+
         leftMotor.configurator.apply(leftConfig)
         rightMotor.configurator.apply(rightConfig)
     }
@@ -38,10 +38,6 @@ class ElevatorIOKraken : ElevatorIO{
         inputs.elevatorPositionMeters = (leftMotor.position.valueAsDouble + rightMotor.position.valueAsDouble) / 2
         inputs.rightMotorPositionMeters = rightMotor.position.valueAsDouble
         inputs.leftMotorPositionMeters = leftMotor.position.valueAsDouble
-        inputs.rightMotorCurrentAmps = doubleArrayOf(rightMotor.statorCurrent.valueAsDouble)
-        inputs.leftMotorCurrentAmps = doubleArrayOf(leftMotor.statorCurrent.valueAsDouble)
-        inputs.rightMotorAppliedVolts = rightMotor.motorVoltage.valueAsDouble
-        inputs.leftMotorAppliedVolts = leftMotor.motorVoltage.valueAsDouble
         inputs.rightMotorVelocityMetersPerSec = rightMotor.velocity.valueAsDouble
         inputs.leftMotorVelocityMetersPerSec = leftMotor.velocity.valueAsDouble
     }

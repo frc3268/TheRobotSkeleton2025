@@ -53,8 +53,6 @@ class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleCon
             -driveMotor.encoder.position
         inputs.driveVelocityMetersPerSec =
             -driveMotor.encoder.velocity
-        inputs.driveAppliedVolts = driveMotor.appliedOutput * driveMotor.busVoltage
-        inputs.driveCurrentAmps = doubleArrayOf(driveMotor.outputCurrent)
 
         inputs.turnAbsolutePosition =
             ((absoluteEncoder.get() * 360.0) + moduleConstants.ANGLE_OFFSET.degrees).rotation2dFromDeg()
@@ -63,8 +61,6 @@ class SwerveModuleIOSparkMax(val moduleConstants: SwerveDriveConstants.ModuleCon
         inputs.turnVelocityRadPerSec = (
                 Units.rotationsPerMinuteToRadiansPerSecond(angleMotor.encoder.velocity)
                         / TURN_GEAR_RATIO)
-        inputs.turnAppliedVolts = angleMotor.appliedOutput * angleMotor.busVoltage
-        inputs.turnCurrentAmps = doubleArrayOf(angleMotor.outputCurrent)
     }
 
     override fun setDriveVoltage(volts: Double) {

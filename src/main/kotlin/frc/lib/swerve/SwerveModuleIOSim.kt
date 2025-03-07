@@ -45,15 +45,11 @@ class SwerveModuleIOSim(val index: Int) : SwerveModuleIO {
         //FIX
         inputs.drivePositionMeters = inputs.drivePositionMeters + driveSim.angularVelocityRadPerSec * 0.002
         inputs.driveVelocityMetersPerSec = driveSim.angularVelocityRadPerSec
-        inputs.driveAppliedVolts = driveAppliedVolts
-        inputs.driveCurrentAmps = doubleArrayOf(abs(driveSim.currentDrawAmps))
 
         inputs.turnAbsolutePosition =
             Rotation2d(turnSim.angularPositionRad).plus(turnAbsoluteInitPosition)
         inputs.turnPosition = inputs.turnPosition + Rotation2d.fromRotations(turnSim.angularVelocityRadPerSec * 0.02)
         inputs.turnVelocityRadPerSec = turnSim.angularVelocityRadPerSec
-        inputs.turnAppliedVolts = turnAppliedVolts
-        inputs.turnCurrentAmps = doubleArrayOf(abs(turnSim.currentDrawAmps))
     }
 
     override fun setDriveVoltage(volts: Double) {

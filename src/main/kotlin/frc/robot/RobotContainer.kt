@@ -3,12 +3,14 @@ package frc.robot
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Filesystem
+import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.AutoSequence
 import frc.lib.FieldLocation
 import frc.lib.FieldPositions
@@ -34,13 +36,12 @@ import java.io.File
  */
 class RobotContainer {
     private val GeneralTab = Shuffleboard.getTab("General")
-    private val TroubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
 
 
 
-    private val driverController = CommandPS4Controller(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT)
+    private val driverController = CommandXboxController(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT)
 
     // There must be a better way to do this! Oh well.
     var coralIntakeSubsystem: CoralIntakeSubsystem? = null
@@ -55,7 +56,7 @@ class RobotContainer {
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
-        { 0.0 },
+        { driverController.getRawAxis(4) },
         { true }
     )
 
@@ -114,10 +115,6 @@ class RobotContainer {
         "dropAlgae" to {algaeIntakeSubsystem!!.dropAlgae()}
     )
 
-
-    val grid = Json.decodeFromStream<gridFile>(
-        File(Filesystem.getDeployDirectory().toString() + "/pathplanner/navgrid.json").inputStream()).grid
-
     fun goto(goal: FieldLocation): Command {
         val color = DriverStation.getAlliance()
         val to =
@@ -127,8 +124,7 @@ class RobotContainer {
                 goal.blue
         return SwerveAutoDrive(
             {to},
-            driveSubsystem,
-            grid
+            driveSubsystem
         )
     }
 
@@ -154,7 +150,7 @@ class RobotContainer {
         // get selected level with levelChooser.selected
         if (Constants.mode == Constants.States.REAL) {
             coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
-            //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
+            algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
             elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
             //climberSubsystem = ClimberSubsystem(ClimberIOKraken())
         }
@@ -168,13 +164,13 @@ class RobotContainer {
 
         if (elevatorSubsystem != null && algaeIntakeSubsystem != null && coralIntakeSubsystem != null && climberSubsystem != null) {
 
-            driverController.L1().onTrue(
+            driverController.leftBumper().onTrue(
                 Routines.takeCoral(
                     coralIntakeSubsystem!!,
                 )
             )
 
-            driverController.L2().onTrue(
+            driverController.leftTrigger().onTrue(
                 Routines.placeCoralAtLevel(
                     levelChooser.selected.lvl,
                     elevatorSubsystem!!,
@@ -182,7 +178,7 @@ class RobotContainer {
                 )
             )
 
-            driverController.R2().onTrue(
+            driverController.rightBumper().onTrue(
                 Routines.takeAlgaeAtLevel(
                     levelChooser.selected.lvl,
                     elevatorSubsystem!!,
@@ -192,7 +188,7 @@ class RobotContainer {
             )
 
 
-            driverController.R2().onTrue(algaeIntakeSubsystem!!.dropAlgae())
+            driverController.rightTrigger().onTrue(algaeIntakeSubsystem!!.dropAlgae())
 
             initDashboard(
                 elevatorSubsystem!!,
@@ -224,27 +220,21 @@ class RobotContainer {
             .withSize(2, 1)
 
 
-        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
-            if(autochooser.selected == null){
-                autochooser.setDefaultOption(file.name,Json.decodeFromStream<AutoSequence>(
-                    file.inputStream()
-                ).toCommandGroup(autos))
-
-            }
-            else {
-                autochooser.addOption(
-                    file.name, Json.decodeFromStream<AutoSequence>(
-                        file.inputStream()
-                    ).toCommandGroup(autos)
-                )
-            }
-        }
-
-        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/buttons").listFiles()?.filter { it.isFile }!!){
-            GeneralTab.add(file.name,Json.decodeFromStream<AutoSequence>(
-                file.inputStream()
-            ).toCommandGroup(autos)).withWidget(BuiltInWidgets.kCommand)
-        }
+//        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
+//            if(autochooser.selected == null){
+//                autochooser.setDefaultOption(file.name,Json.decodeFromStream<AutoSequence>(
+//                    file.inputStream()
+//                ).toCommandGroup(autos))
+//
+//            }
+//            else {
+//                autochooser.addOption(
+//                    file.name, Json.decodeFromStream<AutoSequence>(
+//                        file.inputStream()
+//                    ).toCommandGroup(autos)
+//                )
+//            }
+//        }
     }
 
     /**
