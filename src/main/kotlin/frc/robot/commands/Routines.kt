@@ -25,7 +25,7 @@ object Routines {
     fun takeCoral(coralIntake: CoralIntakeSubsystem, elevator: ElevatorSubsystem): Command = SequentialCommandGroup(
         coralIntake.raiseToIntake().alongWith(elevator.setToPosition(Constants.Levels.LEVEL2.lvl)).andThen(
             coralIntake.intake()
-        )
+        ).andThen(elevator.setToPosition(Constants.Levels.LEVEL0.lvl))
     )
 
     // scores coral on reef at level
