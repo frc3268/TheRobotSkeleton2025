@@ -9,42 +9,20 @@ import org.littletonrobotics.junction.inputs.LoggableInputs
 interface ClimberIO {
     @AutoLog
     open class Inputs {
-        var rightMotorPositionDegrees = 0.0
-        var rightMotorVelocityDegreesPerSec = 0.0
-        var rightMotorAppliedVolts = 0.0
-        var rightMotorCurrentAmps = doubleArrayOf()
+        var motorPositionDegrees = 0.0
+        var motorVelocityDegreesPerSec = 0.0
 
-        var leftMotorPositionDegrees = 0.0
-        var leftMotorVelocityDegreesPerSec = 0.0
-        var leftMotorAppliedVolts = 0.0
-        var leftMotorCurrentAmps = doubleArrayOf()
-
-        var climberPositionDegrees = 0.0
     }
 
     class LoggedInputs : Inputs(), LoggableInputs {
         override fun toLog(table: LogTable) {
-            table.put("rightMotorPositionMeters", rightMotorPositionDegrees)
-            table.put("leftMotorPositionMeters", leftMotorPositionDegrees)
-            table.put("rightMotorVelocityMetersPerSec", rightMotorVelocityDegreesPerSec)
-            table.put("leftMotorVelocityMetersPerSec", leftMotorVelocityDegreesPerSec)
-            table.put("rightMotorAppliedVolts", rightMotorAppliedVolts)
-            table.put("leftMotorAppliedVolts", leftMotorAppliedVolts)
-            table.put("rightMotorCurrentAmps", rightMotorCurrentAmps)
-            table.put("leftMotorCurrentAmps", leftMotorCurrentAmps)
-            table.put("climberPositionDegrees", climberPositionDegrees)
+            table.put("leftMotorPositionMeters", motorPositionDegrees)
+            table.put("leftMotorVelocityMetersPerSec", motorVelocityDegreesPerSec)
         }
 
         override fun fromLog(table: LogTable) {
-            table.get("rightMotorPositionMeters", rightMotorPositionDegrees)
-            table.get("leftMotorPositionMeters", leftMotorPositionDegrees)
-            table.get("rightMotorVelocityMetersPerSec", rightMotorVelocityDegreesPerSec)
-            table.get("leftMotorVelocityMetersPerSec", leftMotorVelocityDegreesPerSec)
-            table.get("rightMotorAppliedVolts", rightMotorAppliedVolts)
-            table.get("leftMotorAppliedVolts", leftMotorAppliedVolts)
-            table.get("rightMotorCurrentAmps", rightMotorCurrentAmps)
-            table.get("leftMotorCurrentAmps", leftMotorCurrentAmps)
-            table.get("climberPositionMeters", climberPositionDegrees)
+            table.get("leftMotorPositionMeters", motorPositionDegrees)
+            table.get("leftMotorVelocityMetersPerSec", motorVelocityDegreesPerSec)
         }
     }
 
@@ -56,9 +34,6 @@ interface ClimberIO {
 
     /** Run the left motor at the specified voltage.  */
     fun setLeftVolts(volts: Double)
-
-    /** Run the right motor at the specified voltage.  */
-    fun setRightVolts(volts: Double)
 
     /** Run both motors at the specified voltage.  */
     fun setBothVolts(volts: Double)

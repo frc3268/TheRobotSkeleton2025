@@ -17,26 +17,20 @@ class ClimberSubsystem(val io: ClimberIO) : SubsystemBase() {
     val rightMotorAppliedVolts = troubleshootingtab.add("Right Motor Applied Volts", 0.0).withPosition(4, 1).entry
     val leftMotorPositionDegrees = troubleshootingtab.add("Left Motor Position", 0.0).withPosition(4, 2).entry
     val leftMotorAppliedVolts = troubleshootingtab.add("Left Motor Applied Volts", 0.0).withPosition(4, 3).entry
-    val climberPositionDegrees = troubleshootingtab.add("Climber Position", 0.0).withPosition(4, 4).entry
     init {
 
     }
 
     override fun periodic() {
         io.updateInputs(inputs)
-
-        rightMotorPositionDegrees.setDouble(inputs.rightMotorPositionDegrees)
-        rightMotorAppliedVolts.setDouble(inputs.rightMotorAppliedVolts)
-        leftMotorPositionDegrees.setDouble(inputs.leftMotorPositionDegrees)
-        leftMotorAppliedVolts.setDouble(inputs.leftMotorAppliedVolts)
-        climberPositionDegrees.setDouble(inputs.climberPositionDegrees)
+        leftMotorPositionDegrees.setDouble(inputs.motorPositionDegrees)
     }
 
     fun setToPosition(setPointDegrees: Double): Command =
         run {
-            io.setBothVolts(io.pidController.calculate(inputs.climberPositionDegrees, setPointDegrees) * 12.0)
+            io.setBothVolts(0.4 * 12.0)
         }
-            .until { abs(inputs.climberPositionDegrees - setPointDegrees) < 10.0 }
+            .until { abs(inputs.motorPositionDegrees - setPointDegrees) < 10.0 }
 
     fun stop(): Command = runOnce { io.stop() }
 

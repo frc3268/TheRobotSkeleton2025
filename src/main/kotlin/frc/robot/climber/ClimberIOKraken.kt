@@ -23,20 +23,7 @@ class ClimberIOKraken : ClimberIO{
         rightMotor.configurator.apply(rightConfig)
     }
     override fun updateInputs(inputs: ClimberIO.Inputs) {
-        //this formula may need to me changed to reflect the reality
-        inputs.climberPositionDegrees = (leftMotor.position.valueAsDouble + rightMotor.position.valueAsDouble) / 2
-        inputs.rightMotorPositionDegrees = rightMotor.position.valueAsDouble / 360
-        inputs.leftMotorPositionDegrees = leftMotor.position.valueAsDouble / 360
 
-        inputs.rightMotorCurrentAmps = doubleArrayOf(rightMotor.statorCurrent.valueAsDouble)
-        inputs.leftMotorCurrentAmps = doubleArrayOf(leftMotor.statorCurrent.valueAsDouble)
-
-        inputs.rightMotorAppliedVolts = rightMotor.motorVoltage.valueAsDouble
-        inputs.leftMotorAppliedVolts = leftMotor.motorVoltage.valueAsDouble
-
-        // Why degrees??
-        inputs.rightMotorVelocityDegreesPerSec = rightMotor.velocity.valueAsDouble / 360
-        inputs.leftMotorVelocityDegreesPerSec = leftMotor.velocity.valueAsDouble / 360
     }
 
     override fun setBothVolts(volts: Double) {
@@ -60,7 +47,4 @@ class ClimberIOKraken : ClimberIO{
         leftMotor.setVoltage(volts)
     }
 
-    override fun setRightVolts(volts: Double) {
-        rightMotor.setVoltage(volts)
-    }
 }
