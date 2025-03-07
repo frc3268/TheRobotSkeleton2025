@@ -12,7 +12,7 @@ class ElevatorIOKraken : ElevatorIO{
     val leftMotor = TalonFX(9, "rio")
     val rightMotor = TalonFX(10, "rio")
 
-    override val pidController: PIDController = PIDController(0.13,0.03,0.0)
+    override val pidController: PIDController = PIDController(0.13,0.045,0.0)
 
     init{
         val leftConfig = TalonFXConfiguration()

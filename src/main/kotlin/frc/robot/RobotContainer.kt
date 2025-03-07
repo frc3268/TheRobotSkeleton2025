@@ -67,7 +67,7 @@ class RobotContainer {
     //type is () -> Command because otherwise CommandScheduler complains that each one has already been scheduled
     val autos: MutableMap<String, () -> Command> = mutableMapOf(
         "goToProcessor" to { goto(FieldPositions.processor) },
-        "pickUpCoral" to {Routines.takeCoral(coralIntakeSubsystem!!)},
+        "pickUpCoral" to {Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)},
         "placeCoralL1" to {Routines.placeCoralAtLevel(
             Constants.Levels.LEVEL1.lvl,
             elevatorSubsystem!!,
@@ -167,7 +167,7 @@ class RobotContainer {
 
             driverController.leftBumper().onTrue(
                 Routines.takeCoral(
-                    coralIntakeSubsystem!!,
+                    coralIntakeSubsystem!!, elevatorSubsystem!!
                 )
             )
 

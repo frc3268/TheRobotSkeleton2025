@@ -17,6 +17,7 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
     val intakeVelocityRotPerMinEntry = troubleshootingTab.add("Intake Velocity RPM", 0.0).withPosition(3, 2).entry
     var setpoint = 0.0
     var stopped = false
+    var initvel = 0.0
 
     init{
         troubleshootingTab.add("outtake",outtake()).withWidget(BuiltInWidgets.kCommand)
@@ -39,9 +40,9 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
 
     }
 
-    fun intake(): Command = run{io.setIntakeVoltage(0.3 * 12.0)}.withTimeout(1.5).andThen(stopIntake())
+    fun intake(): Command = run{io.setIntakeVoltage(0.4 * 12.0)}.until { abs(initvel - inputs.intakeVelocityRPM) > 0.3*initvel }.alongWith(runOnce{initvel = inputs.intakeVelocityRPM}).andThen(stopIntake())
 
-    fun outtake(): Command = run{io.setIntakeVoltage(-0.3 * 12.0)}.withTimeout(1.5).andThen(stopIntake())
+    fun outtake(): Command = run{io.setIntakeVoltage(-0.4 * 12.0)}.until { abs(initvel - inputs.intakeVelocityRPM) > 0.3*initvel }.alongWith(runOnce{initvel = inputs.intakeVelocityRPM}).andThen(stopIntake())
 
     fun raiseToScore(): Command = runOnce {
         stopped = false
@@ -61,6 +62,15 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
         io.stop()
         stopped = true
     }
+
+    fun reset():Command = runOnce{stopped = true}.andThen(
+        run{
+        io.setJointVoltage(0.5)
+    }).until { inputs.jointVelocityRPM < 0.5 }.andThen(runOnce{
+        io.reset()
+        io.stopJoint()
+    })
+
     fun stopJoint(): Command = runOnce{ io.stopJoint() }
     fun stopIntake(): Command = runOnce{ io.stopIntake() }
 
