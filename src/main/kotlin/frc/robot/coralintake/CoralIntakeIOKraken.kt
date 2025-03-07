@@ -53,6 +53,10 @@ class CoralIntakeIOKraken : CoralIntakeIO {
         intakeMotor.stopMotor()
     }
 
+    override fun reset() {
+        TODO("Not yet implemented")
+    }
+
     override fun stop() {
         stopIntake()
         stopJoint()

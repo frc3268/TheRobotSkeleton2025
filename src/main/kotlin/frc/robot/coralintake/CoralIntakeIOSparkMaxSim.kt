@@ -86,5 +86,10 @@ class CoralIntakeIOSparkMaxSim : CoralIntakeIO {
 
         inputs.intakeVelocityRPM = intakeMotor.getEncoder().velocity
         inputs.jointVelocityRPM = jointMotor.getEncoder().velocity
+
+    }
+
+    override fun reset() {
+        TODO("Not yet implemented")
     }
 }

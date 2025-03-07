@@ -22,6 +22,8 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
     val leftMotorPositionMeters = troubleshootingtab.add("Left Motor Position", 0.0).withPosition(1,2).entry
     val elevatorPositionMeters = troubleshootingtab.add("Elevator Position", 0.0).withPosition(1,4).entry
 
+    var gravving = false
+
     init{
 
         troubleshootingtab.add("go positive",run{io.setBothVolts(-0.5)}).withWidget(BuiltInWidgets.kCommand)
@@ -47,23 +49,23 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
         if(inputs.elevatorPositionMeters.toDouble() < -50 || inputs.elevatorPositionMeters > -1 ){
             stop()
         }
+        if(gravving == true && inputs.elevatorPositionMeters < 0.5){
+            io.setBothVolts(-0.2)
+        }
         
     }
 
     fun setToPosition(setPointMeters: Double): Command =
+        runOnce{gravving = false}.andThen(
         run {
             io.setBothVolts(cntrl.calculate(inputs.elevatorPositionMeters, setPointMeters))
-        }
-            .until { abs(inputs.elevatorPositionMeters - setPointMeters) < 0.01}
+        })
+            .until { abs(inputs.elevatorPositionMeters - setPointMeters) < 0.5}
             .andThen(
                 runOnce{
                     cntrl.reset(inputs.elevatorPositionMeters.toDouble())
                 }.andThen(
-                if (setPointMeters < 0) {
-                    run { io.setBothVolts(0.0) }
-                } else {
-                    stop()
-                }))
+                    runOnce { gravving = true } ) )
 
     fun stop(): Command = runOnce { io.stop() }
 

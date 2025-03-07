@@ -50,4 +50,10 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
         inputs.jointVelocityRPM = jointMotor.getEncoder().velocity
         inputs.jointAngle = (jointMotor.encoder.position * 9.5).rotation2dFromDeg()
     }
+
+    override fun reset() {
+        jointMotor.encoder.position = 0.0
+    }
+
+
 }

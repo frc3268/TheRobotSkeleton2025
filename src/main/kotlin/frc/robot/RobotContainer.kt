@@ -56,7 +56,7 @@ class RobotContainer {
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
-        { driverController.getRawAxis(4) },
+        { -driverController.getRawAxis(4) },
         { true }
     )
 
@@ -135,11 +135,12 @@ class RobotContainer {
 
         val levelChooser = SendableChooser<Constants.Levels>()
 
+
         // levelChooser.addOption("Reset Level", Levels.LEVEL0)
         levelChooser.addOption("Level 1", Constants.Levels.LEVEL1)
         levelChooser.addOption("Level 2", Constants.Levels.LEVEL2)
         levelChooser.addOption("Level 3", Constants.Levels.LEVEL3)
-        levelChooser.addOption("Level 4", Constants.Levels.LEVEL4)
+        levelChooser.setDefaultOption("Level 4", Constants.Levels.LEVEL4)
 
         SmartDashboard.putData(levelChooser)
 
@@ -162,7 +163,7 @@ class RobotContainer {
         }
 
 
-        if (elevatorSubsystem != null && algaeIntakeSubsystem != null && coralIntakeSubsystem != null && climberSubsystem != null) {
+        if (elevatorSubsystem != null && coralIntakeSubsystem != null) {
 
             driverController.leftBumper().onTrue(
                 Routines.takeCoral(
@@ -178,24 +179,17 @@ class RobotContainer {
                 )
             )
 
-            driverController.rightBumper().onTrue(
-                Routines.takeAlgaeAtLevel(
-                    levelChooser.selected.lvl,
-                    elevatorSubsystem!!,
-                    algaeIntakeSubsystem!!,
-                    coralIntakeSubsystem!!
-                )
-            )
-
-
-            driverController.rightTrigger().onTrue(algaeIntakeSubsystem!!.dropAlgae())
-
-            initDashboard(
-                elevatorSubsystem!!,
-                algaeIntakeSubsystem!!,
-                coralIntakeSubsystem!!,
-                climberSubsystem!!
-            )
+//            driverController.rightBumper().onTrue(
+//                Routines.takeAlgaeAtLevel(
+//                    levelChooser.selected.lvl,
+//                    elevatorSubsystem!!,
+//                    algaeIntakeSubsystem!!,
+//                    coralIntakeSubsystem!!
+//                )
+//            )
+//
+//
+//            driverController.rightTrigger().onTrue(algaeIntakeSubsystem!!.dropAlgae())
 
         }
 

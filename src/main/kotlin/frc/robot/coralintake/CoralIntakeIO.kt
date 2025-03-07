@@ -45,4 +45,6 @@ interface CoralIntakeIO {
     fun stopIntake()
 
     fun stop()
+
+    fun reset()
 }
