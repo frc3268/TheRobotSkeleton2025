@@ -42,8 +42,8 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
                 dconfig.MotorOutput.Inverted = if (moduleConstants.DRIVE_MOTOR_REVERSED) InvertedValue.Clockwise_Positive else InvertedValue.CounterClockwise_Positive
                 tconfig.MotorOutput.Inverted =  if (moduleConstants.DRIVE_MOTOR_REVERSED) InvertedValue.Clockwise_Positive else InvertedValue.CounterClockwise_Positive
 
-                dconfig.MotorOutput.NeutralMode = NeutralModeValue.Brake
-                tconfig.MotorOutput.NeutralMode = NeutralModeValue.Brake
+                dconfig.MotorOutput.NeutralMode = NeutralModeValue.Coast
+                tconfig.MotorOutput.NeutralMode = NeutralModeValue.Coast
 //                dconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
 //                tconfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveDriveConstants.DrivetrainConsts.OPEN_LOOP_RAMP_RATE_SECONDS
 
