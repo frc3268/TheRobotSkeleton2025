@@ -222,7 +222,7 @@ class RobotContainer {
         // get selected level with levelChooser.selected
         if (Constants.mode == Constants.States.REAL) {
             coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
-            algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
+            //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
             elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
             //climberSubsystem = ClimberSubsystem(ClimberIOKraken())
         }
