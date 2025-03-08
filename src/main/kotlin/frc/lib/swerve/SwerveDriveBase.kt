@@ -40,6 +40,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val shuffleboardTab = Shuffleboard.getTab("Drivetrain")
     private val gyroInputs = GyroIOInputsAutoLogged()
     private var poseEstimator: SwerveDrivePoseEstimator
+    var fakeGyroOffset = 0.0
     private val modules: List<SwerveModule> =
         when (Constants.mode){
             Constants.States.REAL -> {
@@ -215,7 +216,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     fun constructModuleStatesFromChassisSpeeds(xSpeedMetersPerSecond: Double, ySpeedMetersPerSecond: Double, turningSpeedDegreesPerSecond: Double, fieldOriented: Boolean): Array<SwerveModuleState> =
             kinematics.toSwerveModuleStates(
                     if (fieldOriented)
-                        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians, poseEstimator.estimatedPosition.rotation)
+                        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians, (poseEstimator.estimatedPosition.rotation - fakeGyroOffset.rotation2dFromDeg()))
                     else
                         ChassisSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians)
             )
@@ -228,7 +229,10 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
 
     //reset yaw on gyro so that wherever the gyro is pointing is the new forward(0) value
     fun zeroHeadingCommand(): Command {
-        return runOnce { zeroYaw() }
+        return runOnce {
+            fakeGyroOffset = getYaw().degrees
+            //zeroYaw()
+        }
     }
 
     //getters
