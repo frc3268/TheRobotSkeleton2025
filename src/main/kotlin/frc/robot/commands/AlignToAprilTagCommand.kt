@@ -17,7 +17,7 @@ import org.photonvision.targeting.PhotonTrackedTarget
 import kotlin.math.abs
 import kotlin.math.cos
 
-class AlignToAprilTagCommand(val drive:SwerveDriveBase): Command() {
+class AlignToAprilTagCommand(val drive:SwerveDriveBase, val onRight: Boolean): Command() {
     lateinit var bestTarget: PhotonTrackedTarget
 
     var fidID = -1
@@ -35,11 +35,12 @@ class AlignToAprilTagCommand(val drive:SwerveDriveBase): Command() {
         } else {
             bestTarget = drive.camera!!.frame.bestTarget
             fidID = bestTarget.fiducialId
-            val onright = bestTarget.bestCameraToTarget.y >= 0
             targetloc = field.getTagPose(fidID).get().toPose2d()
             //replace 0.5 with real target distance
-            targetloc = Pose2d(targetloc.x + targetloc.rotation.sin * (if (onright) -1 else 1) * 0.5,targetloc.y - targetloc.rotation.cos * (if (onright) -1 else 1) * 0.5, targetloc.rotation)
-        }
+            if(onRight){
+                targetloc = Pose2d(targetloc.x + targetloc.rotation.sin  * -0.5,targetloc.y - targetloc.rotation.cos * -0.5, targetloc.rotation)
+            }
+          }
     }
 
     override fun execute() {

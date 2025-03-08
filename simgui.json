@@ -23,6 +23,7 @@
       "/Shuffleboard/Drivetrain/field2": "Field2d",
       "/Shuffleboard/General/Autonomous Mode": "String Chooser",
       "/Shuffleboard/General/LB Command": "String Chooser",
+      "/Shuffleboard/General/SendableChooser[1]": "String Chooser",
       "/Shuffleboard/General/Zero Heading": "Command",
       "/Shuffleboard/General/soething": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",

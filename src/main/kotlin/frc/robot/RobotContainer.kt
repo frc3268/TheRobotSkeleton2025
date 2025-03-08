@@ -149,10 +149,12 @@ class RobotContainer {
         levelChooser.setDefaultOption("Level 3", Constants.Levels.LEVEL3)
         levelChooser.addOption("Level 4", Constants.Levels.LEVEL4)
 
-        SmartDashboard.putData(levelChooser)
+        GeneralTab.add(levelChooser)
 
+        val rightChooser = SendableChooser<Boolean>()
 
-        GeneralTab.add("Zero Heading", AlignToAprilTagCommand(driveSubsystem)).withWidget(BuiltInWidgets.kCommand)
+        rightChooser.setDefaultOption("left", false)
+        rightChooser.addOption("right", true)
 
 
         // get selected level with levelChooser.selected

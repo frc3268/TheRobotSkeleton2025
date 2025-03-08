@@ -54,7 +54,7 @@ object SwerveDriveConstants {
 
         /* Swerve Profiling Values */
         const val MAX_SPEED_METERS_PER_SECOND = 2.0
-        const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 300.0
+        const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 100.0
         const val MAX_ANGULAR_ACCELERATION_DEGREES_PER_SECOND_SQUARED = 100.0
         const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 5.0
 
