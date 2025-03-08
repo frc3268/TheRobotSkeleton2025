@@ -64,63 +64,63 @@ class RobotContainer {
 
 
 
-    //type is () -> Command because otherwise CommandScheduler complains that each one has already been scheduled
-    val autos: MutableMap<String, () -> Command> = mutableMapOf(
-        "goToProcessor" to { goto(FieldPositions.processor) },
-        "goToSourceLeft" to {goto(FieldPositions.sourceLeft)},
-        "goToSourceRight" to {goto(FieldPositions.sourceRight)},
-        "goToReefLeftClose" to {goto(FieldPositions.reefLeftClose)},
-        "goToReefLeftFar" to {goto(FieldPositions.reefLeftFar)},
-        "goToReefRightClose" to {goto(FieldPositions.reefRightClose)},
-        "goToReefRightFar" to {goto(FieldPositions.reefRightFar)},
-
-        "pickUpCoral" to {Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)},
-        "placeCoralL1" to {Routines.placeCoralAtLevel(
-            Constants.Levels.LEVEL1.lvl,
-            elevatorSubsystem!!,
-            coralIntakeSubsystem!!
-        )},
-        "placeCoralL2" to {Routines.placeCoralAtLevel(
-            Constants.Levels.LEVEL2.lvl,
-            elevatorSubsystem!!,
-            coralIntakeSubsystem!!
-        )},
-        "placeCoralL3" to {Routines.placeCoralAtLevel(
-            Constants.Levels.LEVEL3.lvl,
-            elevatorSubsystem!!,
-            coralIntakeSubsystem!!
-        )},
-        "placeCoralL4" to {Routines.placeCoralAtLevel(
-            Constants.Levels.LEVEL4.lvl,
-            elevatorSubsystem!!,
-            coralIntakeSubsystem!!
-        )},
-        "takeAlgaeL1" to {Routines.takeAlgaeAtLevel(
-            Constants.Levels.LEVEL1.lvl,
-            elevatorSubsystem!!,
-            algaeIntakeSubsystem!!,
-            coralIntakeSubsystem!!
-        )},
-        "takeAlgaeL2" to {Routines.takeAlgaeAtLevel(
-            Constants.Levels.LEVEL2.lvl,
-            elevatorSubsystem!!,
-            algaeIntakeSubsystem!!,
-            coralIntakeSubsystem!!
-        )},
-        "takeAlgaeL3" to {Routines.takeAlgaeAtLevel(
-            Constants.Levels.LEVEL3.lvl,
-            elevatorSubsystem!!,
-            algaeIntakeSubsystem!!,
-            coralIntakeSubsystem!!
-        )},
-        "takeAlgaeL4" to {Routines.takeAlgaeAtLevel(
-            Constants.Levels.LEVEL4.lvl,
-            elevatorSubsystem!!,
-            algaeIntakeSubsystem!!,
-            coralIntakeSubsystem!!
-        )},
-        "dropAlgae" to {algaeIntakeSubsystem!!.dropAlgae()}
-    )
+//    //type is () -> Command because otherwise CommandScheduler complains that each one has already been scheduled
+//    val autos: MutableMap<String, () -> Command> = mutableMapOf(
+//        "goToProcessor" to { goto(FieldPositions.processor) },
+//        "goToSourceLeft" to {goto(FieldPositions.sourceLeft)},
+//        "goToSourceRight" to {goto(FieldPositions.sourceRight)},
+//        "goToReefLeftClose" to {goto(FieldPositions.reefLeftClose)},
+//        "goToReefLeftFar" to {goto(FieldPositions.reefLeftFar)},
+//        "goToReefRightClose" to {goto(FieldPositions.reefRightClose)},
+//        "goToReefRightFar" to {goto(FieldPositions.reefRightFar)},
+//
+//        "pickUpCoral" to {Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)},
+//        "placeCoralL1" to {Routines.placeCoralAtLevel(
+//            Constants.Levels.LEVEL1.lvl,
+//            elevatorSubsystem!!,
+//            coralIntakeSubsystem!!
+//        )},
+//        "placeCoralL2" to {Routines.placeCoralAtLevel(
+//            Constants.Levels.LEVEL2.lvl,
+//            elevatorSubsystem!!,
+//            coralIntakeSubsystem!!
+//        )},
+//        "placeCoralL3" to {Routines.placeCoralAtLevel(
+//            Constants.Levels.LEVEL3.lvl,
+//            elevatorSubsystem!!,
+//            coralIntakeSubsystem!!
+//        )},
+//        "placeCoralL4" to {Routines.placeCoralAtLevel(
+//            Constants.Levels.LEVEL4.lvl,
+//            elevatorSubsystem!!,
+//            coralIntakeSubsystem!!
+//        )},
+//        "takeAlgaeL1" to {Routines.takeAlgaeAtLevel(
+//            Constants.Levels.LEVEL1.lvl,
+//            elevatorSubsystem!!,
+//            algaeIntakeSubsystem!!,
+//            coralIntakeSubsystem!!
+//        )},
+//        "takeAlgaeL2" to {Routines.takeAlgaeAtLevel(
+//            Constants.Levels.LEVEL2.lvl,
+//            elevatorSubsystem!!,
+//            algaeIntakeSubsystem!!,
+//            coralIntakeSubsystem!!
+//        )},
+//        "takeAlgaeL3" to {Routines.takeAlgaeAtLevel(
+//            Constants.Levels.LEVEL3.lvl,
+//            elevatorSubsystem!!,
+//            algaeIntakeSubsystem!!,
+//            coralIntakeSubsystem!!
+//        )},
+//        "takeAlgaeL4" to {Routines.takeAlgaeAtLevel(
+//            Constants.Levels.LEVEL4.lvl,
+//            elevatorSubsystem!!,
+//            algaeIntakeSubsystem!!,
+//            coralIntakeSubsystem!!
+//        )},
+//        "dropAlgae" to {algaeIntakeSubsystem!!.dropAlgae()}
+//    )
 
     fun goto(goal: FieldLocation): Command {
         val color = DriverStation.getAlliance()
@@ -156,6 +156,68 @@ class RobotContainer {
         rightChooser.setDefaultOption("left", false)
         rightChooser.addOption("right", true)
 
+        autochooser.setDefaultOption(
+            "go left" ,
+            goto(FieldPositions.reefLeftFar).andThen(
+                Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+            ).andThen(
+                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                    Constants.Levels.LEVEL0.lvl))
+            ).andThen(
+                goto(FieldPositions.sourceLeft)
+            ).andThen(
+                Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
+            ).andThen(
+                goto(FieldPositions.reefLeftClose)
+            ).andThen(
+                Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+            ).andThen(
+                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                    Constants.Levels.LEVEL0.lvl)))
+                .andThen(
+                    goto(FieldPositions.sourceLeft)
+                ).andThen(
+                    Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
+                ).andThen(
+                    goto(FieldPositions.reefCenterClose)
+                ).andThen(
+                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+                ).andThen(
+                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                        Constants.Levels.LEVEL0.lvl)))
+        )
+
+        autochooser.addOption(
+            "go right" ,
+            goto(FieldPositions.reefRightFar).andThen(
+                Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+            ).andThen(
+                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                    Constants.Levels.LEVEL0.lvl))
+            ).andThen(
+                goto(FieldPositions.sourceRight)
+            ).andThen(
+                Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
+            ).andThen(
+                goto(FieldPositions.reefRightClose)
+            ).andThen(
+                Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+            ).andThen(
+                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                    Constants.Levels.LEVEL0.lvl)))
+                .andThen(
+                    goto(FieldPositions.sourceRight)
+                ).andThen(
+                    Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
+                ).andThen(
+                    goto(FieldPositions.reefCenterClose)
+                ).andThen(
+                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+                ).andThen(
+                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                        Constants.Levels.LEVEL0.lvl)))
+        )
+
 
         // get selected level with levelChooser.selected
         if (Constants.mode == Constants.States.REAL) {
@@ -188,8 +250,8 @@ class RobotContainer {
                 )
             )
 
-            driverController.rightBumper().whileTrue(
-                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.stopIntake()).andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+            driverController.rightBumper().onTrue(
+                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
                     Constants.Levels.LEVEL0.lvl))
            )
 //

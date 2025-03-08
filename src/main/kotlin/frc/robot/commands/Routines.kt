@@ -23,9 +23,7 @@ object Routines {
     //intakes new coral from the source
     //raises coral arm, intakes coral, does NOT lower
     fun takeCoral(coralIntake: CoralIntakeSubsystem, elevator: ElevatorSubsystem): Command = SequentialCommandGroup(
-        coralIntake.raiseToIntake().alongWith(elevator.setToPosition(Constants.Levels.LEVEL2.lvl)).andThen(
-            coralIntake.intake()
-        ).andThen(coralIntake.lower()).andThen(elevator.setToPosition(Constants.Levels.LEVEL0.lvl))
+        coralIntake.raiseToIntake().alongWith(elevator.setToPosition(Constants.Levels.LEVEL2.lvl)).andThen(coralIntake.intake()).andThen(coralIntake.lower()).andThen(elevator.setToPosition(Constants.Levels.LEVEL0.lvl))
     )
 
     // scores coral on reef at level

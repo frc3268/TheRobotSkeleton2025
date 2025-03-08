@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
 import edu.wpi.first.networktables.GenericEntry
+import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
@@ -162,8 +163,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         //estimate robot pose based on what the camera sees
         if(gyroInputs.yawVelocityRadPerSec < Math.PI) {
             seesAprilTag.setBoolean(camera!!.frame.hasTargets())
-            if(camera!!.frame.hasTargets()){
-                // && !DriverStation.isEnabled()
+            if(camera!!.frame.hasTargets() && DriverStation.isDisabled()){
                 val visionEst: Optional<EstimatedRobotPose>? = camera!!.getEstimatedPose()
                 visionEst?.ifPresent { est ->
                     field2.robotPose = Pose2d(est.estimatedPose.toPose2d().x, est.estimatedPose.toPose2d().y, est.estimatedPose.toPose2d().rotation)
@@ -230,30 +230,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     fun zeroHeadingCommand(): Command {
         return runOnce { zeroYaw() }
     }
-
-    fun alignToAprilTagCommand(): Command =
-        if(Constants.mode == Constants.States.REAL){
-            run{
-                val target = camera!!.frame.bestTarget
-                setModuleStates(
-                    //these are negative cause otherwise robot would crash out trying to go backwards
-                    //fieldoriented is false for a similar reason
-                    constructModuleStatesFromChassisSpeeds(
-                        //may want to change setpoints
-                        xPIDController.calculate(target.bestCameraToTarget.x, 0.3) * 0.5,
-                        yPIDController.calculate(target.bestCameraToTarget.y, 0.3) * 0.5,
-                        thetaPIDController.calculate(target.getYaw(), 0.0) * MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND,
-                        false
-                    )
-                )
-                //go only if we see april tags
-            }.onlyWhile({camera!!.frame.hasTargets()})
-                //tolerances
-                .until({camera!!.frame.bestTarget.yaw < 5.0 && camera!!.frame.bestTarget.bestCameraToTarget.translation.getDistance(Translation3d(0.0,0.0,0.0)) < 0.1})
-        } else{
-            //if in sim do nothing. this should be changed
-            InstantCommand()
-        }
 
     //getters
     private fun getYaw(): Rotation2d = gyroInputs.yawPosition
