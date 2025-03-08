@@ -82,12 +82,12 @@ object FieldPositions {
       ),
     );
 
-    val reefRightFar = FieldLocation(Pose2d(), Pose2d(5.4, 2.5, 120.0.rotation2dFromDeg()))
-    val reefRightClose = FieldLocation(Pose2d(), Pose2d(3.6, 2.5, 60.0.rotation2dFromDeg()))
-    val reefLeftClose = FieldLocation(Pose2d(), Pose2d(3.6, 5.5, 300.0.rotation2dFromDeg()))
-    val reefLeftFar = FieldLocation(Pose2d(), Pose2d(5.4, 5.5, 240.0.rotation2dFromDeg()))
-    var reefCenterClose = FieldLocation(Pose2d(), Pose2d(2.75, 4.0, 0.0.rotation2dFromDeg()))
+    val reefRightFar = FieldLocation(Pose2d(12.2, 5.5, 300.0.rotation2dFromDeg()), Pose2d(5.4, 2.5, 120.0.rotation2dFromDeg()))
+    val reefRightClose = FieldLocation(Pose2d(14.0, 5.5, 240.0.rotation2dFromDeg()), Pose2d(3.6, 2.5, 60.0.rotation2dFromDeg()))
+    val reefLeftClose = FieldLocation(Pose2d(14.0, 2.5, 120.0.rotation2dFromDeg()), Pose2d(3.6, 5.5, 300.0.rotation2dFromDeg()))
+    val reefLeftFar = FieldLocation(Pose2d(12.2, 2.5, 60.0.rotation2dFromDeg()), Pose2d(5.4, 5.5, 240.0.rotation2dFromDeg()))
+    var reefCenterClose = FieldLocation(Pose2d(14.8, 4.0, 180.0.rotation2dFromDeg()), Pose2d(2.75, 4.0, 0.0.rotation2dFromDeg()))
 
-    val sourceLeft = FieldLocation(Pose2d(), Pose2d(1.25, 7.0, 126.0.rotation2dFromDeg()))
-    val sourceRight = FieldLocation(Pose2d(), Pose2d(1.291, 1.081, 234.0.rotation2dFromDeg()))
+    val sourceLeft = FieldLocation(Pose2d(16.243, 1.0, 306.rotation2dFromDeg()), Pose2d(1.25, 7.0, 126.0.rotation2dFromDeg()))
+    val sourceRight = FieldLocation(Pose2d(16.243,6.788, 54.000.rotation2dFromDeg()), Pose2d(1.291, 1.081, 234.0.rotation2dFromDeg()))
 }
