@@ -71,7 +71,7 @@ class SwerveAutoDrive(
                         )
                 } else {
                     Pose2d(
-                        -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(
+                        SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(
                             drive.getPose().x, next.x)
                          * MAX_SPEED_METERS_PER_SECOND,
                         SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(

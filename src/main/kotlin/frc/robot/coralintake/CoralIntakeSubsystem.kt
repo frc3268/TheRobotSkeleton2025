@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.robot.Constants
 import kotlin.math.abs
 
@@ -21,11 +22,13 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
 
     init{
         troubleshootingTab.add("outtake",outtake()).withWidget(BuiltInWidgets.kCommand)
+        troubleshootingTab.add("intake",intake()).withWidget(BuiltInWidgets.kCommand)
         troubleshootingTab.add("go up",run{io.setJointVoltage(0.5)}).withWidget(BuiltInWidgets.kCommand)
         troubleshootingTab.add("reset", runOnce { io.reset() }).withWidget(BuiltInWidgets.kCommand)
 
         troubleshootingTab.add("stop", runOnce { stop() }).withWidget(BuiltInWidgets.kCommand)
         troubleshootingTab.add("go to score",raiseToScore()).withWidget(BuiltInWidgets.kCommand)
+        troubleshootingTab.add("go to source",raiseToIntake()).withWidget(BuiltInWidgets.kCommand)
     }
 
     override fun periodic() {
@@ -40,17 +43,18 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
 
     }
 
-    fun intake(): Command = run{io.setIntakeVoltage(0.4 * 12.0)}.until { abs(inputs.intakeVelocityRPM) > 0.3 }.andThen(stopIntake())
+    fun intake(): Command = run{io.setIntakeVoltage(-0.1 * 12.0)}.until { abs(inputs.intakeVelocityRPM) > 300.0 }.andThen(
+        WaitCommand(2.0)).andThen(stopIntake())
 
-    fun outtake(): Command = run{io.setIntakeVoltage(-0.4 * 12.0)}.until { abs(inputs.intakeVelocityRPM) > 0.3 }.andThen(stopIntake())
+    fun outtake(): Command = run{io.setIntakeVoltage(0.1 * 12.0)}.until { abs(inputs.intakeVelocityRPM) > 300.0 }
 
     fun raiseToScore(): Command = runOnce {
         stopped = false
-        setpoint = -70.0
+        setpoint = -40.0
     }
 
     fun raiseToIntake(): Command = runOnce {
-        setpoint = -40.0
+        setpoint = -30.0
     }
 
     fun lower(): Command = runOnce {
@@ -63,10 +67,7 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
         stopped = true
     }
 
-    fun reset():Command = runOnce{stopped = true}.andThen(
-        run{
-        io.setJointVoltage(0.5)
-    }).until { inputs.jointVelocityRPM < 0.5 }.andThen(runOnce{
+    fun reset():Command = runOnce{stopped = true}.andThen(runOnce{
         io.reset()
         io.stopJoint()
     })

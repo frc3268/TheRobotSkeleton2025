@@ -81,4 +81,13 @@ object FieldPositions {
            Pose2d(4.904749809499619, 3.306324612649225, 300.0.rotation2dFromDeg())
       ),
     );
+
+    val reefRightFar = FieldLocation(Pose2d(), Pose2d(5.4, 2.5, 120.0.rotation2dFromDeg()))
+    val reefRightClose = FieldLocation(Pose2d(), Pose2d(3.6, 2.5, 60.0.rotation2dFromDeg()))
+    val reefLeftClose = FieldLocation(Pose2d(), Pose2d(3.6, 5.5, 300.0.rotation2dFromDeg()))
+    val reefLeftFar = FieldLocation(Pose2d(), Pose2d(5.4, 5.5, 240.0.rotation2dFromDeg()))
+    var reefCenterClose = FieldLocation(Pose2d(), Pose2d(2.75, 4.0, 0.0.rotation2dFromDeg()))
+
+    val sourceLeft = FieldLocation(Pose2d(), Pose2d(1.25, 7.0, 126.0.rotation2dFromDeg()))
+    val sourceRight = FieldLocation(Pose2d(), Pose2d(1.291, 1.081, 234.0.rotation2dFromDeg()))
 }

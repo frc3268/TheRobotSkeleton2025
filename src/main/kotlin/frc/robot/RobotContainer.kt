@@ -67,6 +67,13 @@ class RobotContainer {
     //type is () -> Command because otherwise CommandScheduler complains that each one has already been scheduled
     val autos: MutableMap<String, () -> Command> = mutableMapOf(
         "goToProcessor" to { goto(FieldPositions.processor) },
+        "goToSourceLeft" to {goto(FieldPositions.sourceLeft)},
+        "goToSourceRight" to {goto(FieldPositions.sourceRight)},
+        "goToReefLeftClose" to {goto(FieldPositions.reefLeftClose)},
+        "goToReefLeftFar" to {goto(FieldPositions.reefLeftFar)},
+        "goToReefRightClose" to {goto(FieldPositions.reefRightClose)},
+        "goToReefRightFar" to {goto(FieldPositions.reefRightFar)},
+
         "pickUpCoral" to {Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)},
         "placeCoralL1" to {Routines.placeCoralAtLevel(
             Constants.Levels.LEVEL1.lvl,
@@ -139,8 +146,8 @@ class RobotContainer {
         // levelChooser.addOption("Reset Level", Levels.LEVEL0)
         levelChooser.addOption("Level 1", Constants.Levels.LEVEL1)
         levelChooser.addOption("Level 2", Constants.Levels.LEVEL2)
-        levelChooser.addOption("Level 3", Constants.Levels.LEVEL3)
-        levelChooser.setDefaultOption("Level 4", Constants.Levels.LEVEL4)
+        levelChooser.setDefaultOption("Level 3", Constants.Levels.LEVEL3)
+        levelChooser.addOption("Level 4", Constants.Levels.LEVEL4)
 
         SmartDashboard.putData(levelChooser)
 
@@ -179,14 +186,10 @@ class RobotContainer {
                 )
             )
 
-//            driverController.rightBumper().onTrue(
-//                Routines.takeAlgaeAtLevel(
-//                    levelChooser.selected.lvl,
-//                    elevatorSubsystem!!,
-//                    algaeIntakeSubsystem!!,
-//                    coralIntakeSubsystem!!
-//                )
-//            )
+            driverController.rightBumper().whileTrue(
+                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.stopIntake()).andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                    Constants.Levels.LEVEL0.lvl))
+           )
 //
 //
 //            driverController.rightTrigger().onTrue(algaeIntakeSubsystem!!.dropAlgae())
@@ -214,21 +217,21 @@ class RobotContainer {
             .withSize(2, 1)
 
 
-//        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
-//            if(autochooser.selected == null){
-//                autochooser.setDefaultOption(file.name,Json.decodeFromStream<AutoSequence>(
-//                    file.inputStream()
+//       for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
+//           if(autochooser.selected == null){
+//               autochooser.setDefaultOption(file.name,Json.decodeFromStream<AutoSequence>(
+//                   file.inputStream()
 //                ).toCommandGroup(autos))
 //
 //            }
 //            else {
-//                autochooser.addOption(
-//                    file.name, Json.decodeFromStream<AutoSequence>(
-//                        file.inputStream()
+//               autochooser.addOption(
+//                   file.name, Json.decodeFromStream<AutoSequence>(
+//                       file.inputStream()
 //                    ).toCommandGroup(autos)
-//                )
+//               )
 //            }
-//        }
+//       }
     }
 
     /**

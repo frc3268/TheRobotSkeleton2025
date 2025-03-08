@@ -15,7 +15,7 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
     val inputs = ElevatorIO.LoggedInputs()
     val kg = -0.2
 
-    val cntrl = ProfiledPIDController(io.pidController.p, io.pidController.i, io.pidController.d, TrapezoidProfile.Constraints(30.0, 30.0))
+    val cntrl = ProfiledPIDController(io.pidController.p, io.pidController.i, io.pidController.d, TrapezoidProfile.Constraints(48.0, 40.0))
 
     val troubleshootingtab = Shuffleboard.getTab("Elevator")
     val rightMotorPositionMeters = troubleshootingtab.add("Right Motor Position", 0.0).withPosition(1,0).entry

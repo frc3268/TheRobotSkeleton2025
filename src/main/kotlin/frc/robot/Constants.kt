@@ -49,9 +49,9 @@ object Constants {
      */
     enum class Levels(val lvl: Double) {
         LEVEL0(-0.5),
-        LEVEL1(-12.0),
-        LEVEL2(-24.0),
-        LEVEL3(-36.0),
+        LEVEL1(0.5),
+        LEVEL2(-8.0),
+        LEVEL3(-24.0),
         LEVEL4(-50.0)
     }
 
