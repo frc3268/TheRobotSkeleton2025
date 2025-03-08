@@ -3,6 +3,7 @@ package frc.robot.commands
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.trajectory.TrapezoidProfile
+import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Filesystem
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
@@ -16,6 +17,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
+import java.text.FieldPosition
 import java.util.function.DoubleSupplier
 import java.util.function.Supplier
 import kotlin.math.*
@@ -29,7 +31,7 @@ SwerveAutoDrive, command for swerve driving which fuses setpoint following and r
 allows the user to take manual control of the joysticks to make adjustments while also sending the robot to the setpoint
  */
 class SwerveAutoDrive(
-    private val setpoint: Supplier<Pose2d>,
+    private val goal: Supplier<FieldLocation>,
     private val drive: SwerveDriveBase
 ): Command() {
     private var index = 0
@@ -37,7 +39,9 @@ class SwerveAutoDrive(
 
     var next = Pose2d()
     private var tolerance: Pose2d = Pose2d(0.1, 0.1, 10.0.rotation2dFromDeg())
-    val to = setpoint.get()
+
+    var to = Pose2d()
+
     val grid = Json.decodeFromStream<gridFile>(
         File(Filesystem.getDeployDirectory().toString() + "/pathplanner/navgrid.json").inputStream()).grid
 
@@ -46,6 +50,12 @@ class SwerveAutoDrive(
     }
 
     override fun initialize() {
+        val color = DriverStation.getAlliance()
+        to =
+            if (color.isPresent && color.get() == DriverStation.Alliance.Red)
+                goal.get().red
+            else
+                goal.get().blue
         index = 0
         points = pathfind(drive.getPose(),  to)
         drive.field.getObject("points").setPoses(points)
@@ -71,10 +81,10 @@ class SwerveAutoDrive(
                         )
                 } else {
                     Pose2d(
-                        SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(
+                        -SwerveDriveConstants.DrivetrainConsts.xPIDController.calculate(
                             drive.getPose().x, next.x)
                          * MAX_SPEED_METERS_PER_SECOND,
-                        SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(
+                        -SwerveDriveConstants.DrivetrainConsts.yPIDController.calculate(
                             drive.getPose().y, next.y)* MAX_SPEED_METERS_PER_SECOND,
                         (SwerveDriveConstants.DrivetrainConsts.thetaPIDController.calculate(
                             drive.getPose().rotation.degrees,

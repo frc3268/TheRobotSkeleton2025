@@ -14,10 +14,11 @@ import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.thetaPIDController
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.xPIDController
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.yPIDController
 import org.photonvision.targeting.PhotonTrackedTarget
+import java.util.function.Supplier
 import kotlin.math.abs
 import kotlin.math.cos
 
-class AlignToAprilTagCommand(val drive:SwerveDriveBase, val onRight: Boolean): Command() {
+class AlignToAprilTagCommand(val drive:SwerveDriveBase, val onRight: Supplier<Boolean>): Command() {
     lateinit var bestTarget: PhotonTrackedTarget
 
     var fidID = -1
@@ -37,7 +38,7 @@ class AlignToAprilTagCommand(val drive:SwerveDriveBase, val onRight: Boolean): C
             fidID = bestTarget.fiducialId
             targetloc = field.getTagPose(fidID).get().toPose2d()
             //replace 0.5 with real target distance
-            if(onRight){
+            if(onRight.get()){
                 targetloc = Pose2d(targetloc.x + targetloc.rotation.sin  * -0.5,targetloc.y - targetloc.rotation.cos * -0.5, targetloc.rotation)
             }
           }
@@ -58,10 +59,6 @@ class AlignToAprilTagCommand(val drive:SwerveDriveBase, val onRight: Boolean): C
                 )
 
             )
-
-
-
-            println(xPIDController.calculate(targetDelta.y, 0.0))
         }
 
 

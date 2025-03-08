@@ -12,7 +12,7 @@ class CoralIntakeIOSparkMax : CoralIntakeIO {
 
     val intakeMotor = SparkMax(14, SparkLowLevel.MotorType.kBrushless)
 
-    override val pidController: PIDController = PIDController(0.04,0.005,0.0)
+    override val pidController: PIDController = PIDController(0.035,0.005,0.0)
 
     init {
         //jointConfig.encoder.positionConversionFactor(0.01)

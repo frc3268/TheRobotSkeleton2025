@@ -30,7 +30,6 @@ class SwerveModule(val io: SwerveModuleIO, val index:Int) {
 
     fun update() {
         io.updateInputs(inputs)
-        Logger.processInputs("Drive/module" + index.toString(), inputs)
         delta = SwerveModulePosition(
             getPosition().distanceMeters
                     - lastPosition.distanceMeters,

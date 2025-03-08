@@ -90,4 +90,6 @@ object FieldPositions {
 
     val sourceLeft = FieldLocation(Pose2d(16.243, 1.0, 306.rotation2dFromDeg()), Pose2d(1.25, 7.0, 126.0.rotation2dFromDeg()))
     val sourceRight = FieldLocation(Pose2d(16.243,6.788, 54.000.rotation2dFromDeg()), Pose2d(1.291, 1.081, 234.0.rotation2dFromDeg()))
+
+    val taxi = FieldLocation(Pose2d(11.0, 2.0, 180.0.rotation2dFromDeg()), Pose2d(6.0, 6.0, 0.0.rotation2dFromDeg()))
 }

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.AutoSequence
@@ -17,6 +18,7 @@ import frc.lib.FieldPositions
 import frc.lib.swerve.SwerveDriveBase
 import frc.robot.algaeintake.AlgaeIntakeIOSparkMax
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
+import frc.robot.climber.ClimberIOKraken
 import frc.robot.climber.ClimberSubsystem
 import frc.robot.commands.*
 import frc.robot.coralintake.CoralIntakeIOSparkMax
@@ -123,14 +125,8 @@ class RobotContainer {
 //    )
 
     fun goto(goal: FieldLocation): Command {
-        val color = DriverStation.getAlliance()
-        val to =
-            if (color.isPresent && color.get() == DriverStation.Alliance.Red)
-                goal.red
-            else
-                goal.blue
         return SwerveAutoDrive(
-            {to},
+            {goal},
             driveSubsystem
         )
     }
@@ -156,75 +152,13 @@ class RobotContainer {
         rightChooser.setDefaultOption("left", false)
         rightChooser.addOption("right", true)
 
-        autochooser.setDefaultOption(
-            "go left" ,
-            goto(FieldPositions.reefLeftFar).andThen(
-                Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-            ).andThen(
-                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                    Constants.Levels.LEVEL0.lvl))
-            ).andThen(
-                goto(FieldPositions.sourceLeft)
-            ).andThen(
-                Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
-            ).andThen(
-                goto(FieldPositions.reefLeftClose)
-            ).andThen(
-                Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-            ).andThen(
-                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                    Constants.Levels.LEVEL0.lvl)))
-                .andThen(
-                    goto(FieldPositions.sourceLeft)
-                ).andThen(
-                    Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
-                ).andThen(
-                    goto(FieldPositions.reefCenterClose)
-                ).andThen(
-                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-                ).andThen(
-                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                        Constants.Levels.LEVEL0.lvl)))
-        )
-
-        autochooser.addOption(
-            "go right" ,
-            goto(FieldPositions.reefRightFar).andThen(
-                Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-            ).andThen(
-                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                    Constants.Levels.LEVEL0.lvl))
-            ).andThen(
-                goto(FieldPositions.sourceRight)
-            ).andThen(
-                Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
-            ).andThen(
-                goto(FieldPositions.reefRightClose)
-            ).andThen(
-                Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-            ).andThen(
-                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                    Constants.Levels.LEVEL0.lvl)))
-                .andThen(
-                    goto(FieldPositions.sourceRight)
-                ).andThen(
-                    Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
-                ).andThen(
-                    goto(FieldPositions.reefCenterClose)
-                ).andThen(
-                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-                ).andThen(
-                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                        Constants.Levels.LEVEL0.lvl)))
-        )
-
 
         // get selected level with levelChooser.selected
         if (Constants.mode == Constants.States.REAL) {
             coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
             //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
             elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
-            //climberSubsystem = ClimberSubsystem(ClimberIOKraken())
+            climberSubsystem = ClimberSubsystem(ClimberIOKraken())
         }
         else {
             // coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
@@ -233,8 +167,81 @@ class RobotContainer {
             println("Abandon all hope ye who debug here")
         }
 
+        val rbChooser = SendableChooser<Command>()
+
+        rbChooser.setDefaultOption("Align to April Tag", AlignToAprilTagCommand(driveSubsystem, {rightChooser.selected}))
+        rbChooser.addOption("Align to Source Left", goto(FieldPositions.sourceLeft))
+        rbChooser.addOption("Align to Source Right", goto(FieldPositions.sourceRight))
+
 
         if (elevatorSubsystem != null && coralIntakeSubsystem != null) {
+
+            autochooser.addOption("do nothing", WaitCommand(3.0))
+
+            autochooser.setDefaultOption("taxi", goto(FieldPositions.taxi).andThen(driveSubsystem.zeroHeadingCommand()))
+
+            autochooser.setDefaultOption(
+                "go left" ,
+                goto(FieldPositions.reefLeftFar).andThen(
+                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+                ).andThen(
+                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                        Constants.Levels.LEVEL0.lvl))
+                ).andThen(
+                    goto(FieldPositions.sourceLeft)
+                ).andThen(
+                    Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
+                ).andThen(
+                    goto(FieldPositions.reefLeftClose)
+                ).andThen(
+                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+                ).andThen(
+                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                        Constants.Levels.LEVEL0.lvl)))
+                    .andThen(
+                        goto(FieldPositions.sourceLeft)
+                    ).andThen(
+                        Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
+                    ).andThen(
+                        goto(FieldPositions.reefCenterClose)
+                    ).andThen(
+                        Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+                    ).andThen(
+                        coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                            Constants.Levels.LEVEL0.lvl)))
+            )
+
+            autochooser.addOption(
+                "go right" ,
+                goto(FieldPositions.reefRightFar).andThen(
+                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+                ).andThen(
+                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                        Constants.Levels.LEVEL0.lvl))
+                ).andThen(
+                    goto(FieldPositions.sourceRight)
+                ).andThen(
+                    Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
+                ).andThen(
+                    goto(FieldPositions.reefRightClose)
+                ).andThen(
+                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+                ).andThen(
+                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                        Constants.Levels.LEVEL0.lvl)))
+                    .andThen(
+                        goto(FieldPositions.sourceRight)
+                    ).andThen(
+                        Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
+                    ).andThen(
+
+                        goto(FieldPositions.reefCenterClose)
+                    ).andThen(
+                        Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
+                    ).andThen(
+                        coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
+                            Constants.Levels.LEVEL0.lvl)))
+            )
 
             driverController.leftBumper().onTrue(
                 Routines.takeCoral(
@@ -256,7 +263,7 @@ class RobotContainer {
            )
 //
 //
-//            driverController.rightTrigger().onTrue(algaeIntakeSubsystem!!.dropAlgae())
+            driverController.rightTrigger().onTrue(rbChooser.selected)
 
         }
 

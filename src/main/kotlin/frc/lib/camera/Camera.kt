@@ -30,8 +30,8 @@ class Camera(name: String) {
 
     private var robotToCam = Transform3d(
         Translation3d(
-            Units.inchesToMeters(-9.0),
-            Units.inchesToMeters(9.0),
+            Units.inchesToMeters(-11.0),
+            Units.inchesToMeters(11.0),
             Units.inchesToMeters(8.4),
         ),
         Rotation3d(

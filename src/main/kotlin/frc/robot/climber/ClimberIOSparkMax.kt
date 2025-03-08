@@ -10,7 +10,7 @@ import frc.lib.swerve.ElevatorIO
 
 
 class ClimberIOSparkMax : ClimberIO {
-    val leftMotor = SparkMax(0, SparkLowLevel.MotorType.kBrushless)
+    val leftMotor = SparkMax(16, SparkLowLevel.MotorType.kBrushless)
 
     var leftConfig = SparkMaxConfig()
 
