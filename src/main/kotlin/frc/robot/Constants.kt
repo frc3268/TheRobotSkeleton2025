@@ -59,5 +59,5 @@ object Constants {
     enum class States{REAL, SIM, REPLAY}
 
     /** Current state of the robot. Should be automatically set. */
-    var mode = States.REAL
+    var mode = States.SIM
 }
