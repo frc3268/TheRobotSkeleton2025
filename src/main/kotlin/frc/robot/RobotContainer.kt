@@ -108,7 +108,7 @@ class RobotContainer {
 
             autochooser.setDefaultOption("taxi", SwerveJoystickDrive(driveSubsystem, {1.0}, {0.0}, {0.0},{false} ).withTimeout(1.0))
 
-            autochooser.setDefaultOption(
+            autochooser.addOption(
                 "go left" ,
                 goto(FieldPositions.reefLeftFar).andThen(
                     Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
