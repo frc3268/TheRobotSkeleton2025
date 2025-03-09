@@ -14,12 +14,11 @@ class ClimberSubsystem(val io: ClimberIO) : SubsystemBase() {
 
     // Get some trouble - shooting information to the ShuffleBoard
     val troubleshootingtab = Shuffleboard.getTab("climn")
-    val rightMotorPositionDegrees = troubleshootingtab.add("Right Motor Position", 0.0).withPosition(4,0).entry
-    val rightMotorAppliedVolts = troubleshootingtab.add("Right Motor Applied Volts", 0.0).withPosition(4, 1).entry
     val leftMotorPositionDegrees = troubleshootingtab.add("Left Motor Position", 0.0).withPosition(4, 2).entry
-    val leftMotorAppliedVolts = troubleshootingtab.add("Left Motor Applied Volts", 0.0).withPosition(4, 3).entry
-    init {
+     init {
         troubleshootingtab.add("turn it", setToPosition(3.0)).withWidget(BuiltInWidgets.kCommand)
+
+         troubleshootingtab.add("turns it", setToPositions(3.0)).withWidget(BuiltInWidgets.kCommand)
 
     }
 
@@ -30,8 +29,13 @@ class ClimberSubsystem(val io: ClimberIO) : SubsystemBase() {
 
     fun setToPosition(setPointDegrees: Double): Command =
         run {
-            io.setBothVolts(0.4 * 12.0)
-        }
+            io.setBothVolts(-1.5)
+        }.withTimeout(3.0).andThen(stop())
+
+    fun setToPositions(setPointDegrees: Double): Command =
+        run {
+            io.setBothVolts(1.5)
+        }.withTimeout(3.0).andThen(stop())
             // .until { abs(inputs.motorPositionDegrees - setPointDegrees) < 1.0 }
 
     fun stop(): Command = runOnce { io.stop() }

@@ -230,8 +230,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     //reset yaw on gyro so that wherever the gyro is pointing is the new forward(0) value
     fun zeroHeadingCommand(): Command {
         return runOnce {
-            fakeGyroOffset = getYaw().degrees
-            //zeroYaw()
+            //fakeGyroOffset = getYaw().degrees
+            zeroYaw()
         }
     }
 

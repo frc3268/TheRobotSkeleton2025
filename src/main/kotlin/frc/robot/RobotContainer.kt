@@ -19,6 +19,7 @@ import frc.lib.swerve.SwerveDriveBase
 import frc.robot.algaeintake.AlgaeIntakeIOSparkMax
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
 import frc.robot.climber.ClimberIOKraken
+import frc.robot.climber.ClimberIOSparkMax
 import frc.robot.climber.ClimberSubsystem
 import frc.robot.commands.*
 import frc.robot.coralintake.CoralIntakeIOSparkMax
@@ -158,7 +159,7 @@ class RobotContainer {
             coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
             //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
             elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
-            climberSubsystem = ClimberSubsystem(ClimberIOKraken())
+            climberSubsystem = ClimberSubsystem(ClimberIOSparkMax())
         }
         else {
             // coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
@@ -178,7 +179,7 @@ class RobotContainer {
 
             autochooser.addOption("do nothing", WaitCommand(3.0))
 
-            autochooser.setDefaultOption("taxi", goto(FieldPositions.taxi).andThen(driveSubsystem.zeroHeadingCommand()))
+            autochooser.setDefaultOption("taxi", goto(FieldPositions.taxi))
 
             autochooser.setDefaultOption(
                 "go left" ,
@@ -263,7 +264,11 @@ class RobotContainer {
            )
 //
 //
-            driverController.rightTrigger().onTrue(rbChooser.selected)
+            driverController.rightTrigger().onTrue(elevatorSubsystem!!.setToPosition(levelChooser.selected.lvl))
+            GeneralTab.add("0",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL0.lvl) )
+            GeneralTab.add("1",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL1.lvl) )
+            GeneralTab.add("2",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL2.lvl) )
+            GeneralTab.add("3",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL3.lvl) )
 
         }
 

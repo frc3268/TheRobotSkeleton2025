@@ -46,14 +46,17 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
     fun intake(): Command = run{io.setIntakeVoltage(-0.2 * 12.0)}
         .withTimeout(3.5)
         //.andThen(run{})
+        //.until { abs(inputs.intakeVelocityRPM) > 2000 }
+        //.andThen(run{})
         //.until { abs(inputs.intakeVelocityRPM) < 300 }
         .andThen(stopIntake())
+
 
 
     fun outtake(): Command = run{io.setIntakeVoltage(0.2 * 12.0)}
         .withTimeout(1.0)
         .andThen(run{})
-        .until { abs(inputs.intakeVelocityRPM) > 2000 }
+        .until { abs(inputs.intakeVelocityRPM) > 1000 }
         .andThen(stopIntake())
 
     fun raiseToScore(): Command = runOnce {
@@ -62,7 +65,8 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
     }
 
     fun raiseToIntake(): Command = runOnce {
-        setpoint = -30.0
+        stopped = false
+        setpoint = -32.0
     }
 
     fun lower(): Command = runOnce {
