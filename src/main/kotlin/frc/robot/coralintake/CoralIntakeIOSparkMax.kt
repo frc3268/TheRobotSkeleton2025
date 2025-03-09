@@ -1,9 +1,7 @@
 package frc.robot.coralintake
 
-import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
-import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
 import frc.lib.rotation2dFromDeg
 

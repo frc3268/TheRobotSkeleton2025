@@ -1,11 +1,9 @@
 package frc.robot.algaeintake
 
-import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkMax
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import frc.lib.rotation2dFromDeg
 
 

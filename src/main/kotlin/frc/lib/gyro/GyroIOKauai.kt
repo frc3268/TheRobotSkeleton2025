@@ -9,10 +9,6 @@ import kotlin.math.IEEErem
 class GyroIOKauai : GyroIO {
     private val gyro = AHRS(SPI.Port.kMXP)
 
-    init{
-        //gyro.angleAdjustment = 180.0
-    }
-
 
     override fun updateInputs(inputs: GyroIO.GyroIOInputs) {
         inputs.connected = gyro.isConnected

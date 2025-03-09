@@ -4,9 +4,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 
-import frc.robot.Constants
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
-import edu.wpi.first.wpilibj.shuffleboard.WidgetType
 
 
 //algae has 3 motors - one for arm, two for wheels. main and rev are wheel motors, rev always goes reverse direction

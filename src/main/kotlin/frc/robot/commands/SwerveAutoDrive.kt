@@ -1,11 +1,9 @@
 package frc.robot.commands
 
-import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Filesystem
-import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj2.command.Command
 import frc.lib.*
 import frc.lib.swerve.SwerveDriveBase
@@ -17,8 +15,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
-import java.text.FieldPosition
-import java.util.function.DoubleSupplier
 import java.util.function.Supplier
 import kotlin.math.*
 
@@ -42,6 +38,7 @@ class SwerveAutoDrive(
 
     var to = Pose2d()
 
+    @OptIn(ExperimentalSerializationApi::class)
     val grid = Json.decodeFromStream<gridFile>(
         File(Filesystem.getDeployDirectory().toString() + "/pathplanner/navgrid.json").inputStream()).grid
 

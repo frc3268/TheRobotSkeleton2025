@@ -4,7 +4,6 @@ import edu.wpi.first.math.controller.PIDController
 import org.littletonrobotics.junction.AutoLog
 import org.littletonrobotics.junction.LogTable
 import org.littletonrobotics.junction.inputs.LoggableInputs
-import kotlin.reflect.KClass
 
 
 interface ElevatorIO {

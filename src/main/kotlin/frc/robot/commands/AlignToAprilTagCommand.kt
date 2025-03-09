@@ -2,13 +2,10 @@ package frc.robot.commands
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
-import edu.wpi.first.apriltag.AprilTagPoseEstimate
 import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Translation3d
 import edu.wpi.first.wpilibj2.command.Command
 import frc.lib.rotation2dFromDeg
 import frc.lib.swerve.SwerveDriveBase
-import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.thetaPIDController
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.xPIDController
@@ -16,7 +13,6 @@ import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.yPIDController
 import org.photonvision.targeting.PhotonTrackedTarget
 import java.util.function.Supplier
 import kotlin.math.abs
-import kotlin.math.cos
 
 class AlignToAprilTagCommand(val drive:SwerveDriveBase, val onRight: Supplier<Boolean>): Command() {
     lateinit var bestTarget: PhotonTrackedTarget

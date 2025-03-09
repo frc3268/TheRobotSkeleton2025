@@ -5,19 +5,16 @@ import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.geometry.Translation3d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
-import edu.wpi.first.networktables.GenericEntry
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.Camera
 import frc.lib.gyro.GyroIO
@@ -25,12 +22,9 @@ import frc.lib.gyro.GyroIOInputsAutoLogged
 import frc.lib.gyro.GyroIOKauai
 import frc.lib.rotation2dFromDeg
 import frc.lib.rotation2dFromRad
-import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.kinematics
 import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.thetaPIDController
-import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.xPIDController
-import frc.lib.swerve.SwerveDriveConstants.DrivetrainConsts.yPIDController
 import frc.robot.Constants
 import org.littletonrobotics.junction.Logger
 import org.photonvision.EstimatedRobotPose
@@ -40,7 +34,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     private val shuffleboardTab = Shuffleboard.getTab("Drivetrain")
     private val gyroInputs = GyroIOInputsAutoLogged()
     private var poseEstimator: SwerveDrivePoseEstimator
-    var fakeGyroOffset = 0.0
     private val modules: List<SwerveModule> =
         when (Constants.mode){
             Constants.States.REAL -> {
@@ -106,12 +99,6 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }
     }
 
-    private var joystickControlledEntry: GenericEntry = shuffleboardTab
-            .add("Joystick Control", true)
-            .withWidget("Toggle Button")
-            .withProperties(mapOf("colorWhenTrue" to "green", "colorWhenFalse" to "maroon"))
-            .entry
-
     private var poseXEntry = shuffleboardTab.add("Pose X", 0.0).entry
     private var poseYEntry = shuffleboardTab.add("Pose Y", 0.0).entry
     private var headingEntry = shuffleboardTab.add("Robot Heading", gyroInputs.yawPosition.degrees).withWidget(BuiltInWidgets.kGyro).entry
@@ -123,7 +110,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     var camera: Camera? = null
 
     init {
-        SwerveDriveConstants.DrivetrainConsts.thetaPIDController.enableContinuousInput(
+        thetaPIDController.enableContinuousInput(
                 180.0, -180.0
         )
 
@@ -138,7 +125,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         Timer.delay(1.0)
         resetModulesToAbsolute()
         shuffleboardTab.add("Zero Heading", zeroHeadingCommand()).withWidget(BuiltInWidgets.kCommand)
-        poseEstimator = SwerveDrivePoseEstimator(SwerveDriveConstants.DrivetrainConsts.kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1), VecBuilder.fill(0.5, 0.5, 0.5))
+        poseEstimator = SwerveDrivePoseEstimator(kinematics, getYaw(), getModulePositions(), startingPose, VecBuilder.fill(0.1, 0.1, 0.1), VecBuilder.fill(0.5, 0.5, 0.5))
         field= Field2d()
         field2 = Field2d()
         shuffleboardTab.add(field).withWidget(BuiltInWidgets.kField)
@@ -155,7 +142,7 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
             gyro.updateInputs(gyroInputs)
         } else{
             val deltas = modules.map { it.delta }.toTypedArray()
-            val twist = kinematics.toTwist2d(*deltas);
+            val twist = kinematics.toTwist2d(*deltas)
             gyroInputs.yawPosition = (gyroInputs.yawPosition.plus(twist.dtheta.rotation2dFromRad()))
         }
         camera!!.captureFrame()
