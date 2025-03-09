@@ -18,7 +18,6 @@ import frc.lib.FieldPositions
 import frc.lib.swerve.SwerveDriveBase
 import frc.robot.algaeintake.AlgaeIntakeIOSparkMax
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
-import frc.robot.climber.ClimberIOKraken
 import frc.robot.climber.ClimberIOSparkMax
 import frc.robot.climber.ClimberSubsystem
 import frc.robot.commands.*
