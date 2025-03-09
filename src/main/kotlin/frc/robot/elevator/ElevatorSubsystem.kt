@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.lib.swerve.ElevatorIO
 import kotlin.math.abs
-import frc.robot.Constants
 
 
 class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
@@ -33,8 +32,6 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
         troubleshootingtab.add("go to top",setToPosition(-50.0)).withWidget(BuiltInWidgets.kCommand)
 
         troubleshootingtab.add("go to half",setToPosition(-24.0)).withWidget(BuiltInWidgets.kCommand)
-
-
 
     }
 

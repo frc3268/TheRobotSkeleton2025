@@ -1,22 +1,15 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.wpilibj.DriverStation
-import edu.wpi.first.wpilibj.Filesystem
-import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.lib.AutoSequence
 import frc.lib.FieldLocation
 import frc.lib.FieldPositions
 import frc.lib.swerve.SwerveDriveBase
-import frc.robot.algaeintake.AlgaeIntakeIOSparkMax
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
 import frc.robot.climber.ClimberIOSparkMax
 import frc.robot.climber.ClimberSubsystem
@@ -25,10 +18,6 @@ import frc.robot.coralintake.CoralIntakeIOSparkMax
 import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorIOKraken
 import frc.robot.elevator.ElevatorSubsystem
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
-import java.io.File
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -62,67 +51,6 @@ class RobotContainer {
         { true }
     )
 
-
-
-
-
-//    //type is () -> Command because otherwise CommandScheduler complains that each one has already been scheduled
-//    val autos: MutableMap<String, () -> Command> = mutableMapOf(
-//        "goToProcessor" to { goto(FieldPositions.processor) },
-//        "goToSourceLeft" to {goto(FieldPositions.sourceLeft)},
-//        "goToSourceRight" to {goto(FieldPositions.sourceRight)},
-//        "goToReefLeftClose" to {goto(FieldPositions.reefLeftClose)},
-//        "goToReefLeftFar" to {goto(FieldPositions.reefLeftFar)},
-//        "goToReefRightClose" to {goto(FieldPositions.reefRightClose)},
-//        "goToReefRightFar" to {goto(FieldPositions.reefRightFar)},
-//
-//        "pickUpCoral" to {Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)},
-//        "placeCoralL1" to {Routines.placeCoralAtLevel(
-//            Constants.Levels.LEVEL1.lvl,
-//            elevatorSubsystem!!,
-//            coralIntakeSubsystem!!
-//        )},
-//        "placeCoralL2" to {Routines.placeCoralAtLevel(
-//            Constants.Levels.LEVEL2.lvl,
-//            elevatorSubsystem!!,
-//            coralIntakeSubsystem!!
-//        )},
-//        "placeCoralL3" to {Routines.placeCoralAtLevel(
-//            Constants.Levels.LEVEL3.lvl,
-//            elevatorSubsystem!!,
-//            coralIntakeSubsystem!!
-//        )},
-//        "placeCoralL4" to {Routines.placeCoralAtLevel(
-//            Constants.Levels.LEVEL4.lvl,
-//            elevatorSubsystem!!,
-//            coralIntakeSubsystem!!
-//        )},
-//        "takeAlgaeL1" to {Routines.takeAlgaeAtLevel(
-//            Constants.Levels.LEVEL1.lvl,
-//            elevatorSubsystem!!,
-//            algaeIntakeSubsystem!!,
-//            coralIntakeSubsystem!!
-//        )},
-//        "takeAlgaeL2" to {Routines.takeAlgaeAtLevel(
-//            Constants.Levels.LEVEL2.lvl,
-//            elevatorSubsystem!!,
-//            algaeIntakeSubsystem!!,
-//            coralIntakeSubsystem!!
-//        )},
-//        "takeAlgaeL3" to {Routines.takeAlgaeAtLevel(
-//            Constants.Levels.LEVEL3.lvl,
-//            elevatorSubsystem!!,
-//            algaeIntakeSubsystem!!,
-//            coralIntakeSubsystem!!
-//        )},
-//        "takeAlgaeL4" to {Routines.takeAlgaeAtLevel(
-//            Constants.Levels.LEVEL4.lvl,
-//            elevatorSubsystem!!,
-//            algaeIntakeSubsystem!!,
-//            coralIntakeSubsystem!!
-//        )},
-//        "dropAlgae" to {algaeIntakeSubsystem!!.dropAlgae()}
-//    )
 
     fun goto(goal: FieldLocation): Command {
         return SwerveAutoDrive(
@@ -261,8 +189,7 @@ class RobotContainer {
                 coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
                     Constants.Levels.LEVEL0.lvl))
            )
-//
-//
+
             driverController.rightTrigger().onTrue(elevatorSubsystem!!.setToPosition(levelChooser.selected.lvl))
             GeneralTab.add("0",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL0.lvl) )
             GeneralTab.add("1",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL1.lvl) )
@@ -273,40 +200,11 @@ class RobotContainer {
 
         driveSubsystem.defaultCommand = teleopCommand
 
-//        GeneralTab
-//            .add("drop Algae", algaeIntakeSubsystem?.dropAlgae())
-//            .withWidget(BuiltInWidgets.kCommand)
-//            .withPosition(3,0)
-//            .withSize(1,1)
-//
-//        GeneralTab
-//            .add("Take algae from reef", Routines.takeAlgaeAtLevel(levelChooser.selected.lvl, elevatorSubsystem!!, algaeIntakeSubsystem!!, coralIntakeSubsystem!!))
-//            .withWidget(BuiltInWidgets.kComboBoxChooser)
-//            .withPosition(2,0)
-//            .withSize(2,1)
-
         GeneralTab
             .add("Autonomous Mode", autochooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
             .withSize(2, 1)
-
-
-//       for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
-//           if(autochooser.selected == null){
-//               autochooser.setDefaultOption(file.name,Json.decodeFromStream<AutoSequence>(
-//                   file.inputStream()
-//                ).toCommandGroup(autos))
-//
-//            }
-//            else {
-//               autochooser.addOption(
-//                   file.name, Json.decodeFromStream<AutoSequence>(
-//                       file.inputStream()
-//                    ).toCommandGroup(autos)
-//               )
-//            }
-//       }
     }
 
     /**

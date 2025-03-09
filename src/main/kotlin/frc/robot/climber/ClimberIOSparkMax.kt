@@ -1,18 +1,12 @@
 package frc.robot.climber
 
-import com.revrobotics.spark.SparkBase
 import com.revrobotics.spark.SparkLowLevel
 import com.revrobotics.spark.SparkMax
-import com.revrobotics.spark.config.SparkMaxConfig
 import edu.wpi.first.math.controller.PIDController
-import frc.lib.rotation2dFromRot
-import frc.lib.swerve.ElevatorIO
 
 
 class ClimberIOSparkMax : ClimberIO {
     val leftMotor = SparkMax(16, SparkLowLevel.MotorType.kBrushless)
-
-    var leftConfig = SparkMaxConfig()
 
     override val pidController: PIDController = PIDController(0.0,0.0,0.0)
 
