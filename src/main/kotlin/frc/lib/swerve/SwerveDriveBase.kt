@@ -213,14 +213,15 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
         }
     }
 
-    fun constructModuleStatesFromChassisSpeeds(xSpeedMetersPerSecond: Double, ySpeedMetersPerSecond: Double, turningSpeedDegreesPerSecond: Double, fieldOriented: Boolean): Array<SwerveModuleState> =
-            kinematics.toSwerveModuleStates(
-                    if (fieldOriented)
-                        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians, (poseEstimator.estimatedPosition.rotation - fakeGyroOffset.rotation2dFromDeg()))
-                    else
-                        ChassisSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians)
+    fun constructModuleStatesFromChassisSpeeds(xSpeedMetersPerSecond: Double, ySpeedMetersPerSecond: Double, turningSpeedDegreesPerSecond: Double, fieldOriented: Boolean): Array<SwerveModuleState> {
+        val red = DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+        return kinematics.toSwerveModuleStates(
+                    if (fieldOriented){
+                        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians, if (red) {(poseEstimator.estimatedPosition.rotation + 180.0.rotation2dFromDeg())} else {(poseEstimator.estimatedPosition.rotation)})
+                    }else{
+                        ChassisSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians)}
             )
-
+    }
     fun stop() {
         for (mod in modules) {
             mod.stop()
@@ -230,8 +231,8 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     //reset yaw on gyro so that wherever the gyro is pointing is the new forward(0) value
     fun zeroHeadingCommand(): Command {
         return runOnce {
-            fakeGyroOffset = getYaw().degrees
-            //zeroYaw()
+            //fakeGyroOffset = getYaw().degrees
+            zeroYaw()
         }
     }
 
