@@ -2,6 +2,7 @@ package frc.robot.commands
 
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
+import frc.lib.swerve.SwerveDriveBase
 import frc.robot.Constants
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
 import frc.robot.climber.ClimberSubsystem
@@ -50,5 +51,13 @@ object Routines {
         coralIntake.runOnce { coralIntake.stop() },
         climberSubsystem.run { climberSubsystem.stop() }
     )
+
+    fun inchForward(drive: SwerveDriveBase) = SwerveJoystickDrive(drive, {0.1}, {0.0}, {0.0}, {false}).withTimeout(0.5)
+
+    fun inchBack(drive: SwerveDriveBase) = SwerveJoystickDrive(drive, {-0.1}, {0.0}, {0.0}, {false}).withTimeout(0.5)
+
+    fun inchLeft(drive: SwerveDriveBase) = SwerveJoystickDrive(drive, {0.0}, {-0.1}, {0.0}, {false}).withTimeout(0.5)
+
+    fun inchRight(drive: SwerveDriveBase) = SwerveJoystickDrive(drive, {0.0}, {0.1}, {0.0}, {false}).withTimeout(0.5)
 
 }

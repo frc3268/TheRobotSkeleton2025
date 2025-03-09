@@ -196,6 +196,11 @@ class RobotContainer {
                 andThen(coralIntakeSubsystem!!.lower().alongWith(elevatorSubsystem!!.setToPosition(0.0)))
             )
 
+            driverController.povDown().onTrue(Routines.inchBack(driveSubsystem))
+            driverController.povUp().onTrue(Routines.inchForward(driveSubsystem))
+            driverController.povRight().onTrue(Routines.inchRight(driveSubsystem))
+            driverController.povLeft().onTrue(Routines.inchLeft(driveSubsystem))
+
             driverController.rightTrigger().onTrue(elevatorSubsystem!!.setToPosition(levelChooser.selected.lvl))
             GeneralTab.add("0",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL0.lvl) )
             GeneralTab.add("1",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL1.lvl) )
