@@ -16,7 +16,7 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
     val intakeVelocityRotPerMinEntry = troubleshootingTab.add("Intake Velocity RPM", 0.0).withPosition(3, 2).entry
     var setpoint = 0.0
     var stopped = false
-    var initvel = 0.0
+    var startedSpinning = false
 
     init{
         troubleshootingTab.add("outtake",outtake()).withWidget(BuiltInWidgets.kCommand)
@@ -45,9 +45,11 @@ class CoralIntakeSubsystem(val io: CoralIntakeIO) : SubsystemBase() {
         .withTimeout(1.0)
         .andThen(run{})
         .until { abs(inputs.intakeVelocityRPM) > 2000 }
+        .andThen(runOnce { startedSpinning = true })
         .andThen(run{})
-        .until { abs(inputs.intakeVelocityRPM) < 300 }
+        .until { abs(inputs.intakeVelocityRPM) < 300 && startedSpinning == true}
         .andThen(stopIntake())
+        .andThen(runOnce{startedSpinning = false})
 
 
 

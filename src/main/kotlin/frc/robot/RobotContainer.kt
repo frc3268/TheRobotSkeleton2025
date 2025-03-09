@@ -190,6 +190,12 @@ class RobotContainer {
                     Constants.Levels.LEVEL0.lvl))
            )
 
+            //just lower the elevator little bro
+            driverController.y().onTrue(
+                coralIntakeSubsystem!!.stopIntake().
+                andThen(coralIntakeSubsystem!!.lower().alongWith(elevatorSubsystem!!.setToPosition(0.0)))
+            )
+
             driverController.rightTrigger().onTrue(elevatorSubsystem!!.setToPosition(levelChooser.selected.lvl))
             GeneralTab.add("0",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL0.lvl) )
             GeneralTab.add("1",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL1.lvl) )
