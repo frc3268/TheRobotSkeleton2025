@@ -106,7 +106,7 @@ class RobotContainer {
 
             autochooser.addOption("do nothing", WaitCommand(3.0))
 
-            autochooser.setDefaultOption("taxi", goto(FieldPositions.taxi))
+            autochooser.setDefaultOption("taxi", SwerveJoystickDrive(driveSubsystem, {1.0}, {0.0}, {0.0},{false} ).withTimeout(1.0))
 
             autochooser.setDefaultOption(
                 "go left" ,
