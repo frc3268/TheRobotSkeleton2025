@@ -14,8 +14,10 @@ import frc.robot.algaeintake.AlgaeIntakeIOSparkMax
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
 import frc.robot.climber.ClimberIOSparkMax
 import frc.robot.climber.ClimberSubsystem
-import frc.robot.commands.*
-import frc.robot.coralintake.CoralIntakeIOSparkMax
+import frc.robot.commands.AlignToAprilTagCommand
+import frc.robot.commands.Routines
+import frc.robot.commands.SwerveAutoDrive
+import frc.robot.commands.SwerveJoystickDrive
 import frc.robot.coralintake.CoralIntakeSubsystem
 import frc.robot.elevator.ElevatorIOKraken
 import frc.robot.elevator.ElevatorSubsystem
@@ -28,6 +30,10 @@ import frc.robot.elevator.ElevatorSubsystem
  */
 class RobotContainer {
     private val GeneralTab = Shuffleboard.getTab("General")
+    private val CalibrationTab = Shuffleboard.getTab(Constants.CALIBRATION_TAB)
+    val elevatorHeightDesiredEntry = CalibrationTab.add("Desired Elevator Height", 0.0).withWidget(BuiltInWidgets.kNumberSlider).entry
+
+
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
 
@@ -40,6 +46,8 @@ class RobotContainer {
     var elevatorSubsystem: ElevatorSubsystem? = null
     var algaeIntakeSubsystem: AlgaeIntakeSubsystem? = null
     var climberSubsystem: ClimberSubsystem? = null
+
+    var elevatorHeight: Double = 0.0
 
 
     val autochooser = SendableChooser<Command>()
@@ -75,6 +83,7 @@ class RobotContainer {
         levelChooser.addOption("Level 4", Constants.Levels.LEVEL4)
 
         GeneralTab.add(levelChooser)
+
 
         val rightChooser = SendableChooser<Boolean>()
 
@@ -208,7 +217,10 @@ class RobotContainer {
             GeneralTab.add("2",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL2.lvl) )
             GeneralTab.add("3",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL3.lvl) )
 
+            CalibrationTab.add(elevatorSubsystem!!.setToPosition(elevatorHeightDesiredEntry.getDouble(Constants.Levels.LEVEL0.lvl)))
+
         }
+
 
         driveSubsystem.defaultCommand = teleopCommand
 

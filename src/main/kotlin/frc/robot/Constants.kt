@@ -42,6 +42,8 @@ object Constants {
     }
 
     const val TROUBLESHOOTING_TAB = "Troubleshooting"
+    const val CALIBRATION_TAB = "Calibration"
+
 
     /** How far up the [ElevatorSubsystem] should go to, as an enum corresponding to each of the reef's levels
      *

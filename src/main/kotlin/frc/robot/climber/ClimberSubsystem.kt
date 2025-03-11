@@ -10,16 +10,15 @@ class ClimberSubsystem(val io: ClimberIO) : SubsystemBase() {
     val inputs = ClimberIO.LoggedInputs()
     val kg = 0.0
 
-    // Get some trouble - shooting information to the ShuffleBoard
+    // Get some troubleshooting information to the ShuffleBoard
     val troubleshootingtab = Shuffleboard.getTab("climn")
     val leftMotorPositionDegrees = troubleshootingtab.add("Left Motor Position", 0.0).withPosition(4, 2).entry
      init {
         troubleshootingtab.add("turn it", setToPosition(3.0)).withWidget(BuiltInWidgets.kCommand)
 
-         troubleshootingtab.add("turns it", setToPositions(3.0)).withWidget(BuiltInWidgets.kCommand)
+        troubleshootingtab.add("turns it", setToPositions(3.0)).withWidget(BuiltInWidgets.kCommand)
 
-         troubleshootingtab.add("stop", stop()).withWidget(BuiltInWidgets.kCommand)
-
+        troubleshootingtab.add("stop", stop()).withWidget(BuiltInWidgets.kCommand)
     }
 
     override fun periodic() {
