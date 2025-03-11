@@ -40,7 +40,7 @@ class SwerveModuleIOKraken(val moduleConstants: SwerveDriveConstants.ModuleConst
                     SwerveDriveConstants.AngleMotor.POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION
 
                 dconfig.MotorOutput.Inverted = if (moduleConstants.DRIVE_MOTOR_REVERSED) InvertedValue.Clockwise_Positive else InvertedValue.CounterClockwise_Positive
-                tconfig.MotorOutput.Inverted =  if (moduleConstants.DRIVE_MOTOR_REVERSED) InvertedValue.Clockwise_Positive else InvertedValue.CounterClockwise_Positive
+                tconfig.MotorOutput.Inverted =  if (moduleConstants.ANGLE_MOTOR_REVERSED) InvertedValue.Clockwise_Positive else InvertedValue.CounterClockwise_Positive
 
                 dconfig.MotorOutput.NeutralMode = NeutralModeValue.Coast
                 tconfig.MotorOutput.NeutralMode = NeutralModeValue.Coast

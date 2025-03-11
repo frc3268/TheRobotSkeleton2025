@@ -81,6 +81,6 @@ object SwerveDriveConstants {
             ModuleConstants(1, Rotation2d.fromDegrees(145.1), 1, 2, 0, true, false, PIDController(0.01, 0.00, 0.00)),
             ModuleConstants(2, Rotation2d.fromDegrees(9.1), 3, 4, 1, false, false, PIDController(0.01, 0.000, 0.0000)),
             ModuleConstants(3, Rotation2d.fromDegrees(140.0), 5, 6, 2, false, false, PIDController(0.01, 0.00, 0.000)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-90.0), 7, 8, 3, true, false, PIDController(0.01, 0.00, 0.000))
+            ModuleConstants(4, Rotation2d.fromDegrees(-90.0), 7, 8, 3, false, false, PIDController(0.01, 0.00, 0.000))
     )
 }
