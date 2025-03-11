@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.FieldLocation
 import frc.lib.FieldPositions
 import frc.lib.swerve.SwerveDriveBase
+import frc.robot.algaeintake.AlgaeIntakeIOSparkMax
 import frc.robot.algaeintake.AlgaeIntakeSubsystem
 import frc.robot.climber.ClimberIOSparkMax
 import frc.robot.climber.ClimberSubsystem
@@ -83,8 +84,8 @@ class RobotContainer {
 
         // get selected level with levelChooser.selected
         if (Constants.mode == Constants.States.REAL) {
-            coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
-            //algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
+            //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
+            algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
             elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
             climberSubsystem = ClimberSubsystem(ClimberIOSparkMax())
         }

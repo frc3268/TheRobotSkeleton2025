@@ -18,6 +18,8 @@ class ClimberSubsystem(val io: ClimberIO) : SubsystemBase() {
 
          troubleshootingtab.add("turns it", setToPositions(3.0)).withWidget(BuiltInWidgets.kCommand)
 
+         troubleshootingtab.add("stop", stop()).withWidget(BuiltInWidgets.kCommand)
+
     }
 
     override fun periodic() {
@@ -27,13 +29,13 @@ class ClimberSubsystem(val io: ClimberIO) : SubsystemBase() {
 
     fun setToPosition(setPointDegrees: Double): Command =
         run {
-            io.setBothVolts(-1.5)
-        }.withTimeout(3.0).andThen(stop())
+            io.setBothVolts(-0.4 * 12.0)
+        }.until { inputs.motorPositionDegrees < -730 }.andThen(stop())
 
     fun setToPositions(setPointDegrees: Double): Command =
         run {
-            io.setBothVolts(1.5)
-        }.withTimeout(3.0).andThen(stop())
+            io.setBothVolts(0.4*12.0)
+        }.until { inputs.motorPositionDegrees > 0  }.andThen(stop())
             // .until { abs(inputs.motorPositionDegrees - setPointDegrees) < 1.0 }
 
     fun stop(): Command = runOnce { io.stop() }
