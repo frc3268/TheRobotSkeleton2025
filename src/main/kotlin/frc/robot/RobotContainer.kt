@@ -120,65 +120,12 @@ class RobotContainer {
 
             autochooser.addOption(
                 "go left" ,
-                goto(FieldPositions.reefLeftFar).andThen(
-                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-                ).andThen(
-                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                        Constants.Levels.LEVEL0.lvl))
-                ).andThen(
-                    goto(FieldPositions.sourceLeft)
-                ).andThen(
-                    Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
-                ).andThen(
-                    goto(FieldPositions.reefLeftClose)
-                ).andThen(
-                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-                ).andThen(
-                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                        Constants.Levels.LEVEL0.lvl)))
-                    .andThen(
-                        goto(FieldPositions.sourceLeft)
-                    ).andThen(
-                        Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
-                    ).andThen(
-                        goto(FieldPositions.reefCenterClose)
-                    ).andThen(
-                        Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-                    ).andThen(
-                        coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                            Constants.Levels.LEVEL0.lvl)))
+                Routines.goLeftCommand(elevatorSubsystem!!, coralIntakeSubsystem!!, this)
             )
 
             autochooser.addOption(
                 "go right" ,
-                goto(FieldPositions.reefRightFar).andThen(
-                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-                ).andThen(
-                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                        Constants.Levels.LEVEL0.lvl))
-                ).andThen(
-                    goto(FieldPositions.sourceRight)
-                ).andThen(
-                    Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
-                ).andThen(
-                    goto(FieldPositions.reefRightClose)
-                ).andThen(
-                    Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-                ).andThen(
-                    coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                        Constants.Levels.LEVEL0.lvl)))
-                    .andThen(
-                        goto(FieldPositions.sourceRight)
-                    ).andThen(
-                        Routines.takeCoral(coralIntakeSubsystem!!, elevatorSubsystem!!)
-                    ).andThen(
-
-                        goto(FieldPositions.reefCenterClose)
-                    ).andThen(
-                        Routines.placeCoralAtLevel(Constants.Levels.LEVEL3.lvl, elevatorSubsystem!!, coralIntakeSubsystem!!)
-                    ).andThen(
-                        coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                            Constants.Levels.LEVEL0.lvl)))
+                Routines.goRightCommand(elevatorSubsystem!!, coralIntakeSubsystem!!, this)
             )
 
             driverController.leftBumper().onTrue(
