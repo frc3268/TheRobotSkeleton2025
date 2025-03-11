@@ -47,9 +47,6 @@ class RobotContainer {
     var algaeIntakeSubsystem: AlgaeIntakeSubsystem? = null
     var climberSubsystem: ClimberSubsystem? = null
 
-    var elevatorHeight: Double = 0.0
-
-
     val autochooser = SendableChooser<Command>()
 
     val teleopCommand = SwerveJoystickDrive(

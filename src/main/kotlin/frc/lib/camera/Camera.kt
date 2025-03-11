@@ -1,4 +1,4 @@
-package frc.lib
+package frc.lib.camera
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
