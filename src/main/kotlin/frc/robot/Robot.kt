@@ -16,12 +16,9 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-class Robot: TimedRobot() {
+class Robot : TimedRobot() {
     private var autonomousCommand: Command? = null
     private var robotContainer: RobotContainer? = null
-
-
-
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -33,7 +30,7 @@ class Robot: TimedRobot() {
         if (isReal()) {
             Constants.mode = Constants.States.REAL
             PowerDistribution(1, PowerDistribution.ModuleType.kRev) // Enables power distribution logging
-        }else if (isSimulation()){
+        } else if (isSimulation()) {
             Constants.mode = Constants.States.SIM
             // Running a physics simulator, log to NT
             Logger.addDataReceiver(NT4Publisher())
@@ -44,8 +41,7 @@ class Robot: TimedRobot() {
             Logger.addDataReceiver(
                 WPILOGWriter(
                     LogFileUtil.addPathSuffix(
-                        logPath,
-                        "_sim"
+                        logPath, "_sim"
                     )
                 )
             ) // Save outputs to a new log
