@@ -108,6 +108,10 @@ class RobotContainer {
         rbChooser.addOption("Align to Source Left", goto(FieldPositions.sourceLeft))
         rbChooser.addOption("Align to Source Right", goto(FieldPositions.sourceRight))
 
+        if (Constants.mode == Constants.States.SIM) {
+            Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
+                .add(AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected }))
+        }
 
         if (elevatorSubsystem != null && coralIntakeSubsystem != null) {
 
@@ -173,6 +177,8 @@ class RobotContainer {
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
             .withSize(2, 1)
+
+
     }
 
     /**

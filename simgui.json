@@ -26,6 +26,7 @@
       "/Shuffleboard/General/SendableChooser[1]": "String Chooser",
       "/Shuffleboard/General/Zero Heading": "Command",
       "/Shuffleboard/General/soething": "Command",
+      "/Shuffleboard/Troubleshooting/AlignToAprilTagCommand": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/SendableChooser[1]": "String Chooser",
       "/SmartDashboard/SendableChooser[2]": "String Chooser",
