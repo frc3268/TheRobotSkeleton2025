@@ -9,17 +9,19 @@ import frc.lib.rotation2dFromDeg
 
 class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     //right
-    val mainMotor = SparkMax(11, SparkLowLevel.MotorType.kBrushless)
+    val mainMotor = SparkMax(15, SparkLowLevel.MotorType.kBrushless)
     var mainConfig = SparkMaxConfig()
 
     //left
-    val revMotor = SparkMax(12, SparkLowLevel.MotorType.kBrushless)
+    val revMotor = SparkMax(14, SparkLowLevel.MotorType.kBrushless)
     var revConfig = SparkMaxConfig()
 
-    val jointMotor = SparkMax(13, SparkLowLevel.MotorType.kBrushless)
+    val jointMotor = SparkMax(17, SparkLowLevel.MotorType.kBrushless)
     var jointConfig = SparkMaxConfig()
 
-    override val pidController = PIDController(0.01, 0.0, 0.0)
+    override val pidController = PIDController(0.07, 0.0, 0.0)
+
+
     init {
         jointConfig.encoder.positionConversionFactor(0.0)
         revConfig.encoder.positionConversionFactor(0.0)
@@ -31,7 +33,7 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     }
 
     override fun updateInputs(inputs: AlgaeIntakeIO.Inputs) {
-        inputs.jointAngle = (jointMotor.encoder.position * 18.75).rotation2dFromDeg()
+        inputs.jointAngle = (jointMotor.encoder.position * (360 / 27.0)).rotation2dFromDeg()
         inputs.jointVelocityMetersPerSec = jointMotor.getEncoder().velocity
 
         inputs.revVelocityMetersPerSec = revMotor.getEncoder().velocity
@@ -44,7 +46,7 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     }
     override fun setMainAndRevVoltage(voltage: Double) {
         setRevVolate(voltage)
-        setMainVoltage(-voltage)
+        setMainVoltage(voltage)
     }
     override fun setRevVolate(voltage: Double) {
         revMotor.setVoltage(voltage)
@@ -69,5 +71,9 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
 
     override fun stopMain() {
         mainMotor.stopMotor()
+    }
+
+    override fun resetJointEncoder() {
+        jointMotor.encoder.position = 0.0
     }
 }

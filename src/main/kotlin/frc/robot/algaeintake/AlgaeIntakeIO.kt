@@ -47,4 +47,5 @@ interface AlgaeIntakeIO {
     fun stopMain()
     fun stopRev()
     fun stopJoint()
+    fun resetJointEncoder()
 }
