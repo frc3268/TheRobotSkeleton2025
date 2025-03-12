@@ -76,7 +76,7 @@ object Routines {
         ).andThen(
             robot.goto(FieldPositions.sourceLeft)
         ).andThen(
-            Routines.takeCoral(coralIntakeSubsystem, elevatorSubsystem)
+            takeCoral(coralIntakeSubsystem, elevatorSubsystem)
         ).andThen(
             robot.goto(FieldPositions.reefLeftClose)
         ).andThen(

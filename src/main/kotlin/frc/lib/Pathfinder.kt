@@ -1,11 +1,8 @@
 package frc.lib
 
 import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.units.Units
-import edu.wpi.first.units.Units.Inches
 import java.lang.Math.pow
 import java.util.PriorityQueue
-import kotlin.math.pow
 
 
 data class Point ( val loc:Pair<Int,Int>, val from: Point?)
