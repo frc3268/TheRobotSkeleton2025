@@ -31,7 +31,9 @@ class ElevatorSubsystem(val io: ElevatorIO) : SubsystemBase() {
 
         troubleshootingtab.add("go to top",setToPosition(-50.0)).withWidget(BuiltInWidgets.kCommand)
 
-        troubleshootingtab.add("go to half",setToPosition(-24.0)).withWidget(BuiltInWidgets.kCommand)
+        troubleshootingtab.add("go to half",setToPosition(-22.0)).withWidget(BuiltInWidgets.kCommand)
+
+        troubleshootingtab.add("go to down",setToPosition(0.0)).withWidget(BuiltInWidgets.kCommand)
 
     }
 

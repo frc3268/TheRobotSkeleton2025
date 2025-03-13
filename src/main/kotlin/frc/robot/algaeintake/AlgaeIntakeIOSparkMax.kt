@@ -19,7 +19,7 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     val jointMotor = SparkMax(17, SparkLowLevel.MotorType.kBrushless)
     var jointConfig = SparkMaxConfig()
 
-    override val pidController = PIDController(0.07, 0.0, 0.0)
+    override val pidController = PIDController(0.035, 0.0, 0.0)
 
 
     init {
@@ -33,7 +33,7 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     }
 
     override fun updateInputs(inputs: AlgaeIntakeIO.Inputs) {
-        inputs.jointAngle = (jointMotor.encoder.position * (360 / 27.0)).rotation2dFromDeg()
+        inputs.jointAngle = (jointMotor.encoder.position * (360 / 35.0)).rotation2dFromDeg()
         inputs.jointVelocityMetersPerSec = jointMotor.getEncoder().velocity
 
         inputs.revVelocityMetersPerSec = revMotor.getEncoder().velocity

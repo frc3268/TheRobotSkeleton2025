@@ -35,16 +35,28 @@ object Routines {
 //            .andThen(elevator.setToPosition(Constants.Levels.LEVEL0.lvl)))
         )
 
+    fun placeAlgae(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
+        elevator.setToPosition(Constants.Levels.LEVEL0.lvl),
+        algaeIntake.half(),
+        algaeIntake.outtake(),
+        algaeIntake.raise(),
+    )
+
     //takes algae from reef at level
     //raise elevator, moves coral arm out of way, raises algae arm, runs algae flywheels, lowers elevator
-    fun takeAlgaeAtLevel(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem): Command = SequentialCommandGroup(
+    fun reefPickup(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
         elevator.runOnce { elevator.setToPosition(level) },
-        coralIntake.runOnce { coralIntake.raiseToIntake() },
-        algaeIntake.runOnce { algaeIntake.raise() }
-            .andThen({ algaeIntake.intake() }),
-        //coralIntake.runOnce { coralIntake.lower() }, //this would hit the algae
-        elevator.runOnce { elevator.setToPosition(Constants.Levels.LEVEL0.lvl) }
+        algaeIntake.half(),
+        algaeIntake.intake(),
+        elevator.setToPosition(Constants.Levels.LEVEL0.lvl)
     )
+
+    fun groundPickup(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
+        elevator.setToPosition(Constants.Levels.LEVEL0.lvl),
+        algaeIntake.half(),
+        algaeIntake.outtake()
+    )
+
 
     //stops everything, doesn't lower
     fun stopAll(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem, coralIntake: CoralIntakeSubsystem, climberSubsystem: ClimberSubsystem): Command = SequentialCommandGroup(

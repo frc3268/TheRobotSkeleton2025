@@ -19,6 +19,13 @@ class ClimberSubsystem(val io: ClimberIO) : SubsystemBase() {
         troubleshootingtab.add("turns it", setToPositions(3.0)).withWidget(BuiltInWidgets.kCommand)
 
         troubleshootingtab.add("stop", stop()).withWidget(BuiltInWidgets.kCommand)
+
+        troubleshootingtab.add("up unlimited", run{io.setBothVolts(0.4 * 12.0)}).withWidget(BuiltInWidgets.kCommand)
+
+         troubleshootingtab.add("down unlimited", run{io.setBothVolts(-0.4 * 12.0)}).withWidget(BuiltInWidgets.kCommand)
+
+
+         troubleshootingtab.add("reset", runOnce{io.reset()}).withWidget(BuiltInWidgets.kCommand)
     }
 
     override fun periodic() {
