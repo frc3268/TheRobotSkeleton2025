@@ -35,8 +35,8 @@ object Routines {
 //            .andThen(elevator.setToPosition(Constants.Levels.LEVEL0.lvl)))
         )
 
-    fun placeAlgae(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
-        elevator.setToPosition(Constants.Levels.LEVEL0.lvl),
+    fun placeAlgae(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
+        elevator.setToPosition(0.0),
         algaeIntake.half(),
         algaeIntake.outtake(),
         algaeIntake.raise(),
@@ -45,7 +45,7 @@ object Routines {
     //takes algae from reef at level
     //raise elevator, moves coral arm out of way, raises algae arm, runs algae flywheels, lowers elevator
     fun reefPickup(level: Double, elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
-        elevator.runOnce { elevator.setToPosition(level) },
+        elevator.setToPosition(level) ,
         algaeIntake.half(),
         algaeIntake.intake(),
         elevator.setToPosition(Constants.Levels.LEVEL0.lvl)
@@ -53,8 +53,8 @@ object Routines {
 
     fun groundPickup(elevator: ElevatorSubsystem, algaeIntake: AlgaeIntakeSubsystem): Command = SequentialCommandGroup(
         elevator.setToPosition(Constants.Levels.LEVEL0.lvl),
-        algaeIntake.half(),
-        algaeIntake.outtake()
+        algaeIntake.lower(),
+        algaeIntake.intake()
     )
 
 

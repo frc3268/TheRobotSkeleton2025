@@ -113,53 +113,58 @@ class RobotContainer {
                 .add(AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected }))
         }
 
-        if (elevatorSubsystem != null && coralIntakeSubsystem != null) {
+        if (elevatorSubsystem != null && algaeIntakeSubsystem != null) {
 
             autochooser.addOption("do nothing", WaitCommand(3.0))
 
             autochooser.setDefaultOption("taxi", SwerveJoystickDrive(driveSubsystem, {1.0}, {0.0}, {0.0},{false} ).withTimeout(1.0))
 
-            autochooser.addOption(
-                "go left" ,
-                Routines.goLeftCommand(elevatorSubsystem!!, coralIntakeSubsystem!!, this)
-            )
-
-            autochooser.addOption(
-                "go right" ,
-                Routines.goRightCommand(elevatorSubsystem!!, coralIntakeSubsystem!!, this)
-            )
+//            autochooser.addOption(
+//                "go left" ,
+//                Routines.goLeftCommand(elevatorSubsystem!!, coralIntakeSubsystem!!, this)
+//            )
+//
+//            autochooser.addOption(
+//                "go right" ,
+//                Routines.goRightCommand(elevatorSubsystem!!, coralIntakeSubsystem!!, this)
+//            )
 
             driverController.leftBumper().onTrue(
-                Routines.takeCoral(
-                    coralIntakeSubsystem!!, elevatorSubsystem!!
+                Routines.reefPickup(
+                    Constants.Levels.LEVEL2.lvl,
+                     elevatorSubsystem!!, algaeIntakeSubsystem!!
                 )
             )
 
             driverController.leftTrigger().onTrue(
-                Routines.placeCoralAtLevel(
-                    levelChooser.selected.lvl,
+                Routines.groundPickup(
                     elevatorSubsystem!!,
-                    coralIntakeSubsystem!!
+                    algaeIntakeSubsystem!!
                 )
             )
 
             driverController.rightBumper().onTrue(
-                coralIntakeSubsystem!!.outtake().andThen(coralIntakeSubsystem!!.lower()).andThen(coralIntakeSubsystem!!.reset()).andThen(elevatorSubsystem!!.setToPosition(
-                    Constants.Levels.LEVEL0.lvl))
+                Routines.reefPickup(
+                    Constants.Levels.LEVEL3.lvl,
+                    elevatorSubsystem!!, algaeIntakeSubsystem!!
+                )
            )
 
-            //just lower the elevator little bro
-            driverController.y().onTrue(
-                coralIntakeSubsystem!!.stopIntake().
-                andThen(coralIntakeSubsystem!!.lower().alongWith(elevatorSubsystem!!.setToPosition(0.0)))
+            driverController.rightTrigger().onTrue(
+                Routines.placeAlgae(elevatorSubsystem!!, algaeIntakeSubsystem!!)
             )
+
+//            //just lower the elevator little bro
+//            driverController.y().onTrue(
+//                coralIntakeSubsystem!!.stopIntake().
+//                andThen(coralIntakeSubsystem!!.lower().alongWith(elevatorSubsystem!!.setToPosition(0.0)))
+//            )
 
             driverController.povDown().onTrue(Routines.inchBack(driveSubsystem))
             driverController.povUp().onTrue(Routines.inchForward(driveSubsystem))
             driverController.povRight().onTrue(Routines.inchRight(driveSubsystem))
             driverController.povLeft().onTrue(Routines.inchLeft(driveSubsystem))
 
-            driverController.rightTrigger().onTrue(elevatorSubsystem!!.setToPosition(levelChooser.selected.lvl))
             GeneralTab.add("0",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL0.lvl) )
             GeneralTab.add("1",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL1.lvl) )
             GeneralTab.add("2",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL2.lvl) )

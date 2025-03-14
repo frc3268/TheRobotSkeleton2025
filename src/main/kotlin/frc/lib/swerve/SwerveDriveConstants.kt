@@ -53,7 +53,7 @@ object SwerveDriveConstants {
         const val OPEN_LOOP_RAMP_RATE_SECONDS: Double = 0.25
 
         /* Swerve Profiling Values */
-        const val MAX_SPEED_METERS_PER_SECOND = 2.0
+        const val MAX_SPEED_METERS_PER_SECOND = 3.0
         const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 100.0
         const val MAX_ANGULAR_ACCELERATION_DEGREES_PER_SECOND_SQUARED = 100.0
         const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 5.0
@@ -78,9 +78,9 @@ object SwerveDriveConstants {
 
 
     val modules = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(145.1), 1, 2, 0, true, false, PIDController(0.01, 0.00, 0.00)),
-            ModuleConstants(2, Rotation2d.fromDegrees(9.1), 3, 4, 1, false, false, PIDController(0.01, 0.000, 0.0000)),
-            ModuleConstants(3, Rotation2d.fromDegrees(140.0), 5, 6, 2, false, false, PIDController(0.01, 0.00, 0.000)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-90.0), 7, 8, 3, false, false, PIDController(0.01, 0.00, 0.000))
+            ModuleConstants(1, Rotation2d.fromDegrees(145.1), 1, 2, 0, true, false, PIDController(0.013, 0.00, 0.00)),
+            ModuleConstants(2, Rotation2d.fromDegrees(9.1), 3, 4, 1, false, false, PIDController(0.013, 0.000, 0.0000)),
+            ModuleConstants(3, Rotation2d.fromDegrees(140.0), 5, 6, 2, false, false, PIDController(0.013, 0.00, 0.000)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-90.0), 7, 8, 3, false, false, PIDController(0.013, 0.00, 0.000))
     )
 }

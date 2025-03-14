@@ -19,7 +19,7 @@ class AlgaeIntakeIOSparkMax: AlgaeIntakeIO {
     val jointMotor = SparkMax(17, SparkLowLevel.MotorType.kBrushless)
     var jointConfig = SparkMaxConfig()
 
-    override val pidController = PIDController(0.035, 0.0, 0.0)
+    override val pidController = PIDController(0.04, 0.0, 0.0)
 
 
     init {

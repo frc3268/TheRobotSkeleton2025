@@ -210,16 +210,15 @@ class SwerveDriveBase(startingPose: Pose2d) : SubsystemBase() {
     }
 
     fun constructTeleopModuleStatesFromChassisSpeeds(xSpeedMetersPerSecond: Double, ySpeedMetersPerSecond: Double, turningSpeedDegreesPerSecond: Double, fieldOriented: Boolean): Array<SwerveModuleState> {
-        //val red = DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+        val red = DriverStation.getAlliance().get() == DriverStation.Alliance.Red
         return kinematics.toSwerveModuleStates(
             if (fieldOriented){
-                ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians,
-                    //if (red) {(poseEstimator.estimatedPosition.rotation + 180.0.rotation2dFromDeg())} else {
-            (poseEstimator.estimatedPosition.rotation))
+                ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians, if (red) {(poseEstimator.estimatedPosition.rotation + 180.0.rotation2dFromDeg())} else {(poseEstimator.estimatedPosition.rotation)})
             }else{
                 ChassisSpeeds(xSpeedMetersPerSecond, ySpeedMetersPerSecond, turningSpeedDegreesPerSecond.rotation2dFromDeg().radians)}
         )
     }
+
     fun stop() {
         for (mod in modules) {
             mod.stop()

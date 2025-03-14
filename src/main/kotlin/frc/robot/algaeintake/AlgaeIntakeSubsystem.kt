@@ -21,11 +21,13 @@ class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
     val mainVelocityMetersPerSecEntry = troubleshootingTab.add("Main Velocity MPS", 0.0).withPosition(2, 2).entry
     val revVelocityMetersPerSecEntry = troubleshootingTab.add("Reverse Velocity MPS", 0.0).withPosition(2, 3).entry
 
-    val cntrl = ProfiledPIDController(io.pidController.p, io.pidController.i, io.pidController.d, TrapezoidProfile.Constraints(60.0, 60.0))
+    val cntrl = ProfiledPIDController(io.pidController.p, io.pidController.i, io.pidController.d, TrapezoidProfile.Constraints(90.0, 120.0))
 
     var setpoint = 0.0
     var stopped = false
+    var initSpin = false
     var startedSpinning = false
+    var holdIN = false
 
     init {
 
@@ -52,24 +54,53 @@ class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
             io.setJointVoltage(io.pidController.calculate(inputs.jointAngle.degrees, setpoint))
         }
 
+        if(holdIN){
+            io.setMainAndRevVoltage(-0.05)
+        }
+
     }
-    fun intake(): Command = run{io.setMainAndRevVoltage(-0.3 * 12.0)}
+    fun intake(): Command =
+        runOnce { holdIN = false }.andThen(
+        run{io.setMainAndRevVoltage(-0.3 * 12.0)}
         .withTimeout(1.0)
         .andThen(run{})
         .until { abs(inputs.mainVelocityMetersPerSec) > 3000 }
-        .andThen(runOnce { startedSpinning = true })
+        .andThen(runOnce { initSpin = true })
         .andThen(run{})
-        .until { abs(inputs.mainVelocityMetersPerSec) < 2950 && startedSpinning == true}
+        .until { (abs(inputs.mainVelocityMetersPerSec) + abs(inputs.revVelocityMetersPerSec)) / 2 < 2900  && initSpin == true}
+        .andThen(runOnce { initSpin = false
+                            startedSpinning = true})
+        .andThen(run{io.setMainAndRevVoltage(-0.4 * 12.0)})
+        .andThen(run{})
+        .until { (abs(inputs.mainVelocityMetersPerSec)  +  abs(inputs.revVelocityMetersPerSec)) / 2 < 3900 && startedSpinning == true }
         .andThen(stopWheels())
         .andThen(runOnce{startedSpinning = false})
+        .andThen(runOnce { holdIN = true }))
+
+//    fun intake(): Command = run{io.setMainAndRevVoltage(-0.4 * 12.0)}
+//        .withTimeout(1.0)
+//        .andThen(run{})
+//        .until { abs(inputs.mainVelocityMetersPerSec) > 4400 }
+//        .andThen(runOnce { initSpin = true })
+//        .andThen(run{})
+//        .until { (abs(inputs.mainVelocityMetersPerSec) + abs(inputs.revVelocityMetersPerSec)) / 2 < 4000  && initSpin == true}
+//        .andThen(runOnce { initSpin = false
+//            startedSpinning = true})
+//        .andThen(run{io.setMainAndRevVoltage(-0.2 * 12.0)})
+//        .andThen(run{})
+//        .until { (abs(inputs.mainVelocityMetersPerSec)  +  abs(inputs.revVelocityMetersPerSec)) / 2 < 2500 && startedSpinning == true }
+//        .andThen(stopWheels())
+//        .andThen(runOnce{startedSpinning = false})
 
 
 
-    fun outtake(): Command = run{io.setMainAndRevVoltage(0.3 * 12.0)}
+    fun outtake(): Command =
+        runOnce { holdIN = false }.andThen(
+        run{io.setMainAndRevVoltage(0.4 * 12.0)}
         .withTimeout(1.0)
         .andThen(run{})
-        .until { abs(inputs.mainVelocityMetersPerSec) > 2900 }
-        .andThen(stopWheels())
+        .until { abs(inputs.mainVelocityMetersPerSec) > 4400 }
+        .andThen(stopWheels()))
 
 
 
@@ -124,13 +155,13 @@ class AlgaeIntakeSubsystem(val io: AlgaeIntakeIO) : SubsystemBase() {
             stopped = true
         }.andThen(
         run{
-        io.setJointVoltage(cntrl.calculate(inputs.jointAngle.degrees, -95.0))
+        io.setJointVoltage(cntrl.calculate(inputs.jointAngle.degrees, -80.0))
         }.until { (inputs.jointAngle - (-80.0).rotation2dFromDeg()).degrees < 2.0 }.andThen(
         runOnce{
             cntrl.reset(inputs.jointAngle.degrees)
         }.andThen(
             runOnce {
-                setpoint = -95.0
+                setpoint = -80.0
                 stopped = false } ) ))
 
     fun dropAlgae() : Command = runOnce {

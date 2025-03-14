@@ -50,11 +50,11 @@ object Constants {
      * [LEVEL0] Should be the elevators lowest possible point / resting point
      */
     enum class Levels(val lvl: Double) {
-        LEVEL0(-0.5),
+        LEVEL0(0.0),
         LEVEL1(0.5),
-        LEVEL2(-8.0),
-        LEVEL3(-22.0),
-        LEVEL4(-32.0)
+        LEVEL2(-22.0),
+        LEVEL3(-32.0),
+        LEVEL4(-50.0)
     }
 
 
