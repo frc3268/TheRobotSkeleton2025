@@ -17,16 +17,14 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim
 
 class KrakenSimMotor(
     override val id: Int,
-    override var inverse: Boolean = false,
-    var positionPIDController: PIDController,
-    var velocityPIDController: PIDController,
+    val motorConfig: TalonFXConfiguration = TalonFXConfiguration(),
+    var positionSlot: Slot0Configs = Slot0Configs(),
+    var velocitySlot: Slot1Configs = Slot1Configs()
 ) : Motor {
 
     val motor = TalonFX(id, "rio")
-    val motorConfig = TalonFXConfiguration()
 
-    var positionSlot = Slot0Configs()
-    var velocitySlot = Slot1Configs()
+
     val motorDC = DCMotorSim(
         LinearSystemId.createDCMotorSystem(
             DCMotor.getKrakenX60(1),
@@ -37,24 +35,6 @@ class KrakenSimMotor(
 
 
     init{
-
-        if (inverse) {
-            motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive
-        }
-        else {
-            motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive
-        }
-
-        positionSlot.kP = positionPIDController.p
-        positionSlot.kI = positionPIDController.i
-        positionSlot.kD = positionPIDController.d
-
-        velocitySlot.kP = velocityPIDController.p
-        velocitySlot.kI = velocityPIDController.i
-        velocitySlot.kD = velocityPIDController.d
-
-        motorConfig.Feedback.SensorToMechanismRatio = 0.0
-
         configure()
     }
     override fun configure() {

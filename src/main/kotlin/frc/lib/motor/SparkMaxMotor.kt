@@ -11,7 +11,6 @@ import com.revrobotics.spark.config.SparkMaxConfig
 // Also not use as much PiD Controllers
 class SparkMaxMotor(
     override val id: Int,
-    override var inverse: Boolean = false,
     var motorConfig: SparkMaxConfig = SparkMaxConfig()
 ) : Motor {
 
@@ -19,8 +18,6 @@ class SparkMaxMotor(
     var motorClosedLoop = motor.closedLoopController;
 
     init{
-        motorConfig.inverted(inverse)
-
         configure()
     }
 

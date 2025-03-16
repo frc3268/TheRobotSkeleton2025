@@ -12,7 +12,6 @@ import edu.wpi.first.units.measure.Angle
 
 class KrakenMotor(
     override val id: Int,
-    override var inverse: Boolean = false,
     val motorConfig: TalonFXConfiguration = TalonFXConfiguration(),
     var positionSlot: Slot0Configs = Slot0Configs(),
     var velocitySlot: Slot1Configs = Slot1Configs()
@@ -21,20 +20,7 @@ class KrakenMotor(
     val motor = TalonFX(id, "rio")
 
     init{
-
-        if (inverse) {
-            motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive
-        }
-        else {
-            motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive
-        }
-
-
-        motorConfig.Feedback.SensorToMechanismRatio = 0.0
-
-        motor.configurator.apply(motorConfig)
-        motor.configurator.apply(positionSlot)
-        motor.configurator.apply(velocitySlot)
+        configure()
     }
     override fun configure() {
         motor.configurator.apply(motorConfig)

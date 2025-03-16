@@ -15,7 +15,7 @@ interface Motor {
     val id: Int
 
     /** Should the motor be reversed? */
-    var inverse: Boolean
+//    var inverse: Boolean
 
     /** Run the motor at the specified [voltage]
      * @param[voltage] Specified voltage to run motor
