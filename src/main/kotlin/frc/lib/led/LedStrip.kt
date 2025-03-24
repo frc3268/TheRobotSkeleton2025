@@ -35,14 +35,29 @@ class LedStrip(
         setDefaultCommand(applyPattern(LEDPattern.solid(Color.kBlack)).withName("Off"))
     }
 
-    /** Apply a [pattern] to the [LedStrip].
-     * @param[pattern] the pattern to apply to the buffer
+    /** Set a [pattern] to the [LedStrip]. Will clear the queue. 
+     * @param[pattern] the pattern to set to the buffer
      * @sample applyGradientPattern
      */
-    fun applyPattern(pattern: LEDPattern): Command = run {
+    fun setPattern(pattern: LEDPattern): Command = run {
+        clearQueue()
         pattern.applyTo(ledBuffer)
     }
 
+
+    /** Queue up a [pattern] to the [LedStrip] for a [duration]. Currently does nothing.
+     * @param[pattern] the pattern to apply to the buffer
+     * @param[duration] how long should the pattern last for?
+     * @sample applyGradientPattern
+     */
+    fun queuePattern(pattern: LEDPattern, duration: Time): Command = run {
+
+    }
+
+    fun clearQueue(): Command = runOnce {
+
+    }
+    
     /** Apply a gradient pattern to the [LedStrip]. */
     fun applyGradientPattern(color1: Color, color2: Color): Command = runOnce {
         val gradient = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, color1, color2)
