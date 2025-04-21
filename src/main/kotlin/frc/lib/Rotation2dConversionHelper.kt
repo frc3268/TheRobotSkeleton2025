@@ -15,4 +15,3 @@ fun Int.rotation2dFromRad() = Rotation2d.fromRadians(this.toDouble())
 fun Double.rotation2dFromRot() = Rotation2d.fromRotations(this)
 fun Float.rotation2dFromRot() = Rotation2d.fromRotations(this.toDouble())
 fun Int.rotation2dFromRot() = Rotation2d.fromRotations(this.toDouble())
-

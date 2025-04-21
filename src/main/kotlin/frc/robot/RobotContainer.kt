@@ -1,26 +1,26 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
-
-import edu.wpi.first.wpilibj.DriverStation
-import edu.wpi.first.wpilibj.Filesystem
-import edu.wpi.first.wpilibj.shuffleboard.*
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
-import edu.wpi.first.wpilibj2.command.*
-import edu.wpi.first.wpilibj2.command.Commands.runOnce
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-import frc.lib.*
-import frc.lib.FieldPositions.obstacles
+import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.WaitCommand
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import frc.lib.FieldLocation
+import frc.lib.FieldPositions
 import frc.lib.swerve.SwerveDriveBase
-import frc.lib.swerve.SwerveDriveConstants
-import frc.robot.commands.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
-import java.io.File
-import java.util.concurrent.atomic.AtomicReference
-import java.util.function.Supplier
-import kotlin.math.pow
-import kotlin.math.sqrt
+import frc.robot.algaeintake.AlgaeIntakeIOSparkMax
+import frc.robot.algaeintake.AlgaeIntakeSubsystem
+import frc.robot.climber.ClimberIOSparkMax
+import frc.robot.climber.ClimberSubsystem
+import frc.robot.commands.AlignToAprilTagCommand
+import frc.robot.commands.Routines
+import frc.robot.commands.SwerveAutoDrive
+import frc.robot.commands.SwerveJoystickDrive
+import frc.robot.coralintake.CoralIntakeSubsystem
+import frc.robot.elevator.ElevatorIOKraken
+import frc.robot.elevator.ElevatorSubsystem
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,76 +30,151 @@ import kotlin.math.sqrt
  */
 class RobotContainer {
     private val GeneralTab = Shuffleboard.getTab("General")
-    private val thingy = GeneralTab.add("Thing", 0.0).entry
-    private val TroubleshootingTab = Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
+    private val CalibrationTab = Shuffleboard.getTab(Constants.CALIBRATION_TAB)
+    val elevatorHeightDesiredEntry = CalibrationTab.add("Desired Elevator Height", 0.0).withWidget(BuiltInWidgets.kNumberSlider).entry
+
+
 
     val driveSubsystem = SwerveDriveBase(Pose2d())
 
-    private val driverController = CommandPS4Controller(Constants.OperatorConstants.kDriverControllerPort)
+
+
+    private val driverController = CommandXboxController(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT)
+
+    // There must be a better way to do this! Oh well.
+    var coralIntakeSubsystem: CoralIntakeSubsystem? = null
+    var elevatorSubsystem: ElevatorSubsystem? = null
+    var algaeIntakeSubsystem: AlgaeIntakeSubsystem? = null
+    var climberSubsystem: ClimberSubsystem? = null
 
     val autochooser = SendableChooser<Command>()
-    val leftBumperChooser = SendableChooser<Command>()
-    val xButtonChooser = SendableChooser<Command>()
-
 
     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
         { driverController.getRawAxis(1) },
-        { -driverController.getRawAxis(0) },
-        { -driverController.getRawAxis(2) },
+        { driverController.getRawAxis(0) },
+        { -driverController.getRawAxis(4) },
         { true }
     )
 
 
-    //type is () -> Command because otherwise CommandScheduler complains that each one has already been scheduled
-    val autos: MutableMap<String, () -> Command> = mutableMapOf(
-        "gotoSpeaker" to { goToSpeakerCloser() },
-        "gotoSpeakerCenter" to {goto(FieldPositions.speakerCenter)},
-        "gotoSpeakerRight" to {goto(FieldPositions.speakerRight)},
-        "gotoSpeakerLeft" to {goto(FieldPositions.speakerLeft)},
-        "gotoAmp" to {goto(FieldPositions.amp)},
-        "goToSourceCloserToBaseline" to {goto(FieldPositions.sourceBaseline)},
-        "goToSourceFurtherFromBaseline" to {goto(FieldPositions.sourceNotBaseline)},
-        "goToRing" to {WaitCommand(1.0)},
-        //todo: other rings
-    )
-
     fun goto(goal: FieldLocation): Command {
-        val color = DriverStation.getAlliance()
-        val to =
-            if (color.isPresent && color.get() == DriverStation.Alliance.Red)
-                goal.red
-            else
-                goal.blue
         return SwerveAutoDrive(
-            {to},
+            {goal},
             driveSubsystem
         )
     }
 
-
-    fun goToSpeakerCloser(): Command {
-        var startingPose = Pose2d()
-        return runOnce({
-            startingPose = driveSubsystem.getPose()
-        }, driveSubsystem).andThen(
-            //red
-            goto(
-                FieldPositions.closest(
-                    startingPose,
-                    listOf(
-                        FieldPositions.speakerRight,
-                        FieldPositions.speakerCenter,
-                        FieldPositions.speakerLeft
-                    )
-                )
-            )
-        )
-    }
-
-
+    
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
+
+
+        val levelChooser = SendableChooser<Constants.Levels>()
+
+
+        // levelChooser.addOption("Reset Level", Levels.LEVEL0)
+        levelChooser.addOption("Level 1", Constants.Levels.LEVEL1)
+        levelChooser.addOption("Level 2", Constants.Levels.LEVEL2)
+        levelChooser.setDefaultOption("Level 3", Constants.Levels.LEVEL3)
+        levelChooser.addOption("Level 4", Constants.Levels.LEVEL4)
+
+        GeneralTab.add(levelChooser)
+
+
+        val rightChooser = SendableChooser<Boolean>()
+
+        rightChooser.setDefaultOption("left", false)
+        rightChooser.addOption("right", true)
+
+
+        // get selected level with levelChooser.selected
+        if (Constants.mode == Constants.States.REAL) {
+            //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
+            algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
+            elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
+            climberSubsystem = ClimberSubsystem(ClimberIOSparkMax())
+        }
+        else {
+            // coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
+
+            println("Warning: Simulated subsystems do not exist as no IOClass for them exists!")
+            println("Abandon all hope ye who debug here")
+        }
+
+        val rbChooser = SendableChooser<Command>()
+
+        rbChooser.setDefaultOption("Align to April Tag", AlignToAprilTagCommand(driveSubsystem, {rightChooser.selected}))
+        rbChooser.addOption("Align to Source Left", goto(FieldPositions.sourceLeft))
+        rbChooser.addOption("Align to Source Right", goto(FieldPositions.sourceRight))
+
+        if (Constants.mode == Constants.States.SIM) {
+            Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
+                .add(AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected }))
+        }
+
+        if (elevatorSubsystem != null && algaeIntakeSubsystem != null) {
+
+            autochooser.addOption("do nothing", WaitCommand(3.0))
+
+            autochooser.setDefaultOption("taxi", SwerveJoystickDrive(driveSubsystem, {1.0}, {0.0}, {0.0},{false} ).withTimeout(1.0))
+
+//            autochooser.addOption(
+//                "go left" ,
+//                Routines.goLeftCommand(elevatorSubsystem!!, coralIntakeSubsystem!!, this)
+//            )
+//
+//            autochooser.addOption(
+//                "go right" ,
+//                Routines.goRightCommand(elevatorSubsystem!!, coralIntakeSubsystem!!, this)
+//            )
+
+            driverController.leftBumper().onTrue(
+                Routines.reefPickup(
+                    Constants.Levels.LEVEL2.lvl,
+                     elevatorSubsystem!!, algaeIntakeSubsystem!!
+                )
+            )
+
+            driverController.leftTrigger().onTrue(
+                Routines.groundPickup(
+                    elevatorSubsystem!!,
+                    algaeIntakeSubsystem!!
+                )
+            )
+
+            driverController.rightBumper().onTrue(
+                Routines.reefPickup(
+                    Constants.Levels.LEVEL3.lvl,
+                    elevatorSubsystem!!, algaeIntakeSubsystem!!
+                )
+           )
+
+            driverController.rightTrigger().onTrue(
+                Routines.placeAlgae(elevatorSubsystem!!, algaeIntakeSubsystem!!)
+            )
+
+//            //just lower the elevator little bro
+//            driverController.y().onTrue(
+//                coralIntakeSubsystem!!.stopIntake().
+//                andThen(coralIntakeSubsystem!!.lower().alongWith(elevatorSubsystem!!.setToPosition(0.0)))
+//            )
+
+            driverController.povDown().onTrue(Routines.inchBack(driveSubsystem))
+            driverController.povUp().onTrue(Routines.inchForward(driveSubsystem))
+            driverController.povRight().onTrue(Routines.inchRight(driveSubsystem))
+            driverController.povLeft().onTrue(Routines.inchLeft(driveSubsystem))
+
+            GeneralTab.add("0",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL0.lvl) )
+            GeneralTab.add("1",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL1.lvl) )
+            GeneralTab.add("2",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL2.lvl) )
+            GeneralTab.add("3",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL3.lvl) )
+
+            CalibrationTab.add(elevatorSubsystem!!.setToPosition(elevatorHeightDesiredEntry.getDouble(Constants.Levels.LEVEL0.lvl)))
+
+        }
+
+
         driveSubsystem.defaultCommand = teleopCommand
 
         GeneralTab
@@ -107,34 +182,8 @@ class RobotContainer {
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
             .withSize(2, 1)
-        GeneralTab
-            .add("LB Command", leftBumperChooser)
-            .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withPosition(2, 0)
-            .withSize(2, 1)
 
-        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/paths").listFiles()?.filter { it.isFile }!!){
-            if(autochooser.selected == null){
-                autochooser.setDefaultOption(file.name,Json.decodeFromStream<AutoSequence>(
-                    file.inputStream()
-                ).toCommandGroup(autos))
 
-                Shuffleboard.getTab("General").addString("something35", {"test"})
-            }
-            else {
-                autochooser.addOption(
-                    file.name, Json.decodeFromStream<AutoSequence>(
-                        file.inputStream()
-                    ).toCommandGroup(autos)
-                )
-            }
-        }
-
-        for (file:File in File(Filesystem.getDeployDirectory().toString() + "/buttons").listFiles()?.filter { it.isFile }!!){
-            GeneralTab.add(file.name,Json.decodeFromStream<AutoSequence>(
-                file.inputStream()
-            ).toCommandGroup(autos)).withWidget(BuiltInWidgets.kCommand)
-        }
     }
 
     /**

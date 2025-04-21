@@ -1,6 +1,6 @@
-# ValhallaLib
+# REEFSCAPE2025
 
-*library for robot code created by frc team 3268*
+*repo for the robot code for Reefscape2025, created by FRC team 3268 with ValhallaLib*
 
 **Features** swerve-drive code, camera code, autonomous code & dashboard code    
 **More** features to come, including but not limited to: more dashboard code, more odometry integrations, and documentation
@@ -22,7 +22,6 @@
 - Keep it simple
 - Don't appeal to boilerplate if you don't have to
 - Allow extensibility
-
 
 **Usage:**
 1. Clone/fork the repo

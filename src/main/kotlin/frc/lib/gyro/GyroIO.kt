@@ -1,4 +1,4 @@
-package frc.lib
+package frc.lib.gyro
 
 import edu.wpi.first.math.geometry.Rotation2d
 import org.littletonrobotics.junction.AutoLog
@@ -15,9 +15,9 @@ interface GyroIO {
         var yawVelocityRadPerSec: Double = 0.0
     }
 
-    fun updateInputs(inputs: GyroIOInputs) {}
+    fun updateInputs(inputs: GyroIOInputs)
 
-    fun zeroYaw() {}
+    fun zeroYaw()
 }
 
 class GyroIOInputsAutoLogged : GyroIO.GyroIOInputs(), LoggableInputs {

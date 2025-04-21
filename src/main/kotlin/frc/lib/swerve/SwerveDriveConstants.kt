@@ -28,15 +28,14 @@ object SwerveDriveConstants {
     )
 
     object DriveMotor {
-        const val GEAR_RATIO: Double = 8.14 / 1.0
-        const val POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION: Double =
-                (WHEEL_DIAMETER_METERS * Math.PI) / GEAR_RATIO
+        const val GEAR_RATIO: Double = 12.1 / 1.0
+        const val POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION: Double = GEAR_RATIO
         const val VELOCITY_CONVERSION_FACTOR_METERS_PER_SECOND = POSITION_CONVERSION_FACTOR_METERS_PER_ROTATION / 60.0
     }
 
     object AngleMotor {
         //for some reason 10:1 delivers the most accurate results
-        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 16.8
+        const val POSITION_CONVERSION_FACTOR_DEGREES_PER_ROTATION = 6.2 / 1.0
 
     }
 
@@ -46,36 +45,32 @@ object SwerveDriveConstants {
     }
 
     object DrivetrainConsts {        /* Drivetrain Constants */
-        val TRACK_WIDTH_METERS = Units.inchesToMeters(24.0)
-        val WHEEL_BASE_METERS = Units.inchesToMeters(24.0)
+        val TRACK_WIDTH_METERS = Units.inchesToMeters(30.0)
+        val WHEEL_BASE_METERS = Units.inchesToMeters(30.0)
 
         const val WHEEL_DIAMETER_METERS = 0.1016
 
         const val OPEN_LOOP_RAMP_RATE_SECONDS: Double = 0.25
 
         /* Swerve Profiling Values */
-        const val MAX_SPEED_METERS_PER_SECOND = 6.0
-        const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 300.0
+        const val MAX_SPEED_METERS_PER_SECOND = 3.0
+        const val MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 100.0
         const val MAX_ANGULAR_ACCELERATION_DEGREES_PER_SECOND_SQUARED = 100.0
-        const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2.0
+        const val MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 5.0
 
-        val xPIDController = ProfiledPIDController(1.5, 0.0, 0.0, TrapezoidProfile.Constraints(
-            MAX_SPEED_METERS_PER_SECOND, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED
-        ))
-        val yPIDController = ProfiledPIDController(1.5, 0.0, 0.0, TrapezoidProfile.Constraints(
-            MAX_SPEED_METERS_PER_SECOND, MAX_ACCELERATION_METERS_PER_SECOND_SQUARED
-        ))
-        val thetaPIDController = ProfiledPIDController(0.02, 0.0, 0.0, TrapezoidProfile.Constraints(
+        val xPIDController = PIDController(1.8, 0.0, 0.0)
+        val yPIDController = PIDController(1.8, 0.0, 0.0)
+        val thetaPIDController = ProfiledPIDController(0.03, 0.0, 0.0, TrapezoidProfile.Constraints(
             MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND, MAX_ANGULAR_ACCELERATION_DEGREES_PER_SECOND_SQUARED))
 
         //in the order they appear in modules list
         //assuming that 0,0 is the center of the robot, and (+,+) means (left, front)
         val kinematics =
                 SwerveDriveKinematics(
-                        Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
-                        Translation2d(-WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
-                        Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
                         Translation2d(WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
+                        Translation2d(WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
+                        Translation2d(-WHEEL_BASE_METERS / 2.0, TRACK_WIDTH_METERS / 2.0),
+                        Translation2d(-WHEEL_BASE_METERS / 2.0, -TRACK_WIDTH_METERS / 2.0),
 
 
                         )
@@ -83,9 +78,9 @@ object SwerveDriveConstants {
 
 
     val modules = listOf(
-            ModuleConstants(1, Rotation2d.fromDegrees(-253.36), 1, 2, 0, false, false, PIDController(0.009, 0.003, 0.0003)),
-            ModuleConstants(2, Rotation2d.fromDegrees(-7.66), 3, 4, 1, false, false, PIDController(0.009, 0.003, 0.0003)),
-            ModuleConstants(3, Rotation2d.fromDegrees(-182.53), 5, 6, 2, false, false, PIDController(0.009, 0.003, 0.0003)),
-            ModuleConstants(4, Rotation2d.fromDegrees(-115.76), 7, 8, 3, false, false, PIDController(0.009, 0.003, 0.0003))
+            ModuleConstants(1, Rotation2d.fromDegrees(145.1), 1, 2, 0, true, false, PIDController(0.013, 0.00, 0.00)),
+            ModuleConstants(2, Rotation2d.fromDegrees(9.1), 3, 4, 1, false, false, PIDController(0.013, 0.000, 0.0000)),
+            ModuleConstants(3, Rotation2d.fromDegrees(140.0), 5, 6, 2, false, false, PIDController(0.013, 0.00, 0.000)),
+            ModuleConstants(4, Rotation2d.fromDegrees(-90.0), 7, 8, 3, false, false, PIDController(0.013, 0.00, 0.000))
     )
 }

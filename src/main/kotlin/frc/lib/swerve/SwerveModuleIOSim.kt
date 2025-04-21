@@ -16,6 +16,7 @@ import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.system.plant.DCMotor
+import edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem
 import edu.wpi.first.wpilibj.simulation.DCMotorSim
 import frc.lib.swerve.SwerveModuleIO.ModuleIOInputs
 import kotlin.math.abs
@@ -29,8 +30,8 @@ import kotlin.math.abs
  * approximation for the behavior of the module.
  */
 class SwerveModuleIOSim(val index: Int) : SwerveModuleIO {
-    private val driveSim = DCMotorSim(DCMotor.getNEO(1), 6.75, 0.025)
-    private val turnSim = DCMotorSim(DCMotor.getNEO(1), 150.0 / 7.0, 0.004)
+    private val driveSim = DCMotorSim(createDCMotorSystem(DCMotor.getNEO(10), 0.025, 6.75),DCMotor.getNEO(10) )
+    private val turnSim = DCMotorSim(createDCMotorSystem(DCMotor.getNEO(10), 0.004, 150.0 / 7.0), DCMotor.getNEO(10))
 
     private val turnAbsoluteInitPosition = Rotation2d(Math.random() * 2.0 * Math.PI)
     private var driveAppliedVolts = 0.0
@@ -44,15 +45,11 @@ class SwerveModuleIOSim(val index: Int) : SwerveModuleIO {
         //FIX
         inputs.drivePositionMeters = inputs.drivePositionMeters + driveSim.angularVelocityRadPerSec * 0.002
         inputs.driveVelocityMetersPerSec = driveSim.angularVelocityRadPerSec
-        inputs.driveAppliedVolts = driveAppliedVolts
-        inputs.driveCurrentAmps = doubleArrayOf(abs(driveSim.currentDrawAmps))
 
         inputs.turnAbsolutePosition =
             Rotation2d(turnSim.angularPositionRad).plus(turnAbsoluteInitPosition)
-        inputs.turnPosition = inputs.turnPosition + Rotation2d.fromRotations(turnSim.angularVelocityRadPerSec * 0.002)
+        inputs.turnPosition = inputs.turnPosition + Rotation2d.fromRotations(turnSim.angularVelocityRadPerSec * 0.02)
         inputs.turnVelocityRadPerSec = turnSim.angularVelocityRadPerSec
-        inputs.turnAppliedVolts = turnAppliedVolts
-        inputs.turnCurrentAmps = doubleArrayOf(abs(turnSim.currentDrawAmps))
     }
 
     override fun setDriveVoltage(volts: Double) {
@@ -63,6 +60,18 @@ class SwerveModuleIOSim(val index: Int) : SwerveModuleIO {
     override fun setTurnVoltage(volts: Double) {
         turnAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0)
         turnSim.setInputVoltage(turnAppliedVolts)
+    }
+
+    override fun setDriveBrakeMode(enable: Boolean) {
+        //no...
+    }
+
+    override fun setTurnBrakeMode(enable: Boolean) {
+        //no...
+    }
+
+    override fun reset() {
+        //no...
     }
 
     companion object {

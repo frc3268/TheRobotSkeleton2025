@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.kinematics.*
 import edu.wpi.first.networktables.GenericEntry
 import edu.wpi.first.wpilibj.shuffleboard.*
+import frc.robot.Constants
 import org.littletonrobotics.junction.Logger
 import kotlin.math.*
 
@@ -15,10 +16,8 @@ Set: Module state
 class SwerveModule(val io: SwerveModuleIO, val index:Int) {
     private val inputs = ModuleIOInputsAutoLogged()
     private val ShuffleboardTab = Shuffleboard.getTab("Swerve Module " + index)
-    val setPointEntry: GenericEntry = ShuffleboardTab.add("Setpoint", 0.0).withWidget(BuiltInWidgets.kGyro).entry
-
-    val angleEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder (Relative)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
-    val absoluteEncoderEntry: GenericEntry = ShuffleboardTab.add("Angle Encoder (Absolute)", 0.0).withWidget(BuiltInWidgets.kGyro).entry
+    val headingE = ShuffleboardTab.add("heading", 0.0 ).getEntry()
+    val setpointE = ShuffleboardTab.add("setpoint", "nothing" ).getEntry()
 
     val turnController: PIDController = io.turnPIDController
 
@@ -31,14 +30,12 @@ class SwerveModule(val io: SwerveModuleIO, val index:Int) {
 
     fun update() {
         io.updateInputs(inputs)
-        Logger.processInputs("Drive/module" + index.toString(), inputs)
-        angleEncoderEntry.setDouble(getState().angle.degrees)
-        absoluteEncoderEntry.setDouble(inputs.turnAbsolutePosition.degrees)
         delta = SwerveModulePosition(
             getPosition().distanceMeters
                     - lastPosition.distanceMeters,
             getPosition().angle);
         lastPosition = getPosition()
+        headingE.setDouble(inputs.turnPosition.degrees)
     }
 
     fun resetToAbsolute() {
@@ -53,16 +50,21 @@ class SwerveModule(val io: SwerveModuleIO, val index:Int) {
             stop()
             return
         }
-        val optimizedState = SwerveModuleState.optimize(desiredState, getState().angle)
-        setPointEntry.setDouble(optimizedState.angle.degrees)
-        io.setDriveVoltage((optimizedState.speedMetersPerSecond / SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND) * 12.0)
-        io.setTurnVoltage(turnController.calculate(getState().angle.degrees, optimizedState.angle.degrees) * 12.0)
+        desiredState.optimize(getState().angle)
+        desiredState.cosineScale(getState().angle)
+        var error = (desiredState.angle - getState().angle).degrees
+
+        setpointE.setString("error; " + error + "currentState: " + desiredState.angle.degrees)
+        io.setDriveVoltage((desiredState.speedMetersPerSecond / SwerveDriveConstants.DrivetrainConsts.MAX_SPEED_METERS_PER_SECOND) * 12.0)
+        if(Constants.mode == Constants.States.REAL){
+            io.setTurnVoltage(turnController.calculate(error, 0.0) * 12.0)
+        } else{
+            io.setTurnVoltage(turnController.calculate(getState().angle.degrees, desiredState.angle.degrees) * 12.0)
+        }
     }
 
     fun stop() {
         io.setDriveVoltage(0.0)
         io.setTurnVoltage(0.0)
     }
-
-
 }
