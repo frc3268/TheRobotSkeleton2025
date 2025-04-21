@@ -10,17 +10,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import frc.lib.FieldLocation
 import frc.lib.FieldPositions
 import frc.lib.swerve.SwerveDriveBase
-import frc.robot.algaeintake.AlgaeIntakeIOSparkMax
-import frc.robot.algaeintake.AlgaeIntakeSubsystem
-import frc.robot.climber.ClimberIOSparkMax
-import frc.robot.climber.ClimberSubsystem
 import frc.robot.commands.AlignToAprilTagCommand
 import frc.robot.commands.Routines
 import frc.robot.commands.SwerveAutoDrive
 import frc.robot.commands.SwerveJoystickDrive
-import frc.robot.coralintake.CoralIntakeSubsystem
-import frc.robot.elevator.ElevatorIOKraken
-import frc.robot.elevator.ElevatorSubsystem
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,11 +34,6 @@ class RobotContainer {
 
     private val driverController = CommandXboxController(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT)
 
-    // There must be a better way to do this! Oh well.
-    var coralIntakeSubsystem: CoralIntakeSubsystem? = null
-    var elevatorSubsystem: ElevatorSubsystem? = null
-    var algaeIntakeSubsystem: AlgaeIntakeSubsystem? = null
-    var climberSubsystem: ClimberSubsystem? = null
 
     val autochooser = SendableChooser<Command>()
 
@@ -90,12 +78,8 @@ class RobotContainer {
 
         // get selected level with levelChooser.selected
         if (Constants.mode == Constants.States.REAL) {
-            //coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMax())
-            algaeIntakeSubsystem = AlgaeIntakeSubsystem(AlgaeIntakeIOSparkMax())
-            elevatorSubsystem = ElevatorSubsystem(ElevatorIOKraken())
-            climberSubsystem = ClimberSubsystem(ClimberIOSparkMax())
-        }
-        else {
+
+        } else {
             // coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
 
             println("Warning: Simulated subsystems do not exist as no IOClass for them exists!")
@@ -104,7 +88,10 @@ class RobotContainer {
 
         val rbChooser = SendableChooser<Command>()
 
-        rbChooser.setDefaultOption("Align to April Tag", AlignToAprilTagCommand(driveSubsystem, {rightChooser.selected}))
+        rbChooser.setDefaultOption(
+            "Align to April Tag",
+            AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected })
+        )
         rbChooser.addOption("Align to Source Left", goto(FieldPositions.sourceLeft))
         rbChooser.addOption("Align to Source Right", goto(FieldPositions.sourceRight))
 
@@ -112,77 +99,11 @@ class RobotContainer {
             Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
                 .add(AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected }))
         }
-
-        if (elevatorSubsystem != null && algaeIntakeSubsystem != null) {
-
-            autochooser.addOption("do nothing", WaitCommand(3.0))
-
-            autochooser.setDefaultOption("taxi", SwerveJoystickDrive(driveSubsystem, {1.0}, {0.0}, {0.0},{false} ).withTimeout(1.0))
-
-//            autochooser.addOption(
-//                "go left" ,
-//                Routines.goLeftCommand(elevatorSubsystem!!, coralIntakeSubsystem!!, this)
-//            )
-//
-//            autochooser.addOption(
-//                "go right" ,
-//                Routines.goRightCommand(elevatorSubsystem!!, coralIntakeSubsystem!!, this)
-//            )
-
-            driverController.leftBumper().onTrue(
-                Routines.reefPickup(
-                    Constants.Levels.LEVEL2.lvl,
-                     elevatorSubsystem!!, algaeIntakeSubsystem!!
-                )
-            )
-
-            driverController.leftTrigger().onTrue(
-                Routines.groundPickup(
-                    elevatorSubsystem!!,
-                    algaeIntakeSubsystem!!
-                )
-            )
-
-            driverController.rightBumper().onTrue(
-                Routines.reefPickup(
-                    Constants.Levels.LEVEL3.lvl,
-                    elevatorSubsystem!!, algaeIntakeSubsystem!!
-                )
-           )
-
-            driverController.rightTrigger().onTrue(
-                Routines.placeAlgae(elevatorSubsystem!!, algaeIntakeSubsystem!!)
-            )
-
-//            //just lower the elevator little bro
-//            driverController.y().onTrue(
-//                coralIntakeSubsystem!!.stopIntake().
-//                andThen(coralIntakeSubsystem!!.lower().alongWith(elevatorSubsystem!!.setToPosition(0.0)))
-//            )
-
-            driverController.povDown().onTrue(Routines.inchBack(driveSubsystem))
-            driverController.povUp().onTrue(Routines.inchForward(driveSubsystem))
-            driverController.povRight().onTrue(Routines.inchRight(driveSubsystem))
-            driverController.povLeft().onTrue(Routines.inchLeft(driveSubsystem))
-
-            GeneralTab.add("0",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL0.lvl) )
-            GeneralTab.add("1",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL1.lvl) )
-            GeneralTab.add("2",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL2.lvl) )
-            GeneralTab.add("3",elevatorSubsystem!!.setToPosition(Constants.Levels.LEVEL3.lvl) )
-
-            CalibrationTab.add(elevatorSubsystem!!.setToPosition(elevatorHeightDesiredEntry.getDouble(Constants.Levels.LEVEL0.lvl)))
-
-        }
-
-
+        driverController.povDown().onTrue(Routines.inchBack(driveSubsystem))
+        driverController.povUp().onTrue(Routines.inchForward(driveSubsystem))
+        driverController.povRight().onTrue(Routines.inchRight(driveSubsystem))
+        driverController.povLeft().onTrue(Routines.inchLeft(driveSubsystem))
         driveSubsystem.defaultCommand = teleopCommand
-
-        GeneralTab
-            .add("Autonomous Mode", autochooser)
-            .withWidget(BuiltInWidgets.kComboBoxChooser)
-            .withPosition(0, 0)
-            .withSize(2, 1)
-
 
     }
 
@@ -193,6 +114,8 @@ class RobotContainer {
      */
     val autonomousCommand: Command
         get() {
-            return autochooser.selected
+            return WaitCommand(1.0)
+            //fix
+            //autochooser.selected
         }
 }
