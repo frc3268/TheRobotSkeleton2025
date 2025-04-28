@@ -1,5 +1,6 @@
 package frc.lib.led
 
+import edu.wpi.first.units.measure.Time
 import edu.wpi.first.wpilibj.AddressableLED
 import edu.wpi.first.wpilibj.AddressableLEDBuffer
 import edu.wpi.first.wpilibj.LEDPattern
@@ -32,7 +33,7 @@ class LedStrip(
         ledStrip.setData(ledBuffer)
         ledStrip.start()
 
-        setDefaultCommand(applyPattern(LEDPattern.solid(Color.kBlack)).withName("Off"))
+        setDefaultCommand(setPattern(LEDPattern.solid(Color.kBlack)).withName("Off"))
     }
 
     /** Set a [pattern] to the [LedStrip]. Will clear the queue. 
@@ -45,7 +46,7 @@ class LedStrip(
     }
 
 
-    /** Queue up a [pattern] to the [LedStrip] for a [duration]. Currently does nothing.
+    /** Queue up a [pattern] to the [LedStrip] for a [duration]. Currently, does nothing.
      * @param[pattern] the pattern to apply to the buffer
      * @param[duration] how long should the pattern last for?
      * @sample applyGradientPattern
@@ -61,7 +62,7 @@ class LedStrip(
     /** Apply a gradient pattern to the [LedStrip]. */
     fun applyGradientPattern(color1: Color, color2: Color): Command = runOnce {
         val gradient = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, color1, color2)
-        applyPattern(gradient)
+        setPattern(gradient)
     }
 
     override fun periodic() {
