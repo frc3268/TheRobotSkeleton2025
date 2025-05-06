@@ -1,7 +1,6 @@
 package frc.robot
 
 import frc.robot.Constants.Levels.LEVEL0
-import frc.robot.elevator.ElevatorSubsystem
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean

@@ -3,10 +3,18 @@ package frc.lib.core
 import edu.wpi.first.hal.FRCNetComm
 import edu.wpi.first.hal.HAL
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
+import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import frc.lib.FieldLocation
 import frc.robot.commands.SwerveJoystickDrive
 import frc.lib.swerve.SwerveDriveBase
 import frc.robot.Constants
+import frc.robot.commands.Routines
+import frc.robot.commands.SwerveAutoDrive
 
 /** A Basic core singleton. *WARNING: You must call [initCore] before using or acessing this singleton!* */
 object robotCore {
@@ -21,7 +29,7 @@ object robotCore {
     
     fun goto(goal: FieldLocation): Command {
         return SwerveAutoDrive(
-            {goal},
+            { goal },
             driveSubsystem
         )
     }
@@ -33,7 +41,7 @@ object robotCore {
      */
     val autonomousCommand: Command
         get() {
-            return autochooser.selected
+            return autoChooser.selected
         }
 
     
@@ -54,8 +62,7 @@ object robotCore {
         driverController.povLeft().onTrue(Routines.inchLeft(driveSubsystem))
 
 
-        driveSubsystem.defaultCommand = teleopCommand
-    
+
         autoChooser.addOption("Do nothing", WaitCommand(3.0))
         autoChooser.setDefaultOption("Taxi", SwerveJoystickDrive(driveSubsystem, {1.0}, {0.0}, {0.0}, {false} ).withTimeout(1.0))
     }
@@ -63,7 +70,7 @@ object robotCore {
     // Idk if this should be called in initCore or not
     fun initWidgets() {
         GeneralTab
-            .add("Autonomous Mode", autochooser)
+            .add("Autonomous Mode", autoChooser)
             .withWidget(BuiltInWidgets.kComboBoxChooser)
             .withPosition(0, 0)
             .withSize(2, 1)
