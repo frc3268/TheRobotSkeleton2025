@@ -1,19 +1,14 @@
 package frc.robot
 
-import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
+import edu.wpi.first.wpilibj.motorcontrol.Talon
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.lib.FieldLocation
-import frc.lib.FieldPositions
-import frc.lib.swerve.SwerveDriveBase
-import frc.robot.commands.AlignToAprilTagCommand
-import frc.robot.commands.Routines
-import frc.robot.commands.SwerveAutoDrive
-import frc.robot.commands.SwerveJoystickDrive
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,8 +20,6 @@ class RobotContainer {
     private val GeneralTab = Shuffleboard.getTab("General")
     private val CalibrationTab = Shuffleboard.getTab(Constants.CALIBRATION_TAB)
     val elevatorHeightDesiredEntry = CalibrationTab.add("Desired Elevator Height", 0.0).withWidget(BuiltInWidgets.kNumberSlider).entry
-
-
 
     //val driveSubsystem = SwerveDriveBase(Pose2d())
 
@@ -61,13 +54,14 @@ class RobotContainer {
         val levelChooser = SendableChooser<Constants.Levels>()
 
 
-        // levelChooser.addOption("Reset Level", Levels.LEVEL0)
-        levelChooser.addOption("Level 1", Constants.Levels.LEVEL1)
-        levelChooser.addOption("Level 2", Constants.Levels.LEVEL2)
-        levelChooser.setDefaultOption("Level 3", Constants.Levels.LEVEL3)
-        levelChooser.addOption("Level 4", Constants.Levels.LEVEL4)
 
-        GeneralTab.add(levelChooser)
+        // levelChooser.addOption("Reset Level", Levels.LEVEL0)
+//        levelChooser.addOption("Level 1", Constants.Levels.LEVEL1)
+//        levelChooser.addOption("Level 2", Constants.Levels.LEVEL2)
+//        levelChooser.setDefaultOption("Level 3", Constants.Levels.LEVEL3)
+//        levelChooser.addOption("Level 4", Constants.Levels.LEVEL4)
+//
+//        GeneralTab.add(levelChooser)
 
 
         val rightChooser = SendableChooser<Boolean>()
@@ -76,7 +70,6 @@ class RobotContainer {
         rightChooser.addOption("right", true)
 
 
-        // get selected level with levelChooser.selected
         if (Constants.mode == Constants.States.REAL) {
 
         } else {

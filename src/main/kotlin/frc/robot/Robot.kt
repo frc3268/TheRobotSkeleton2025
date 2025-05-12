@@ -2,8 +2,12 @@ package frc.robot
 
 import edu.wpi.first.wpilibj.PowerDistribution
 import edu.wpi.first.wpilibj.TimedRobot
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup
+import edu.wpi.first.wpilibj.motorcontrol.Talon
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import org.littletonrobotics.junction.LogFileUtil
 import org.littletonrobotics.junction.Logger
 import org.littletonrobotics.junction.networktables.NT4Publisher
@@ -18,7 +22,19 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter
  */
 class Robot : TimedRobot() {
     private var autonomousCommand: Command? = null
-    private var robotContainer: RobotContainer? = null
+
+    val driveleftFront = Talon(0);
+    val driveleftBack = Talon(1);
+    val driverightFront = Talon(2);
+    val driverightBack = Talon(3);
+    var basepower: Double = 0.0
+
+    val PD = PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
+    val driverController = CommandXboxController(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT)
+
+    var drive: DifferentialDrive = DifferentialDrive(
+        MotorControllerGroup(driveleftFront, driveleftBack),
+        MotorControllerGroup(driverightFront, driverightBack))
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -46,7 +62,6 @@ class Robot : TimedRobot() {
                 )
             ) // Save outputs to a new log
         }
-        robotContainer = RobotContainer()
 
     }
 
@@ -74,10 +89,10 @@ class Robot : TimedRobot() {
 
     /** This autonomous runs the autonomous command selected by your [RobotContainer] class.  */
     override fun autonomousInit() {
-        autonomousCommand = robotContainer?.autonomousCommand
-        // Schedule the autonomous command (example)
-        // Note the Kotlin safe-call(?.), this ensures autonomousCommand is not null before scheduling it
-        autonomousCommand?.schedule()
+//        autonomousCommand = robotContainer?.autonomousCommand
+//        // Schedule the autonomous command (example)
+//        // Note the Kotlin safe-call(?.), this ensures autonomousCommand is not null before scheduling it
+//        autonomousCommand?.schedule()
     }
 
     /** This function is called periodically during autonomous.  */
@@ -85,6 +100,7 @@ class Robot : TimedRobot() {
 
     /** This function is called once when teleop is enabled.  */
     override fun teleopInit() {
+        basepower = PD.voltage;
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
@@ -97,7 +113,13 @@ class Robot : TimedRobot() {
 
     /** This function is called periodically during operator control.  */
     override fun teleopPeriodic() {
-
+        if(PD.voltage < 0.75 * basepower){
+            //brownout prevention
+            drive.arcadeDrive(driverController.rightX*0.5, driverController.leftY*0.5);
+        }
+        else{
+            drive.arcadeDrive(driverController.rightX*0.5, driverController.leftY*0.5);
+        }
 
     }
 
