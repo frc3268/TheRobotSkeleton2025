@@ -1,8 +1,14 @@
 package frc.robot
 
+import edu.wpi.first.wpilibj.PowerDistribution
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
+import org.littletonrobotics.junction.LogFileUtil
+import org.littletonrobotics.junction.Logger
+import org.littletonrobotics.junction.networktables.NT4Publisher
+import org.littletonrobotics.junction.wpilog.WPILOGReader
+import org.littletonrobotics.junction.wpilog.WPILOGWriter
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -21,7 +27,27 @@ class Robot : TimedRobot() {
     override fun robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
+        if (isReal()) {
+            Constants.mode = Constants.States.REAL
+            PowerDistribution(1, PowerDistribution.ModuleType.kRev) // Enables power distribution logging
+        } else if (isSimulation()) {
+            Constants.mode = Constants.States.SIM
+            // Running a physics simulator, log to NT
+            Logger.addDataReceiver(NT4Publisher())
+        } else {
+            Constants.mode = Constants.States.REPLAY
+            val logPath = LogFileUtil.findReplayLog() // Pull the replay log from AdvantageScope (or prompt the user)
+            Logger.setReplaySource(WPILOGReader(logPath)) // Read replay log
+            Logger.addDataReceiver(
+                WPILOGWriter(
+                    LogFileUtil.addPathSuffix(
+                        logPath, "_sim"
+                    )
+                )
+            ) // Save outputs to a new log
+        }
         robotContainer = RobotContainer()
+
     }
 
     /**
@@ -49,8 +75,6 @@ class Robot : TimedRobot() {
     /** This autonomous runs the autonomous command selected by your [RobotContainer] class.  */
     override fun autonomousInit() {
         autonomousCommand = robotContainer?.autonomousCommand
-        robotContainer?.driveSubsystem?.zeroYaw()
-
         // Schedule the autonomous command (example)
         // Note the Kotlin safe-call(?.), this ensures autonomousCommand is not null before scheduling it
         autonomousCommand?.schedule()
@@ -67,11 +91,15 @@ class Robot : TimedRobot() {
         // this line or comment it out.
         // Note the Kotlin safe-call(?.), this ensures autonomousCommand is not null before cancelling it
         autonomousCommand?.cancel()
+        robotContainer?.driveSubsystem?.zeroHeadingCommand()?.schedule()
         robotContainer?.teleopCommand?.schedule()
     }
 
     /** This function is called periodically during operator control.  */
-    override fun teleopPeriodic() {}
+    override fun teleopPeriodic() {
+
+
+    }
 
     /** This function is called once when test mode is enabled.  */
     override fun testInit() {
