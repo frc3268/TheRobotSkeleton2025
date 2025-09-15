@@ -1,19 +1,26 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.networktables.GenericEntry
+import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab
+import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.WaitCommand
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import frc.lib.FieldLocation
-import frc.lib.FieldPositions
-import frc.lib.swerve.SwerveDriveBase
-import frc.robot.commands.AlignToAprilTagCommand
-import frc.robot.commands.Routines
-import frc.robot.commands.SwerveAutoDrive
+import edu.wpi.first.wpilibj2.command.button.Trigger
+import frc.lib.basics.SwerveDriveBase
+import frc.lib.utils.Camera
+import frc.lib.utils.TrajectoryOrchestrator
+import frc.robot.commands.Autos
+import frc.robot.commands.ExampleCommand
 import frc.robot.commands.SwerveJoystickDrive
+import frc.robot.subsystems.ExampleSubsystem
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -22,89 +29,53 @@ import frc.robot.commands.SwerveJoystickDrive
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 class RobotContainer {
-    private val GeneralTab = Shuffleboard.getTab("General")
-    private val CalibrationTab = Shuffleboard.getTab(Constants.CALIBRATION_TAB)
-    val elevatorHeightDesiredEntry = CalibrationTab.add("Desired Elevator Height", 0.0).withWidget(BuiltInWidgets.kNumberSlider).entry
 
+    // The robot's subsystems and commands are defined here...
+    //todo: change this to reflect a field position. Maybe use a constant?
+    val driveSubsystem:SwerveDriveBase = SwerveDriveBase(Pose2d())
 
+    //todo: set limelight up
+    //private val cameraSubsystem:Camera = Camera("Spy Balloon Camera", "")
 
-    val driveSubsystem = SwerveDriveBase(Pose2d())
+    // Replace with CommandPS4Controller or CommandJoystick if needed
+    private val driverController = Joystick(Constants.OperatorConstants.kDriverControllerPort)
 
+    private val orchestrator:TrajectoryOrchestrator = TrajectoryOrchestrator()
 
+    val autoCommand:Command = orchestrator.beelineCommand(
+        driveSubsystem,
+        Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90.0))
+    )
 
-    private val driverController = CommandXboxController(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT)
-
-
-    val autochooser = SendableChooser<Command>()
-
-    val teleopCommand = SwerveJoystickDrive(
+    //this is the command called when teleop mode is enabled
+     val teleopCommand = SwerveJoystickDrive(
         driveSubsystem,
         { driverController.getRawAxis(1) },
         { driverController.getRawAxis(0) },
-        { -driverController.getRawAxis(4) },
-        { true }
+        { -driverController.getRawAxis(2) },
+        { !driverController.triggerPressed }
     )
-
-
-    fun goto(goal: FieldLocation): Command {
-        return SwerveAutoDrive(
-            {goal},
-            driveSubsystem
-        )
-    }
-
-    
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
+        driveSubsystem.setDefaultCommand(teleopCommand)
+        // Configure the trigger bindings
+        configureBindings()
+    }
 
+    /**
+     * Use this method to define your trigger->command mappings. Triggers can be created via the
+     * [Trigger#Trigger(java.util.function.BooleanSupplier)] constructor with an arbitrary
+     * predicate, or via the named factories in [edu.wpi.first.wpilibj2.command.button.CommandGenericHID]'s subclasses for
+     * [CommandXboxController]/[edu.wpi.first.wpilibj2.command.button.CommandPS4Controller] controllers
+     * or [edu.wpi.first.wpilibj2.command.button.CommandJoystick].
+     */
+    private fun configureBindings() {
+        // Schedule ExampleCommand when exampleCondition changes to true
+        //Trigger { exampleSubsystem.exampleCondition() }.onTrue(ExampleCommand(exampleSubsystem))
 
-        val levelChooser = SendableChooser<Constants.Levels>()
-
-
-        // levelChooser.addOption("Reset Level", Levels.LEVEL0)
-        levelChooser.addOption("Level 1", Constants.Levels.LEVEL1)
-        levelChooser.addOption("Level 2", Constants.Levels.LEVEL2)
-        levelChooser.setDefaultOption("Level 3", Constants.Levels.LEVEL3)
-        levelChooser.addOption("Level 4", Constants.Levels.LEVEL4)
-
-        GeneralTab.add(levelChooser)
-
-
-        val rightChooser = SendableChooser<Boolean>()
-
-        rightChooser.setDefaultOption("left", false)
-        rightChooser.addOption("right", true)
-
-
-        // get selected level with levelChooser.selected
-        if (Constants.mode == Constants.States.REAL) {
-
-        } else {
-            // coralIntakeSubsystem = CoralIntakeSubsystem(CoralIntakeIOSparkMaxSim())
-
-            println("Warning: Simulated subsystems do not exist as no IOClass for them exists!")
-            println("Abandon all hope ye who debug here")
-        }
-
-        val rbChooser = SendableChooser<Command>()
-
-        rbChooser.setDefaultOption(
-            "Align to April Tag",
-            AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected })
-        )
-        rbChooser.addOption("Align to Source Left", goto(FieldPositions.sourceLeft))
-        rbChooser.addOption("Align to Source Right", goto(FieldPositions.sourceRight))
-
-        if (Constants.mode == Constants.States.SIM) {
-            Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
-                .add(AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected }))
-        }
-        driverController.povDown().onTrue(Routines.inchBack(driveSubsystem))
-        driverController.povUp().onTrue(Routines.inchForward(driveSubsystem))
-        driverController.povRight().onTrue(Routines.inchRight(driveSubsystem))
-        driverController.povLeft().onTrue(Routines.inchLeft(driveSubsystem))
-        driveSubsystem.defaultCommand = teleopCommand
-
+        // Schedule exampleMethodCommand when the Xbox controller's B button is pressed,
+        // cancelling on release.
+        //driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand())
     }
 
     /**
@@ -114,8 +85,7 @@ class RobotContainer {
      */
     val autonomousCommand: Command
         get() {
-            return WaitCommand(1.0)
-            //fix
-            //autochooser.selected
+            // wait 3 seconds...
+            return autoCommand
         }
 }
