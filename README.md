@@ -1,19 +1,33 @@
 # ValhallaLib
 
-*general-purpose robotics library created by frc team 3268*
+*repo for the robot code for Reefscape2025, created by FRC team 3268 with ValhallaLib*
 
-Features swerve-drive code, camera code, autonomous code & some dashboard code    
-More features to come, including but not limited to: more dashboard code, more odometry integrations, and documentation
+**Features** swerve-drive code, camera code, autonomous code & dashboard code    
+**More** features to come, including but not limited to: more dashboard code, more odometry integrations, and documentation
 
-Written in Kotlin
+*This library tries to abide by the following "ideals":*
 
-Usage:
+**Naming:**
+- Subsystems: End with "Subsystem"
+- Commands: End with "Command"
+- Constants: UPPERCASE_WITH_UNDERSCORES
+- Methods/Functions: startWithLowerCaseThenCamelCase
+- Classes: CamelCase
+
+**Structure:**
+- Lib: All the library (ie non wpilib) things go here
+- Robot: everything else goes here
+
+**Generally:**
+- Keep it simple
+- Don't appeal to boilerplate if you don't have to
+- Allow extensibility
+
+**Usage:**
 1. Clone/fork the repo
 2. Change constants to match your robot
 3. Enjoy
 
-toupdate:
-https://github.com/PhotonVision/photonvision/releases
 
+**Thanks** to frc team 6814 for creating an excellent series on frc programming(0 to Autonomous). Their code in episode 6 served as the basis for much of the swerve-drive code in this library
 
-Thanks to frc team 6814 for creating an excellent series on frc programming(0 to Autonomous). Their code in episode 6 served as the basis for much of the swerve-drive code in this library
