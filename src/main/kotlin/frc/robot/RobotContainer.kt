@@ -21,7 +21,7 @@ class RobotContainer {
     private val CalibrationTab = Shuffleboard.getTab(Constants.CALIBRATION_TAB)
     val elevatorHeightDesiredEntry = CalibrationTab.add("Desired Elevator Height", 0.0).withWidget(BuiltInWidgets.kNumberSlider).entry
 
-    //val driveSubsystem = SwerveDriveBase(Pose2d())
+    val driveSubsystem = SwerveDriveBase(Pose2d())
 
 
 
@@ -30,23 +30,23 @@ class RobotContainer {
 
     val autochooser = SendableChooser<Command>()
 
-//    val teleopCommand = SwerveJoystickDrive(
-//        driveSubsystem,
-//        { driverController.getRawAxis(1) },
-//        { driverController.getRawAxis(0) },
-//        { -driverController.getRawAxis(4) },
-//        { true }
-//    )
+   val teleopCommand = SwerveJoystickDrive(
+       driveSubsystem,
+       { driverController.getRawAxis(1) },
+       { driverController.getRawAxis(0) },
+       { -driverController.getRawAxis(4) },
+       { true }
+   )
 
 
-//    fun goto(goal: FieldLocation): Command {
-//        return SwerveAutoDrive(
-//            {goal},
-//            driveSubsystem
-//        )
-//    }
-//
-//
+   fun goto(goal: FieldLocation): Command {
+       return SwerveAutoDrive(
+           {goal},
+           driveSubsystem
+       )
+   }
+
+
     /** The container for the robot. Contains subsystems, OI devices, and commands.  */
     init {
 
@@ -80,22 +80,22 @@ class RobotContainer {
 
         val rbChooser = SendableChooser<Command>()
 
-//        rbChooser.setDefaultOption(
-//            "Align to April Tag",
-//            AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected })
-//        )
-//        rbChooser.addOption("Align to Source Left", goto(FieldPositions.sourceLeft))
-//        rbChooser.addOption("Align to Source Right", goto(FieldPositions.sourceRight))
-//
-//        if (Constants.mode == Constants.States.SIM) {
-//            Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
-//                .add(AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected }))
-//        }
-//        driverController.povDown().onTrue(Routines.inchBack(driveSubsystem))
-//        driverController.povUp().onTrue(Routines.inchForward(driveSubsystem))
-//        driverController.povRight().onTrue(Routines.inchRight(driveSubsystem))
-//        driverController.povLeft().onTrue(Routines.inchLeft(driveSubsystem))
-//        driveSubsystem.defaultCommand = teleopCommand
+       rbChooser.setDefaultOption(
+           "Align to April Tag",
+           AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected })
+       )
+       rbChooser.addOption("Align to Source Left", goto(FieldPositions.sourceLeft))
+       rbChooser.addOption("Align to Source Right", goto(FieldPositions.sourceRight))
+
+       if (Constants.mode == Constants.States.SIM) {
+           Shuffleboard.getTab(Constants.TROUBLESHOOTING_TAB)
+               .add(AlignToAprilTagCommand(driveSubsystem, { rightChooser.selected }))
+       }
+       driverController.povDown().onTrue(Routines.inchBack(driveSubsystem))
+       driverController.povUp().onTrue(Routines.inchForward(driveSubsystem))
+       driverController.povRight().onTrue(Routines.inchRight(driveSubsystem))
+       driverController.povLeft().onTrue(Routines.inchLeft(driveSubsystem))
+       driveSubsystem.defaultCommand = teleopCommand
 
     }
 
