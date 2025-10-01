@@ -36,7 +36,7 @@ object robotCore {
     
     fun goto(goal: FieldLocation): Command {
         return SwerveAutoDrive(
-            {goal},
+            { goal },
             driveSubsystem
         )
     }
@@ -69,8 +69,7 @@ object robotCore {
         driverController.povLeft().onTrue(Routines.inchLeft(driveSubsystem))
 
 
-        driveSubsystem.defaultCommand = teleopCommand
-    
+
         autoChooser.addOption("Do nothing", WaitCommand(3.0))
         autoChooser.setDefaultOption("Taxi", SwerveJoystickDrive(driveSubsystem, {1.0}, {0.0}, {0.0}, {false} ).withTimeout(1.0))
     }
