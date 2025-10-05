@@ -22,6 +22,9 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter
  */
 class Robot : TimedRobot() {
     private var autonomousCommand: Command? = null
+    private var robotContainer: RobotContainer? = null
+
+
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
@@ -48,7 +51,7 @@ class Robot : TimedRobot() {
                 )
             ) // Save outputs to a new log
         }
-
+        robotContainer = RobotContainer()
     }
 
     /**
